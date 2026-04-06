@@ -295,11 +295,57 @@
     });
 
     formulario.addEventListener('submit', function(e) {
-        const emailDestino = "edugc73@gmail.com"; 
-        this.action = `https://formsubmit.co/${emailDestino}`;
-        btnEnviar.innerText = "Obrigado por confiar em CBFITWEAR";
-        btnEnviar.style.opacity = "0.5";
-    });
+    // 1. Configura o destino do e-mail
+    const emailDestino = "edugc73@gmail.com"; 
+    this.action = `https://formsubmit.co/${emailDestino}`;
+
+    // 2. Pequeno delay para garantir que o navegador inicie o envio antes de mudar a tela
+    setTimeout(() => {
+        mostrarAgradecimento();
+    }, 500);
+});
+
+function mostrarAgradecimento() {
+    // Aplica o fundo azul escuro total na tela
+    document.body.innerHTML = `
+        <div style="
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            width: 100vw; 
+            background-color: #0f172a; 
+            color: #f8fafc; 
+            text-align: center;
+            padding: 20px;
+            animation: fadeIn 0.8s ease-in-out;
+        ">
+            <div style="font-size: 5rem; margin-bottom: 20px;">✅</div>
+            <h1 style="
+                font-size: 2.5rem; 
+                background: linear-gradient(to right, #818cf8, #c084fc);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 10px;
+            ">Muito Obrigado!</h1>
+            <p style="font-size: 1.2rem; color: #94a3b8; max-width: 400px;">
+                Seu pedido foi enviado com sucesso. <br> 
+                Em breve a equipe <strong>CB Fitwear</strong> entrará em contato com você!
+            </p>
+            <button onclick="window.location.reload()" style="
+                margin-top: 30px;
+                padding: 12px 25px;
+                background: #6366f1;
+                color: white;
+                border: none;
+                border-radius: 50px;
+                cursor: pointer;
+                font-weight: bold;
+            ">Voltar ao Catálogo</button>
+        </div>
+    `;
+}};
 
     init();
 </script>
