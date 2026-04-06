@@ -161,10 +161,13 @@
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_next" value="https://edugc73.github.io/cbfitwear?sucesso=true">
        
-        <div id="result" class="result-card">
-            <div class="price-label">Valor de Venda</div>
-            <div class="price-value" id="valor">R$ 0,00</div>
-        </div>
+       <div id="result" class="result-card">
+    <div class="price-label">Valor de Venda</div>
+    <div class="price-value" id="valor">R$ 0,00</div>
+    <div id="estoque-info" style="margin-top: 10px; font-size: 0.9rem; font-weight: 600;">
+        Estoque: <span id="qtd-estoque">0</span> unidades
+    </div>
+</div>
        
         <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Pedido por E-mail</button>
     </form>
@@ -199,12 +202,13 @@ async function carregarDados() {
         const json = JSON.parse(text.substr(47).slice(0, -2));
         
         // Mapeia as linhas da planilha para o formato do nosso catálogo
-        dados = json.table.rows.map(row => ({
-            p: row.c[0] ? row.c[0].v : '', // Coluna A (Produto)
-            t: row.c[1] ? row.c[1].v : '', // Coluna B (Tamanho)
-            c: row.c[2] ? row.c[2].v : '', // Coluna C (Cor)
-            v: row.c[3] ? row.c[3].v : 0   // Coluna D (Valor)
-        }));
+       dados = json.table.rows.map(row => ({
+    p: row.c[0] ? row.c[0].v : '', // Produto
+    t: row.c[1] ? row.c[1].v : '', // Tamanho
+    c: row.c[2] ? row.c[2].v : '', // Cor
+    v: row.c[3] ? row.c[3].v : 0,  // Valor
+    e: row.c[4] ? row.c[4].v : 0   // Coluna E (Estoque) - NOVA
+}));
 
         init(); // Inicia o catálogo após carregar os dados
     } catch (error) {
@@ -259,12 +263,34 @@ selCor.addEventListener('change', () => {
     const item = dados.find(d => 
         d.p === selProd.value && d.t === selTam.value && d.c === selCor.value
     );
+
+    const txtEstoque = document.getElementById('qtd-estoque');
+    const infoEstoque = document.getElementById('estoque-info');
+
     if (item) {
+        // Atualiza Valor
         const valorFormatado = `R$ ${parseFloat(item.v).toFixed(2).replace('.', ',')}`;
         txtValor.textContent = valorFormatado;
         hiddenValor.value = valorFormatado;
+
+        // Atualiza Estoque
+        const qtd = parseInt(item.e);
+        txtEstoque.textContent = qtd;
+        
         cardResult.style.display = 'block';
-        btnEnviar.style.display = 'block';
+
+        if (qtd > 0) {
+            infoEstoque.style.color = "#10b981"; // Verde se tiver estoque
+            btnEnviar.style.display = 'block';
+            btnEnviar.disabled = false;
+            btnEnviar.innerText = "Enviar Pedido por E-mail";
+        } else {
+            infoEstoque.style.color = "#ef4444"; // Vermelho se estiver zerado
+            btnEnviar.style.display = 'block';
+            btnEnviar.disabled = true;
+            btnEnviar.innerText = "Produto Indisponível";
+            btnEnviar.style.opacity = "0.5";
+        }
     }
 });
 
