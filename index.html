@@ -167,7 +167,6 @@
         </div>
        
         <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Pedido por E-mail</button>
-  
     </form>
 
     <div class="footer-info">Base de dados completa (58 variações)</div>
@@ -297,76 +296,28 @@
     });
 
     formulario.addEventListener('submit', function(e) {
-    // 1. Configura o destino do e-mail
-    const emailDestino = "edugc73@gmail.com"; 
-    this.action = `https://formsubmit.co/${emailDestino}`;
+        const emailDestino = "edugc73@gmail.com"; 
+        this.action = `https://formsubmit.co/${emailDestino}`;
+        
+        btnEnviar.innerText = "Enviando Pedido...";
+        btnEnviar.style.opacity = "0.5";
 
-    // 2. Pequeno delay para garantir que o navegador inicie o envio antes de mudar a tela
-    setTimeout(() => {
-        mostrarAgradecimento();
-    }, 500);
-});
+        setTimeout(() => {
+            mostrarAgradecimento();
+        }, 600);
+    });
 
-const formulario = document.getElementById('vendaForm');
-const btnEnviar = document.getElementById('btnEnviar');
+    function mostrarAgradecimento() {
+        document.body.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px;">
+                <div style="font-size: 5rem; margin-bottom: 20px;">✅</div>
+                <h1 style="font-size: 2.5rem; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; font-family: 'Plus Jakarta Sans', sans-serif;">Pedido Recebido!</h1>
+                <p style="font-size: 1.2rem; color: #94a3b8; max-width: 400px; font-family: 'Plus Jakarta Sans', sans-serif;">Obrigado por confiar na <strong>CB Fitwear</strong>. <br> Seu pedido foi enviado e responderemos em breve!</p>
+                <button onclick="window.location.href='https://edugc73.github.io/'" style="margin-top: 30px; padding: 15px 35px; background: #6366f1; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: 'Plus Jakarta Sans', sans-serif;">Voltar ao Início</button>
+            </div>
+        `;
+    }
 
-formulario.addEventListener('submit', function(e) {
-    // 1. Define o e-mail de destino
-    const emailDestino = "edugc73@gmail.com"; 
-    this.action = `https://formsubmit.co/${emailDestino}`;
-    
-    // 2. Muda o texto do botão para dar feedback imediato
-    btnEnviar.innerText = "Enviando Pedido...";
-    btnEnviar.style.opacity = "0.5";
-
-    // 3. Opcional: Se quiser evitar a página do FormSubmit totalmente, 
-    // usamos um pequeno truque visual antes do redirecionamento.
-    setTimeout(() => {
-        mostrarAgradecimento();
-    }, 400);
-});
-
-function mostrarAgradecimento() {
-    document.body.innerHTML = `
-        <div style="
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            width: 100vw; 
-            background-color: #0f172a; 
-            color: #f8fafc; 
-            text-align: center;
-            padding: 20px;
-        ">
-            <div style="font-size: 5rem; margin-bottom: 20px;">✅</div>
-            <h1 style="
-                font-size: 2.5rem; 
-                background: linear-gradient(to right, #818cf8, #c084fc);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                margin-bottom: 10px;
-                font-family: 'Plus Jakarta Sans', sans-serif;
-            ">Pedido Recebido!</h1>
-            <p style="font-size: 1.2rem; color: #94a3b8; max-width: 400px; font-family: 'Plus Jakarta Sans', sans-serif;">
-                Obrigado por confiar na <strong>CB Fitwear</strong>. <br> 
-                Seu e-mail foi enviado e responderemos em breve!
-            </p>
-            <button onclick="window.location.href='https://edugc73.github.io/'" style="
-                margin-top: 30px;
-                padding: 15px 35px;
-                background: #6366f1;
-                color: white;
-                border: none;
-                border-radius: 12px;
-                cursor: pointer;
-                font-weight: bold;
-                font-family: 'Plus Jakarta Sans', sans-serif;
-            ">Voltar ao Início</button>
-        </div>
-    `;
-}
     init();
 </script>
 
