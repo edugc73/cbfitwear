@@ -159,13 +159,15 @@
 
         <input type="hidden" name="Valor_Venda" id="hidden_valor">
         <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://edugc73.github.io/">
 
         <div id="result" class="result-card">
             <div class="price-label">Valor de Venda</div>
             <div class="price-value" id="valor">R$ 0,00</div>
         </div>
-
+       
         <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Pedido por E-mail</button>
+  
     </form>
 
     <div class="footer-info">Base de dados completa (58 variações)</div>
@@ -305,8 +307,26 @@
     }, 500);
 });
 
+const formulario = document.getElementById('vendaForm');
+const btnEnviar = document.getElementById('btnEnviar');
+
+formulario.addEventListener('submit', function(e) {
+    // 1. Define o e-mail de destino
+    const emailDestino = "edugc73@gmail.com"; 
+    this.action = `https://formsubmit.co/${emailDestino}`;
+    
+    // 2. Muda o texto do botão para dar feedback imediato
+    btnEnviar.innerText = "Enviando Pedido...";
+    btnEnviar.style.opacity = "0.5";
+
+    // 3. Opcional: Se quiser evitar a página do FormSubmit totalmente, 
+    // usamos um pequeno truque visual antes do redirecionamento.
+    setTimeout(() => {
+        mostrarAgradecimento();
+    }, 400);
+});
+
 function mostrarAgradecimento() {
-    // Aplica o fundo azul escuro total na tela
     document.body.innerHTML = `
         <div style="
             display: flex; 
@@ -319,7 +339,6 @@ function mostrarAgradecimento() {
             color: #f8fafc; 
             text-align: center;
             padding: 20px;
-            animation: fadeIn 0.8s ease-in-out;
         ">
             <div style="font-size: 5rem; margin-bottom: 20px;">✅</div>
             <h1 style="
@@ -328,25 +347,26 @@ function mostrarAgradecimento() {
                 -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
                 margin-bottom: 10px;
-            ">Muito Obrigado!</h1>
-            <p style="font-size: 1.2rem; color: #94a3b8; max-width: 400px;">
-                Seu pedido foi enviado com sucesso. <br> 
-                Em breve a equipe <strong>CB Fitwear</strong> entrará em contato com você!
+                font-family: 'Plus Jakarta Sans', sans-serif;
+            ">Pedido Recebido!</h1>
+            <p style="font-size: 1.2rem; color: #94a3b8; max-width: 400px; font-family: 'Plus Jakarta Sans', sans-serif;">
+                Obrigado por confiar na <strong>CB Fitwear</strong>. <br> 
+                Seu e-mail foi enviado e responderemos em breve!
             </p>
-            <button onclick="window.location.reload()" style="
+            <button onclick="window.location.href='https://edugc73.github.io/'" style="
                 margin-top: 30px;
-                padding: 12px 25px;
+                padding: 15px 35px;
                 background: #6366f1;
                 color: white;
                 border: none;
-                border-radius: 50px;
+                border-radius: 12px;
                 cursor: pointer;
                 font-weight: bold;
-            ">Voltar ao Catálogo</button>
+                font-family: 'Plus Jakarta Sans', sans-serif;
+            ">Voltar ao Início</button>
         </div>
     `;
-};
-
+}
     init();
 </script>
 
