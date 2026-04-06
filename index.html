@@ -159,8 +159,8 @@
 
         <input type="hidden" name="Valor_Venda" id="hidden_valor">
         <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_next" value="https://edugc73.github.io/cbfitwear">
-
+        <input type="hidden" name="_next" value="https://edugc73.github.io/cbfitwear?sucesso=true">
+       
         <div id="result" class="result-card">
             <div class="price-label">Valor de Venda</div>
             <div class="price-value" id="valor">R$ 0,00</div>
@@ -295,28 +295,37 @@
         }
     });
 
-    formulario.addEventListener('submit', function(e) {
-        const emailDestino = "edugc73@gmail.com"; 
-        this.action = `https://formsubmit.co/${emailDestino}`;
-        
-        btnEnviar.innerText = "Enviando Pedido...";
-        btnEnviar.style.opacity = "0.5";
+ // Gerencia o envio do formulário
+formulario.addEventListener('submit', function(e) {
+    const emailDestino = "edugc73@gmail.com"; 
+    this.action = `https://formsubmit.co/${emailDestino}`;
+    
+    btnEnviar.innerText = "Enviando Pedido...";
+    btnEnviar.style.opacity = "0.5";
+    // Deixamos o navegador seguir o fluxo natural do FormSubmit
+});
 
-        setTimeout(() => {
-            mostrarAgradecimento();
-        }, 600);
-    });
+// Função que cria a tela de agradecimento
+function mostrarAgradecimento() {
+    document.body.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px;">
+            <div style="font-size: 5rem; margin-bottom: 20px;">✅</div>
+            <h1 style="font-size: 2.5rem; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; font-family: 'Plus Jakarta Sans', sans-serif;">Pedido Recebido!</h1>
+            <p style="font-size: 1.2rem; color: #94a3b8; max-width: 400px; font-family: 'Plus Jakarta Sans', sans-serif;">Obrigado por confiar na <strong>CB Fitwear</strong>. <br> Seu pedido foi enviado e responderemos em breve!</p>
+            <button onclick="window.location.href='https://edugc73.github.io/cbfitwear'" style="margin-top: 30px; padding: 15px 35px; background: #6366f1; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: 'Plus Jakarta Sans', sans-serif;">Voltar ao Início</button>
+        </div>
+    `;
+}
 
-    function mostrarAgradecimento() {
-        document.body.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px;">
-                <div style="font-size: 5rem; margin-bottom: 20px;">✅</div>
-                <h1 style="font-size: 2.5rem; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; font-family: 'Plus Jakarta Sans', sans-serif;">Pedido Recebido!</h1>
-                <p style="font-size: 1.2rem; color: #94a3b8; max-width: 400px; font-family: 'Plus Jakarta Sans', sans-serif;">Obrigado por confiar na <strong>CB Fitwear</strong>. <br> Seu pedido foi enviado e responderemos em breve!</p>
-                <button onclick="window.location.href='https://edugc73.github.io/cbfitwear'" style="margin-top: 30px; padding: 15px 35px; background: #6366f1; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: 'Plus Jakarta Sans', sans-serif;">Voltar ao Início</button>
-            </div>
-        `;
+// O SEGREDO: Verifica se a página acabou de voltar de um envio de sucesso
+window.onload = function() {
+    init(); // Inicializa o catálogo normalmente
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('sucesso') === 'true') {
+        mostrarAgradecimento();
     }
+};
 
     init();
 </script>
