@@ -125,8 +125,9 @@
 <div class="dashboard-container">
     <h1>Catálogo de Preços</h1>
 
-   <form action="https://formsubmit.co/edugc73@gmail.com" method="POST" id="vendaForm">
-        
+<form action="" method="POST" id="vendaForm">
+    <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Pedido por E-mail</button>
+    
         <div class="input-group">
             <label>Nome do Cliente</label>
             <input type="text" name="Nome" id="nome_cliente" placeholder="Digite o nome..." required>
@@ -294,8 +295,24 @@
             btnEnviar.style.display = 'block'; // Mostra o botão
         }
     });
+    
+// Configuração do formulário e envio
+const formulario = document.getElementById('vendaForm');
+const btnEnviar = document.getElementById('btnEnviar');
 
-    init();
+formulario.addEventListener('submit', function(e) {
+    // 1. Defina aqui o seu e-mail de recebimento
+    const emailDestino = "edugc73@gmail.com"; 
+    
+    // 2. Aplica o e-mail ao destino do formulário no momento do clique
+    this.action = `https://formsubmit.co/${emailDestino}`;
+    
+    // Opcional: Você pode mudar o texto do botão para dar um feedback visual
+    btnEnviar.innerText = "Obrigado por confiar em CBFITWEAR";
+    btnEnviar.style.opacity = "0.5";
+});
+     init();
+  
 </script>
 
 </body>
