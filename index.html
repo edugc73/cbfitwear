@@ -99,7 +99,7 @@
             font-weight: 700;
             cursor: pointer;
             transition: opacity 0.2s;
-            display: none; /* Só aparece quando o resultado surge */
+            display: none; 
         }
 
         .btn-enviar:hover { opacity: 0.9; }
@@ -125,9 +125,7 @@
 <div class="dashboard-container">
     <h1>Catálogo de Preços</h1>
 
-<form action="" method="POST" id="vendaForm">
-    <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Pedido por E-mail</button>
-    
+    <form action="" method="POST" id="vendaForm">
         <div class="input-group">
             <label>Nome do Cliente</label>
             <input type="text" name="Nome" id="nome_cliente" placeholder="Digite o nome..." required>
@@ -160,7 +158,6 @@
         </div>
 
         <input type="hidden" name="Valor_Venda" id="hidden_valor">
-        <input type="hidden" name="_next" value="https://seugithub.github.io/agradecimento.html">
         <input type="hidden" name="_captcha" value="false">
 
         <div id="result" class="result-card">
@@ -242,6 +239,7 @@
     const txtValor = document.getElementById('valor');
     const hiddenValor = document.getElementById('hidden_valor');
     const btnEnviar = document.getElementById('btnEnviar');
+    const formulario = document.getElementById('vendaForm');
 
     function init() {
         const produtosUnicos = [...new Set(dados.map(item => item.p))].sort();
@@ -290,29 +288,20 @@
         if (item) {
             const valorFormatado = `R$ ${item.v.toFixed(2).replace('.', ',')}`;
             txtValor.textContent = valorFormatado;
-            hiddenValor.value = valorFormatado; // Guarda para o e-mail
+            hiddenValor.value = valorFormatado;
             cardResult.style.display = 'block';
-            btnEnviar.style.display = 'block'; // Mostra o botão
+            btnEnviar.style.display = 'block';
         }
     });
-    
-// Configuração do formulário e envio
-const formulario = document.getElementById('vendaForm');
-const btnEnviar = document.getElementById('btnEnviar');
 
-formulario.addEventListener('submit', function(e) {
-    // 1. Defina aqui o seu e-mail de recebimento
-    const emailDestino = "edugc73@gmail.com"; 
-    
-    // 2. Aplica o e-mail ao destino do formulário no momento do clique
-    this.action = `https://formsubmit.co/${emailDestino}`;
-    
-    // Opcional: Você pode mudar o texto do botão para dar um feedback visual
-    btnEnviar.innerText = "Obrigado por confiar em CBFITWEAR";
-    btnEnviar.style.opacity = "0.5";
-});
-     init();
-  
+    formulario.addEventListener('submit', function(e) {
+        const emailDestino = "edugc73@gmail.com"; 
+        this.action = `https://formsubmit.co/${emailDestino}`;
+        btnEnviar.innerText = "Obrigado por confiar em CBFITWEAR";
+        btnEnviar.style.opacity = "0.5";
+    });
+
+    init();
 </script>
 
 </body>
