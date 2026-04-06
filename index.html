@@ -173,139 +173,109 @@
 </div>
 
 <script>
-    const dados = [
-        {p:"Bermuda com bolso", t:"Grande", c:"Azul Piscina", v:40},
-        {p:"Bermuda com bolso", t:"Grande", c:"Rosa Pink", v:40},
-        {p:"Bermuda com bolso", t:"Grande", c:"Bordo", v:40},
-        {p:"Bermuda com bolso", t:"Médio", c:"Rosa Claro", v:40},
-        {p:"Bermuda com bolso", t:"Médio", c:"Rosa Pink", v:40},
-        {p:"Bermuda sem bolso", t:"Grande", c:"Cinza", v:30},
-        {p:"Bermuda sem bolso", t:"Grande", c:"Rosa Pink", v:30},
-        {p:"Bermuda sem bolso", t:"Médio", c:"Azul Claro", v:30},
-        {p:"Bermuda sem bolso", t:"Médio", c:"Azul Escuro", v:30},
-        {p:"Bermuda sem bolso", t:"Médio", c:"Roxo", v:30},
-        {p:"Bermuda sem bolso", t:"Médio", c:"Verde", v:30},
-        {p:"Calça com bolso", t:"Grande", c:"Azul Marinho", v:55},
-        {p:"Calça com bolso", t:"Médio", c:"Preto", v:55},
-        {p:"Calça sem bolso suplex G1", t:"Grande", c:"Preto", v:45},
-        {p:"Calça sem bolso suplex", t:"Grande", c:"Preto", v:45},
-        {p:"Calça sem bolso suplex", t:"Grande", c:"Lilás", v:45},
-        {p:"Calça sem bolso suplex", t:"Médio", c:"Preto", v:45},
-        {p:"Calça sem bolso suplex", t:"Médio", c:"Verde", v:45},
-        {p:"Calça sem bolso suplex", t:"Médio", c:"Marrom", v:45},
-        {p:"Calça sem bolso suplex", t:"Médio", c:"Bordo", v:45},
-        {p:"Calça sem bolso suplex", t:"Médio", c:"Lilás", v:45},
-        {p:"Camiseta dry fit", t:"Grande", c:"Branco", v:60},
-        {p:"Camiseta dry fit", t:"Grande", c:"Azul Claro", v:60},
-        {p:"Camiseta dry fit", t:"Grande", c:"Preto", v:60},
-        {p:"Camiseta dry fit", t:"Grande", c:"Rosa", v:60},
-        {p:"Conjunto bicolor poliamida", t:"Grande", c:"Roxo", v:90},
-        {p:"Conjunto bicolor poliamida", t:"Médio", c:"Verde", v:90},
-        {p:"Conjunto bicolor poliamida", t:"Médio", c:"Marrom", v:90},
-        {p:"Conjunto unicolor poliamida", t:"Grande", c:"Marrom", v:90},
-        {p:"Conjunto unicolor poliamida", t:"Grande", c:"Preto", v:90},
-        {p:"Conjunto unicolor poliamida", t:"Grande", c:"Cinza", v:90},
-        {p:"Macacão bicolor", t:"Grande", c:"Marrom", v:100},
-        {p:"Macacão bicolor", t:"Grande", c:"Preto", v:100},
-        {p:"Macacão bicolor", t:"Grande", c:"Azul Marinho", v:100},
-        {p:"Macacão com manga", t:"Grande", c:"Azul Marinho", v:100},
-        {p:"Macacão com manga", t:"Grande", c:"Marrom", v:100},
-        {p:"Macacão sem manga", t:"Grande", c:"Preto", v:100},
-        {p:"Macacão sem manga", t:"Grande", c:"Marrom", v:100},
-        {p:"Top Alcina", t:"Grande", c:"Bordo", v:30},
-        {p:"Top Alcina", t:"Grande", c:"Rosa Pink", v:30},
-        {p:"Top Alcina", t:"Grande", c:"Preto", v:30},
-        {p:"Top Alcina", t:"Grande", c:"Verde", v:30},
-        {p:"Top Alcina", t:"Grande", c:"Lilás", v:30},
-        {p:"Top Alcina", t:"Grande", c:"Marrom", v:30},
-        {p:"Top Alcina", t:"Grande", c:"Cinza", v:30},
-        {p:"Top Alcina", t:"Médio", c:"Lilás", v:30},
-        {p:"Top Alcina", t:"Médio", c:"Azul Claro", v:30},
-        {p:"Top Alcina", t:"Médio", c:"Azul Piscina", v:30},
-        {p:"Top Alcina", t:"Médio", c:"Bordo", v:30},
-        {p:"Top Alcina", t:"Médio", c:"Preto", v:30},
-        {p:"Top Alcina", t:"Médio", c:"Rosa Pink", v:30},
-        {p:"Top Alcina", t:"Médio", c:"Roxo", v:30},
-        {p:"Top Nadador", t:"Médio", c:"Azul Escuro", v:30},
-        {p:"Top Nadador", t:"Médio", c:"Bordo", v:30},
-        {p:"Top Nadador", t:"Médio", c:"Rosa Claro", v:30},
-        {p:"Top Nadador", t:"Médio", c:"Roxo", v:30},
-        {p:"Top Nadador", t:"Médio", c:"Verde", v:30}
-    ];
+   // 1. COLE O ID DA SUA PLANILHA AQUI
+// O ID fica na URL da planilha: docs.google.com/spreadsheets/d/O_ID_FICA_AQUI/edit
+const SHEET_ID = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzZH_Y2vjYIClUKSeVBVdfvx8y4b81c66zJoc-wnLbM-mza5hRP-sPPuaQhTloew/pub?gid=1503843495&single=true&output=csv';
+const SHEET_NAME = 'Página1'; // Nome da aba na planilha
+const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
-    const selProd = document.getElementById('prod');
-    const selTam = document.getElementById('tam');
-    const selCor = document.getElementById('cor');
-    const cardResult = document.getElementById('result');
-    const txtValor = document.getElementById('valor');
-    const hiddenValor = document.getElementById('hidden_valor');
-    const btnEnviar = document.getElementById('btnEnviar');
-    const formulario = document.getElementById('vendaForm');
+let dados = []; // Começa vazio e será preenchido pela planilha
 
-    function init() {
-        const produtosUnicos = [...new Set(dados.map(item => item.p))].sort();
-        produtosUnicos.forEach(p => {
-            const opt = document.createElement('option');
-            opt.value = p; opt.textContent = p;
-            selProd.appendChild(opt);
-        });
+const selProd = document.getElementById('prod');
+const selTam = document.getElementById('tam');
+const selCor = document.getElementById('cor');
+const cardResult = document.getElementById('result');
+const txtValor = document.getElementById('valor');
+const hiddenValor = document.getElementById('hidden_valor');
+const btnEnviar = document.getElementById('btnEnviar');
+const formulario = document.getElementById('vendaForm');
+
+// Função para buscar dados do Google Sheets
+async function carregarDados() {
+    try {
+        const response = await fetch(URL);
+        const text = await response.text();
+        // Limpa o JSON retornado pelo Google
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        
+        // Mapeia as linhas da planilha para o formato do nosso catálogo
+        dados = json.table.rows.map(row => ({
+            p: row.c[0] ? row.c[0].v : '', // Coluna A (Produto)
+            t: row.c[1] ? row.c[1].v : '', // Coluna B (Tamanho)
+            c: row.c[2] ? row.c[2].v : '', // Coluna C (Cor)
+            v: row.c[3] ? row.c[3].v : 0   // Coluna D (Valor)
+        }));
+
+        init(); // Inicia o catálogo após carregar os dados
+    } catch (error) {
+        console.error("Erro ao carregar planilha:", error);
+        alert("Erro ao carregar o catálogo. Verifique a conexão.");
     }
+}
 
-    selProd.addEventListener('change', () => {
-        const prod = selProd.value;
-        const tamanhos = [...new Set(dados.filter(d => d.p === prod).map(d => d.t))].sort();
-        selTam.innerHTML = '<option value="" selected disabled>Selecione...</option>';
-        tamanhos.forEach(t => {
-            const opt = document.createElement('option');
-            opt.value = t; opt.textContent = t;
-            selTam.appendChild(opt);
-        });
-        selTam.disabled = false;
-        selCor.disabled = true;
-        selCor.innerHTML = '<option value="">Aguardando...</option>';
-        cardResult.style.display = 'none';
-        btnEnviar.style.display = 'none';
+function init() {
+    const produtosUnicos = [...new Set(dados.map(item => item.p))].sort();
+    selProd.innerHTML = '<option value="" selected disabled>Escolha o produto...</option>';
+    produtosUnicos.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p; opt.textContent = p;
+        selProd.appendChild(opt);
     });
+}
 
-    selTam.addEventListener('change', () => {
-        const prod = selProd.value;
-        const tam = selTam.value;
-        const cores = [...new Set(dados.filter(d => d.p === prod && d.t === tam).map(d => d.c))].sort();
-        selCor.innerHTML = '<option value="" selected disabled>Selecione...</option>';
-        cores.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c; opt.textContent = c;
-            selCor.appendChild(opt);
-        });
-        selCor.disabled = false;
-        cardResult.style.display = 'none';
-        btnEnviar.style.display = 'none';
+// Eventos de seleção (mantêm a mesma lógica do seu código anterior)
+selProd.addEventListener('change', () => {
+    const prod = selProd.value;
+    const tamanhos = [...new Set(dados.filter(d => d.p === prod).map(d => d.t))].sort();
+    selTam.innerHTML = '<option value="" selected disabled>Selecione...</option>';
+    tamanhos.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t; opt.textContent = t;
+        selTam.appendChild(opt);
     });
+    selTam.disabled = false;
+    selCor.disabled = true;
+    selCor.innerHTML = '<option value="">Aguardando...</option>';
+    cardResult.style.display = 'none';
+    btnEnviar.style.display = 'none';
+});
 
-    selCor.addEventListener('change', () => {
-        const item = dados.find(d => 
-            d.p === selProd.value && d.t === selTam.value && d.c === selCor.value
-        );
-        if (item) {
-            const valorFormatado = `R$ ${item.v.toFixed(2).replace('.', ',')}`;
-            txtValor.textContent = valorFormatado;
-            hiddenValor.value = valorFormatado;
-            cardResult.style.display = 'block';
-            btnEnviar.style.display = 'block';
-        }
+selTam.addEventListener('change', () => {
+    const prod = selProd.value;
+    const tam = selTam.value;
+    const cores = [...new Set(dados.filter(d => d.p === prod && d.t === tam).map(d => d.c))].sort();
+    selCor.innerHTML = '<option value="" selected disabled>Selecione...</option>';
+    cores.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        selCor.appendChild(opt);
     });
+    selCor.disabled = false;
+    cardResult.style.display = 'none';
+    btnEnviar.style.display = 'none';
+});
 
- // Gerencia o envio do formulário
+selCor.addEventListener('change', () => {
+    const item = dados.find(d => 
+        d.p === selProd.value && d.t === selTam.value && d.c === selCor.value
+    );
+    if (item) {
+        const valorFormatado = `R$ ${parseFloat(item.v).toFixed(2).replace('.', ',')}`;
+        txtValor.textContent = valorFormatado;
+        hiddenValor.value = valorFormatado;
+        cardResult.style.display = 'block';
+        btnEnviar.style.display = 'block';
+    }
+});
+
+// Envio do formulário e agradecimento (mantidos conforme sua última versão)
 formulario.addEventListener('submit', function(e) {
     const emailDestino = "edugc73@gmail.com"; 
     this.action = `https://formsubmit.co/${emailDestino}`;
-    
     btnEnviar.innerText = "Enviando Pedido...";
     btnEnviar.style.opacity = "0.5";
-    // Deixamos o navegador seguir o fluxo natural do FormSubmit
 });
 
-// Função que cria a tela de agradecimento
 function mostrarAgradecimento() {
     document.body.innerHTML = `
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px;">
@@ -317,17 +287,14 @@ function mostrarAgradecimento() {
     `;
 }
 
-// O SEGREDO: Verifica se a página acabou de voltar de um envio de sucesso
 window.onload = function() {
-    init(); // Inicializa o catálogo normalmente
+    carregarDados(); // Carrega os dados da planilha primeiro
     
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('sucesso') === 'true') {
         mostrarAgradecimento();
     }
 };
-
-    init();
 </script>
 
 </body>
