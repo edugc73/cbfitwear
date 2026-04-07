@@ -177,9 +177,9 @@
 
 <script>
    // 1. COLE O ID DA SUA PLANILHA AQUI
-// O ID fica na URL da planilha: docs.google.com/spreadsheets/d/O_ID_FICA_AQUI/edit
-const SHEET_ID = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzZH_Y2vjYIClUKSeVBVdfvx8y4b81c66zJoc-wnLbM-mza5hRP-sPPuaQhTloew/pub?gid=1503843495&single=true&output=csv';
-const SHEET_NAME = 'cbfitwear'; // Nome da aba na planilha
+
+const SHEET_ID = '10PHxjW6F-roUMump4IkhLF4UG0kB_yvX'; 
+const SHEET_NAME = 'cbfitwear'; 
 const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
 let dados = []; // Começa vazio e será preenchido pela planilha
@@ -202,12 +202,13 @@ async function carregarDados() {
         const json = JSON.parse(text.substr(47).slice(0, -2));
         
         // Mapeia as linhas da planilha para o formato do nosso catálogo
-       dados = json.table.rows.map(row => ({
-    p: row.c[0] ? row.c[0].v : '', // Produto
-    t: row.c[1] ? row.c[1].v : '', // Tamanho
-    c: row.c[2] ? row.c[2].v : '', // Cor
-    v: row.c[3] ? row.c[3].v : 0,  // Valor
-    e: row.c[4] ? row.c[4].v : 0   // Coluna E (Estoque) - NOVA
+      // Dentro da função carregarDados(), verifique se está assim:
+dados = json.table.rows.map(row => ({
+    p: row.c[0] ? row.c[0].v : '', // Coluna A: PRODUTO
+    t: row.c[1] ? row.c[1].v : '', // Coluna B: TAMANHO
+    c: row.c[2] ? row.c[2].v : '', // Coluna C: COR
+    v: row.c[3] ? row.c[3].v : 0,  // Coluna D: VALOR
+    e: row.c[4] ? row.c[4].v : 0   // Coluna E: ESTOQUE
 }));
 
         init(); // Inicia o catálogo após carregar os dados
