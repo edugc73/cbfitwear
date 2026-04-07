@@ -137,7 +137,7 @@
 
                 // Tratamento de valores para garantir que sejam números
                 const qVendida = parseFloat(String(row['QTDE VENDIDA']).replace(',', '.')) || 0;
-                const vVenda = parseFloat(String(row['VALOR DE VENDA']).replace(',', '.')) || 0;
+                const vVenda = parseFloat(String(row['VALOR']).replace(',', '.')) || 0;
                 const vCompra = parseFloat(String(row['VALOR DA COMPRA']).replace(',', '.')) || 0;
                 const estAtual = parseFloat(String(row['ESTOQUE']).replace(',', '.')) || 0;
 
