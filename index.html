@@ -161,10 +161,15 @@
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_next" value="https://edugc73.github.io/cbfitwear?sucesso=true">
        
-       <div id="result" class="result-card">
+      <div id="result" class="result-card">
     <div class="price-label">Valor de Venda</div>
     <div class="price-value" id="valor">R$ 0,00</div>
-    <div id="estoque-info" style="margin-top: 10px; font-size: 0.9rem; font-weight: 600;">
+    
+    <button type="button" id="btnCopiarPix" onclick="copiarPix()" style="margin-top: 15px; background: #ffffff; color: #0f172a; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.85rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <span>📋</span> COPIAR CHAVE PIX
+    </button>
+
+    <div id="estoque-info" style="margin-top: 12px; font-size: 0.9rem; font-weight: 600;">
         Estoque: <span id="qtd-estoque">0</span> unidades
     </div>
 </div>
@@ -172,7 +177,12 @@
         <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Pedido por E-mail</button>
     </form>
 
-    <div class="footer-info">Base de dados completa (58 variações)</div>
+<div id="qrcode-container" style="display: none; text-align: center; margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 1rem;">
+    <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 10px; font-weight: 600;">ESCANEIE PARA PAGAMENTO</p>
+    <img id="qrcode-img" src="" alt="QR Code de Pagamento" style="width: 150px; height: 150px; border: 5px solid white; border-radius: 10px;">
+</div>
+
+<div class="footer-info">Base de dados completa (58 variações)</div>
 </div>
 
 <script>
@@ -267,30 +277,43 @@ selCor.addEventListener('change', () => {
 
     const txtEstoque = document.getElementById('qtd-estoque');
     const infoEstoque = document.getElementById('estoque-info');
+    
+    // Variáveis para o QR Code
+    const qrcodeContainer = document.getElementById('qrcode-container');
+    const qrcodeImg = document.getElementById('qrcode-img');
 
     if (item) {
-        // Atualiza Valor
         const valorFormatado = `R$ ${parseFloat(item.v).toFixed(2).replace('.', ',')}`;
         txtValor.textContent = valorFormatado;
         hiddenValor.value = valorFormatado;
 
-        // Atualiza Estoque
         const qtd = parseInt(item.e);
         txtEstoque.textContent = qtd;
         
         cardResult.style.display = 'block';
 
         if (qtd > 0) {
-            infoEstoque.style.color = "#10b981"; // Verde se tiver estoque
+            infoEstoque.style.color = "#10b981";
             btnEnviar.style.display = 'block';
             btnEnviar.disabled = false;
             btnEnviar.innerText = "Enviar Pedido por E-mail";
+
+            // --- LÓGICA DO QR CODE ---
+            // Gera um link que, ao ser escaneado, mostra o produto e o valor (ou link de pagamento)
+
+           const minhaChavePix = "bilhacamilla86@gmail.com";
+           const textoQR = encodeURIComponent(minhaChavePix);
+           qrcodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${textoQR}`;
+           qrcodeContainer.style.display = 'block';
+            // --------------------------
+
         } else {
-            infoEstoque.style.color = "#ef4444"; // Vermelho se estiver zerado
+            infoEstoque.style.color = "#ef4444";
             btnEnviar.style.display = 'block';
             btnEnviar.disabled = true;
             btnEnviar.innerText = "Produto Indisponível";
             btnEnviar.style.opacity = "0.5";
+            qrcodeContainer.style.display = 'none'; // Esconde se não tiver estoque
         }
     }
 });
@@ -322,6 +345,32 @@ window.onload = function() {
         mostrarAgradecimento();
     }
 };
+
+    function copiarPix() {
+    const chavePix = "bilhacamilla86@gmail.com"; // Sua chave cadastrada
+    const btn = document.getElementById('btnCopiarPix');
+    
+    // Copia para a área de transferência
+    navigator.clipboard.writeText(chavePix).then(() => {
+        // Feedback visual no botão
+        const textoOriginal = btn.innerHTML;
+        btn.style.background = "#10b981"; // Muda para verde
+        btn.style.color = "#ffffff";
+        btn.innerHTML = "✅ CHAVE COPIADA!";
+        
+        // Volta ao normal após 3 segundos
+        setTimeout(() => {
+            btn.style.background = "#ffffff";
+            btn.style.color = "#0f172a";
+            btn.innerHTML = textoOriginal;
+        }, 3000);
+    }).catch(err => {
+        console.error('Erro ao copiar: ', err);
+        alert("Chave PIX: " + chavePix); // Fallback caso o navegador bloqueie
+    });
+}
+
+    
 </script>
 
 </body>
