@@ -301,7 +301,7 @@ selCor.addEventListener('change', () => {
             // --- LÓGICA DO QR CODE ---
             // Gera um link que, ao ser escaneado, mostra o produto e o valor (ou link de pagamento)
 
-           const minhaChavePix = "15946471864";
+           const minhaChavePix = "bilhacamilla86@gmail.com";
            const textoQR = encodeURIComponent(minhaChavePix);
            qrcodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${textoQR}`;
            qrcodeContainer.style.display = 'block';
