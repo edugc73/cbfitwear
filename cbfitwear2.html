@@ -95,6 +95,12 @@ select:focus, input:focus {
     border: 1px solid rgba(16, 185, 129, 0.3);
     border-radius: 1.5rem;
     animation: slideUp 0.4s ease-out;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .price-value { 
@@ -177,9 +183,9 @@ select:focus, input:focus {
     <div class="price-label">Valor de Venda</div>
     <div class="price-value" id="valor">R$ 0,00</div>
     
-    <button type="button" id="btnCopiarPix" onclick="copiarPix()" style="margin-top: 15px; background: #ffffff; color: #0f172a; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.85rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <span>📋</span> COPIAR CHAVE PIX
-    </button>
+   <button type="button" id="btnCopiarPix" onclick="copiarPix()" style="margin: 15px auto 0 auto; background: #ffffff; color: #0f172a; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.85rem; width: fit-content; display: flex; align-items: center; justify-content: center; gap: 8px;">
+    <span>📋</span> COPIAR CHAVE PIX
+</button>
 
     <div id="estoque-info" style="margin-top: 12px; font-size: 0.9rem; font-weight: 600;">
         Estoque: <span id="qtd-estoque">0</span> unidades
@@ -189,9 +195,15 @@ select:focus, input:focus {
         <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Pedido por E-mail</button>
     </form>
 
-<div id="qrcode-container" style="display: none; text-align: center; margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 1.5rem; border: 1px dashed rgba(255,255,255,0.1);">
-    <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 15px; font-weight: 600; letter-spacing: 0.05em;">PAGAMENTO VIA MERCADO PAGO</p>
-    <img id="qrcode-img" src="" alt="QR Code" style="width: 180px; height: 180px; border: 8px solid white; border-radius: 1.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+<div id="qrcode-container" style="display: none; text-align: center; margin-top: 2rem; padding: 1.5rem; background: rgba(0, 158, 227, 0.05); border-radius: 1.5rem; border: 1px solid rgba(0, 158, 227, 0.2);">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 15px;">
+        <div style="width: 12px; height: 12px; background: #009ee3; border-radius: 50%;"></div>
+        <p style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.05em; margin: 0;">PAGAMENTO VIA MERCADO PAGO</p>
+    </div>
+    
+    <img id="qrcode-img" src="" alt="QR Code" style="width: 180px; height: 180px; border: 8px solid white; border-radius: 1.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin-bottom: 10px;">
+    
+    <p style="font-size: 0.65rem; color: var(--text-dim); font-style: italic;">Escaneie o código acima para pagar</p>
 </div>
 
 <div class="footer-info">Base de dados completa (58 variações)</div>
