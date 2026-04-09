@@ -6,124 +6,130 @@
     <title>Catálogo de Vendas - CB Fitwear</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #6366f1;
-            --bg: #0f172a;
-            --card: #1e293b;
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --accent: #10b981;
-        }
+       :root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg: #0b0f1a; /* Fundo levemente mais escuro para contraste */
+    --card: rgba(30, 41, 59, 0.7); /* Transparência para Glassmorphism */
+    --text-main: #f8fafc;
+    --text-dim: #94a3b8;
+    --accent: #10b981;
+}
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
+* { 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    box-sizing: border-box;
+}
 
-       /* Adicione transições suaves em todos os elementos */
-* { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent),
+                      radial-gradient(circle at bottom left, rgba(192, 132, 252, 0.15), transparent);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
 
 .dashboard-container {
-    background: rgba(30, 41, 59, 0.7); /* Transparência */
-    backdrop-filter: blur(12px);
+    background: var(--card);
+    backdrop-filter: blur(16px); /* Efeito de vidro */
+    -webkit-backdrop-filter: blur(16px);
+    padding: 3rem;
+    border-radius: 2.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    width: 100%;
+    max-width: 550px; /* Aumentado para não ficar estreito */
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Efeito de foco neon nos inputs */
-select:focus, input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-    transform: translateY(-2px);
+h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    background: linear-gradient(135deg, #818cf8, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
 }
 
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 2rem;
-            text-align: center;
-            background: linear-gradient(to right, #818cf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+.input-group { margin-bottom: 1.5rem; }
 
-        .input-group { margin-bottom: 1.2rem; }
+label {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.8rem;
+    color: var(--text-dim);
+    font-weight: 700;
+}
 
-        label {
-            display: block;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.6rem;
-            color: var(--text-dim);
-            font-weight: 700;
-        }
+select, input {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    border-radius: 1rem;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+}
 
-        select, input {
-            width: 100%;
-            padding: 0.9rem 1rem;
-            background: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 0.8rem;
-            color: white;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-            outline: none;
-            box-sizing: border-box;
-        }
+select:focus, input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+    background: #0f172a;
+}
 
-        select:focus, input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
-        }
+.result-card {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(16, 185, 129, 0.05);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 1.5rem;
+    animation: slideUp 0.4s ease-out;
+}
 
-        .result-card {
-            margin-top: 1.5rem;
-            padding: 1.2rem;
-            background: rgba(16, 185, 129, 0.1);
-            border: 2px solid var(--accent);
-            border-radius: 1.2rem;
-            text-align: center;
-            display: none;
-            animation: slideUp 0.3s ease-out;
-        }
+.price-value { 
+    font-size: 2.8rem; 
+    font-weight: 800; 
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
 
-        .btn-enviar {
-            width: 100%;
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 0.8rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            display: none; 
-        }
+.btn-enviar {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 1.2rem;
+    background: linear-gradient(135deg, var(--primary), #818cf8);
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+}
 
-        .btn-enviar:hover { opacity: 0.9; }
+.btn-enviar:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+}
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+#btnCopiarPix {
+    transition: all 0.2s;
+}
 
-        .price-label { color: var(--text-dim); font-size: 0.8rem; }
-        .price-value { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
-
-        .footer-info {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.7rem;
-            color: #475569;
-        }
+#btnCopiarPix:active {
+    transform: scale(0.95);
+}
     </style>
 </head>
 <body>
@@ -183,9 +189,9 @@ select:focus, input:focus {
         <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Pedido por E-mail</button>
     </form>
 
-<div id="qrcode-container" style="display: none; text-align: center; margin-top: 2rem; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 1rem;">
-    <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 10px; font-weight: 600;">ESCANEIE PARA PAGAMENTO</p>
-    <img id="qrcode-img" src="" alt="QR Code de Pagamento" style="width: 150px; height: 150px; border: 5px solid white; border-radius: 10px;">
+<div id="qrcode-container" style="display: none; text-align: center; margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 1.5rem; border: 1px dashed rgba(255,255,255,0.1);">
+    <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 15px; font-weight: 600; letter-spacing: 0.05em;">PAGAMENTO VIA MERCADO PAGO</p>
+    <img id="qrcode-img" src="" alt="QR Code" style="width: 180px; height: 180px; border: 8px solid white; border-radius: 1.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
 </div>
 
 <div class="footer-info">Base de dados completa (58 variações)</div>
@@ -306,10 +312,10 @@ selCor.addEventListener('change', () => {
     const qrcodeImg = document.getElementById('qrcode-img');
 
     if (item) {
-        const valorFormatado = `R$ ${parseFloat(item.v).toFixed(2).replace('.', ',')}`;
-        txtValor.textContent = valorFormatado;
-        hiddenValor.value = valorFormatado;
-
+        const valorNumerico = parseFloat(item.v);
+    animarPreco(valorNumerico); // Chama a animação em vez de apenas trocar o texto
+    hiddenValor.value = `R$ ${valorNumerico.toFixed(2).replace('.', ',')}`;
+       
         const qtd = parseInt(item.e);
         txtEstoque.textContent = qtd;
         
