@@ -94,9 +94,9 @@ select:focus, input:focus {
     background: rgba(16, 185, 129, 0.05);
     border: 1px solid rgba(16, 185, 129, 0.3);
     border-radius: 1.5rem;
-    animation: slideUp 0.4s ease-out;
     
-    display: flex;
+    /* Centralização garantida */
+    display: none; /* Começa escondido */
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -183,7 +183,7 @@ select:focus, input:focus {
     <div class="price-label">Valor de Venda</div>
     <div class="price-value" id="valor">R$ 0,00</div>
     
-   <button type="button" id="btnCopiarPix" onclick="copiarPix()" style="margin: 15px auto 0 auto; background: #ffffff; color: #0f172a; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.85rem; width: fit-content; display: flex; align-items: center; justify-content: center; gap: 8px;">
+  <button type="button" id="btnCopiarPix" onclick="copiarPix()" style="display: none; margin: 15px auto 0 auto; background: #ffffff; color: #0f172a; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.85rem; width: fit-content; align-items: center; justify-content: center; gap: 8px;">
     <span>📋</span> COPIAR CHAVE PIX
 </button>
 
@@ -322,7 +322,8 @@ selCor.addEventListener('change', () => {
     // Variáveis para o QR Code
     const qrcodeContainer = document.getElementById('qrcode-container');
     const qrcodeImg = document.getElementById('qrcode-img');
-
+    const btnCopiar = document.getElementById('btnCopiarPix'); // Pegue a referência do botão
+    
     if (item) {
         const valorNumerico = parseFloat(item.v);
     animarPreco(valorNumerico); // Chama a animação em vez de apenas trocar o texto
@@ -331,9 +332,10 @@ selCor.addEventListener('change', () => {
         const qtd = parseInt(item.e);
         txtEstoque.textContent = qtd;
         
-        cardResult.style.display = 'block';
+        cardResult.style.display = 'flex';
 
         if (qtd > 0) {
+            btnCopiar.style.display = 'flex';
             infoEstoque.style.color = "#10b981";
             btnEnviar.style.display = 'block';
             btnEnviar.disabled = false;
@@ -349,8 +351,8 @@ selCor.addEventListener('change', () => {
             // --------------------------
 
         } else {
+            btnCopiar.style.display = 'none';
             infoEstoque.style.color = "#ef4444";
-            btnEnviar.style.display = 'block';
             btnEnviar.disabled = true;
             btnEnviar.innerText = "Produto Indisponível";
             btnEnviar.style.opacity = "0.5";
