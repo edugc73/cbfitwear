@@ -8,7 +8,6 @@
     <style>
         :root {
             --primary: #6366f1;
-            --primary-hover: #4f46e5;
             --bg: #0b0f1a;
             --card: rgba(30, 41, 59, 0.7);
             --text-main: #f8fafc;
@@ -25,7 +24,7 @@
                               radial-gradient(circle at bottom left, rgba(192, 132, 252, 0.15), transparent);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             justify-content: center;
         }
@@ -34,19 +33,18 @@
             background: var(--card);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            padding: 2.5rem;
-            border-radius: 2.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 2rem;
             width: 100%;
             max-width: 600px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .logo-container { text-align: center; margin-bottom: 2rem; }
-        .logo-container img { max-width: 150px; filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.4)); }
+        .logo-container { text-align: center; margin-bottom: 1.5rem; }
+        .logo-container img { max-width: 140px; filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.4)); }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             text-align: center;
             background: linear-gradient(135deg, #818cf8, #c084fc);
             -webkit-background-clip: text;
@@ -54,25 +52,24 @@
             margin-bottom: 2rem;
         }
 
-        /* Grid de Fotos */
         .vitrine-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 15px;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 2.5rem;
         }
 
         .product-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 1.5rem;
-            padding: 10px;
+            border-radius: 1.2rem;
+            padding: 8px;
             cursor: pointer;
             text-align: center;
         }
 
         .product-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             background: rgba(99, 102, 241, 0.1);
             border-color: var(--primary);
         }
@@ -81,37 +78,35 @@
             width: 100%;
             aspect-ratio: 1/1;
             object-fit: cover;
-            border-radius: 1rem;
-            margin-bottom: 10px;
+            border-radius: 0.8rem;
+            margin-bottom: 8px;
         }
 
-        .product-card p { font-size: 0.7rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin: 0; }
+        .product-card p { font-size: 0.65rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin: 0; }
 
-        /* Formulário */
-        .input-group { margin-bottom: 1.2rem; }
-        label { display: block; font-size: 0.75rem; color: var(--text-dim); font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; }
+        .input-group { margin-bottom: 1rem; }
+        label { display: block; font-size: 0.7rem; color: var(--text-dim); font-weight: 700; margin-bottom: 0.4rem; text-transform: uppercase; }
         select, input {
-            width: 100%; padding: 0.8rem 1rem; background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(51, 65, 85, 0.5); border-radius: 0.8rem; color: white; outline: none;
+            width: 100%; padding: 0.7rem; background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.5); border-radius: 0.7rem; color: white; outline: none; font-size: 0.9rem;
         }
-        select:focus, input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2); }
 
         .result-card {
-            display: none; flex-direction: column; align-items: center; padding: 1.5rem;
-            background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 1.5rem; margin-top: 1.5rem;
+            display: none; flex-direction: column; align-items: center; padding: 1.2rem;
+            background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 1.2rem; margin-top: 1.2rem;
         }
 
-        .price-value { font-size: 2.2rem; font-weight: 800; color: var(--accent); }
+        .price-value { font-size: 2rem; font-weight: 800; color: var(--accent); }
 
         .btn-enviar {
-            width: 100%; margin-top: 1.5rem; padding: 1rem; background: linear-gradient(135deg, var(--primary), #818cf8);
-            color: white; border: none; border-radius: 1rem; font-weight: 700; cursor: pointer;
+            width: 100%; margin-top: 1.2rem; padding: 0.9rem; background: linear-gradient(135deg, var(--primary), #818cf8);
+            color: white; border: none; border-radius: 0.8rem; font-weight: 700; cursor: pointer;
         }
 
         #whatsapp-flutuante {
-            position: fixed; bottom: 20px; right: 20px; background: #25d366; width: 60px; height: 60px;
+            position: fixed; bottom: 15px; right: 15px; background: #25d366; width: 50px; height: 50px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3); z-index: 1000; text-decoration: none; font-size: 30px;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3); z-index: 1000; text-decoration: none; font-size: 24px;
         }
     </style>
 </head>
@@ -119,65 +114,65 @@
 
 <div class="dashboard-container">
     <div class="logo-container">
-        <img src="https://drive.google.com/file/d/1BScTj2sNm84_vn81rk0fh8Wdpp0nYM6A/view?usp=drive_link">
+        <img src="https://lh3.googleusercontent.com/u/0/d/1BScTj2sNm84_vn81rk0fh8Wdpp0nYM6A" alt="CB Fitwear">
     </div>
 
     <h1>Catálogo de Vendas</h1>
 
     <div class="vitrine-grid">
         <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO CANELADO')">
-            <img src="https://drive.google.com/file/d/1ONJCrJxIhTBwBjzLwQO_QUdk6XWQCVI0/view?usp=drive_link">
+            <img src="https://lh3.googleusercontent.com/u/0/d/1ONJCrJxIhTBwBjzLwQO_QUdk6XWQCVI0">
             <p>Canelado Terra</p>
         </div>
         <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO LISO')">
-            <img src="https://drive.google.com/file/d/17PFGaj0YaUNo7HvagNVmppnLcfC8CFKz/view?usp=drive_link">
+            <img src="https://lh3.googleusercontent.com/u/0/d/17PFGaj0YaUNo7HvagNVmppnLcfC8CFKz">
             <p>Premium Chocolate</p>
         </div>
         <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO PINK')">
-            <img src="https://drive.google.com/file/d/1pL3GP8S7tUocBUrFAsLmsnSnhOmnz0dA/view?usp=drive_link">
+            <img src="https://lh3.googleusercontent.com/u/0/d/1pL3GP8S7tUocBUrFAsLmsnSnhOmnz0dA">
             <p>Pink Summer</p>
         </div>
         <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO VERDE')">
-            <img src="https://drive.google.com/file/d/1DAEtHK_mc5_UbrsuryR-2CIvCDa0AK1O/view?usp=drive_link">
+            <img src="https://lh3.googleusercontent.com/u/0/d/1DAEtHK_mc5_UbrsuryR-2CIvCDa0AK1O">
             <p>Militar Soft</p>
         </div>
     </div>
 
-    <form id="vendaForm" method="POST">
+    <form id="vendaForm" onsubmit="enviarEmail(event)">
         <div class="input-group">
-            <label>Nome do Cliente</label>
-            <input type="text" name="Nome" id="nome_cliente" placeholder="Seu nome..." required>
+            <label>Seu Nome</label>
+            <input type="text" id="nome_cliente" placeholder="Como podemos te chamar?" required>
         </div>
 
         <div class="input-group">
-            <label>Produto</label>
-            <select name="Produto" id="prod" required>
-                <option value="" selected disabled>Escolha ou clique na foto acima...</option>
+            <label>Selecione o Look</label>
+            <select id="prod" required>
+                <option value="" selected disabled>Escolha ou clique na foto...</option>
             </select>
         </div>
 
         <div class="input-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
             <div>
                 <label>Tamanho</label>
-                <select name="Tamanho" id="tam" disabled required></select>
+                <select id="tam" disabled required></select>
             </div>
             <div>
                 <label>Cor</label>
-                <select name="Cor" id="cor" disabled required></select>
+                <select id="cor" disabled required></select>
             </div>
         </div>
 
         <div id="result" class="result-card">
-            <div style="font-size: 0.7rem; color: var(--text-dim); font-weight: 700;">VALOR DO INVESTIMENTO</div>
+            <div style="font-size: 0.6rem; color: var(--text-dim); font-weight: 700;">VALOR DO PRODUTO</div>
             <div class="price-value" id="valor">R$ 0,00</div>
-            <div id="estoque-info" style="font-size: 0.8rem; margin-top: 5px;">Estoque: <span id="qtd-estoque">0</span></div>
+            <div id="estoque-info" style="font-size: 0.75rem; margin-top: 5px;">Disponível: <span id="qtd-estoque">0</span></div>
         </div>
 
-        <button type="submit" class="btn-enviar" id="btnEnviar">Finalizar Pedido por E-mail</button>
+        <button type="submit" class="btn-enviar">Solicitar Reserva por E-mail</button>
     </form>
 </div>
 
-<a href="https://wa.me/SEUNUMEROAQUI" id="whatsapp-flutuante" target="_blank">🟢</a>
+<a href="https://wa.me/5513991075481" id="whatsapp-flutuante" target="_blank">🟢</a>
 
 <script>
 const SHEET_ID = '10PHxjW6F-roUMump4IkhLF4UG0kB_yvX'; 
@@ -205,7 +200,7 @@ async function carregarDados() {
 
 function init() {
     const produtos = [...new Set(dados.map(i => i.p))].sort();
-    selProd.innerHTML = '<option value="" disabled selected>Selecione o produto...</option>';
+    selProd.innerHTML = '<option value="" disabled selected>Escolha o look...</option>';
     produtos.forEach(p => {
         const opt = document.createElement('option');
         opt.value = p; opt.textContent = p;
@@ -219,7 +214,6 @@ function selecionarDaVitrine(nomeProd) {
     document.getElementById('vendaForm').scrollIntoView({ behavior: 'smooth' });
 }
 
-// Lógica de cascata original mantida para funcionalidade
 selProd.addEventListener('change', () => {
     const filtrados = dados.filter(d => d.p === selProd.value);
     const tamanhos = [...new Set(filtrados.map(d => d.t))].sort();
@@ -245,6 +239,20 @@ selCor.addEventListener('change', () => {
         cardResult.style.display = 'flex';
     }
 });
+
+function enviarEmail(e) {
+    e.preventDefault();
+    const nome = document.getElementById('nome_cliente').value;
+    const produto = selProd.value;
+    const tamanho = selTam.value;
+    const cor = selCor.value;
+    const valor = document.getElementById('valor').textContent;
+    
+    const subject = `Pedido CB Fitwear - ${nome}`;
+    const body = `Olá! Gostaria de reservar o seguinte item:\n\nProduto: ${produto}\nTamanho: ${tamanho}\nCor: ${cor}\nValor: ${valor}\n\nCliente: ${nome}`;
+    
+    window.location.href = `mailto:seuemail@teste.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 
 window.onload = carregarDados;
 </script>
