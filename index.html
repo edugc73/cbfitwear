@@ -4,29 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camilla Bilha | Fitwear</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --dark-blue: #0a192f;
-            --accent-pink: #d4a373; /* Tom sofisticado para contrastar */
+            --accent-pink: #d4a373;
             --white: #ffffff;
             --bg-body: #f8f9fa;
+            --card-dark: #112240;
+            --accent-green: #10b981;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; transition: all 0.3s ease; }
 
-        body {
-            background-color: var(--bg-body);
-            color: var(--dark-blue);
-            line-height: 1.6;
-        }
+        body { background-color: var(--bg-body); color: var(--dark-blue); line-height: 1.6; }
 
-        /* --- HEADER --- */
         header {
             background-color: var(--dark-blue);
             padding: 20px;
@@ -37,131 +29,70 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
-        .logo {
-            max-width: 180px;
-            height: auto;
-            transition: transform 0.3s ease;
-        }
+        .logo { max-width: 180px; height: auto; }
 
-        .logo:hover {
-            transform: scale(1.05);
-        }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+
+        h2 { text-align: center; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; font-weight: 300; }
 
         /* --- GALERIA --- */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 50px; }
+        .product-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); cursor: pointer; }
+        .product-card:hover { transform: translateY(-5px); }
+        .product-card img { width: 100%; height: 400px; object-fit: cover; display: block; }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 300;
-        }
-
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-card img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* --- MODAL DE ZOOM --- */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            padding-top: 50px;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(10, 25, 47, 0.95);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            margin: auto;
-            display: block;
-            max-width: 90%;
-            max-height: 85vh;
-            border-radius: 5px;
-            animation: zoom 0.3s;
-        }
-
-        @keyframes zoom {
-            from {transform: scale(0)} 
-            to {transform: scale(1)}
-        }
-
-        .close {
-            position: absolute;
-            top: 20px;
-            right: 35px;
-            color: white;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* --- WHATSAPP --- */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #25d366;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-            z-index: 1000;
-            text-decoration: none;
-            font-size: 30px;
-        }
-
-        /* --- FOOTER --- */
-        footer {
+        /* --- FORMULÁRIO (Estilo sitecb adaptado) --- */
+        .order-section {
             background: var(--dark-blue);
             color: white;
-            text-align: center;
-            padding: 30px;
-            margin-top: 50px;
+            padding: 40px 20px;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 0 auto 50px auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
+        .order-section h3 { text-align: center; margin-bottom: 25px; color: var(--accent-pink); }
+
+        .input-group { margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.75rem; color: #94a3b8; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; }
+        
+        select, input {
+            width: 100%; padding: 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; outline: none;
+            font-size: 1rem;
+        }
+
+        select option { background: var(--dark-blue); }
+        select:focus, input:focus { border-color: var(--accent-pink); }
+
+        .result-card {
+            display: none; flex-direction: column; align-items: center; padding: 20px;
+            background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-green); border-radius: 12px; margin-bottom: 20px;
+        }
+
+        .price-value { font-size: 2rem; font-weight: 700; color: var(--accent-green); }
+
+        .btn-enviar {
+            width: 100%; padding: 15px; background: var(--accent-pink);
+            color: var(--dark-blue); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .btn-enviar:hover { background: #c29262; transform: scale(1.02); }
+
+        /* --- MODAL & WHATSAPP --- */
+        .modal { display: none; position: fixed; z-index: 2000; padding-top: 50px; left: 0; top: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.95); backdrop-filter: blur(5px); }
+        .modal-content { margin: auto; display: block; max-width: 90%; max-height: 85vh; border-radius: 5px; }
+        .close { position: absolute; top: 20px; right: 35px; color: white; font-size: 40px; cursor: pointer; }
+
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 10px rgba(0,0,0,0.2); z-index: 1000; text-decoration: none; font-size: 30px; }
+
+        footer { background: var(--dark-blue); color: white; text-align: center; padding: 30px; margin-top: 50px; }
+
         @media (max-width: 600px) {
-            .gallery {
-                grid-template-columns: 1fr 1fr; /* Duas colunas no mobile */
-                gap: 10px;
-            }
-            .product-card img {
-                height: 250px;
-            }
+            .gallery { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .product-card img { height: 220px; }
         }
     </style>
 </head>
@@ -175,63 +106,166 @@
     <h2>Coleção Exclusive</h2>
     
     <div class="gallery">
-        <div class="product-card" onclick="openModal(this)">
+        <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO MARROM')">
             <img src="foto1.jpeg" alt="Conjunto Marrom">
         </div>
-        <div class="product-card" onclick="openModal(this)">
+        <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO VERDE OLIVA')">
             <img src="foto2.jpeg" alt="Conjunto Verde Oliva">
         </div>
-        <div class="product-card" onclick="openModal(this)">
+        <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO AZUL MARINHO')">
             <img src="foto3.jpeg" alt="Conjunto Azul Marinho">
         </div>
-        <div class="product-card" onclick="openModal(this)">
+        <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO PINK')">
             <img src="foto5.jpeg" alt="Conjunto Pink">
         </div>
-        <div class="product-card" onclick="openModal(this)">
+        <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO VINHO')">
             <img src="foto6.jpeg" alt="Conjunto Vinho">
         </div>
-        <div class="product-card" onclick="openModal(this)">
+        <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO VERDE CLARO')">
             <img src="foto7.jpeg" alt="Conjunto Verde Claro">
         </div>
-        <div class="product-card" onclick="openModal(this)">
+        <div class="product-card" onclick="selecionarDaVitrine('CONJUNTO ROSA NEON')">
             <img src="foto8.jpeg" alt="Conjunto Rosa Neon">
         </div>
-        <div class="product-card" onclick="openModal(this)">
-            <img src="foto9.jpeg" alt="Macação Marrom detalhes em branco">
+        <div class="product-card" onclick="selecionarDaVitrine('MACACÃO MARROM')">
+            <img src="foto9.jpeg" alt="Macação Marrom">
         </div>
-        <div class="product-card" onclick="openModal(this)">
-            <img src="foto10.png" alt="Conjuntos CBFITWEAR">
-        </div>
+    </div>
+
+    <div class="order-section" id="fazer-pedido">
+        <h3>Finalizar Pedido</h3>
+        <form id="vendaForm">
+            <div class="input-group">
+                <label>Seu Nome</label>
+                <input type="text" id="nome_cliente" placeholder="Como podemos te chamar?" required>
+            </div>
+
+            <div class="input-group">
+                <label>Produto Selecionado</label>
+                <select id="prod" required>
+                    <option value="" selected disabled>Clique em uma foto ou escolha aqui...</option>
+                </select>
+            </div>
+
+            <div class="input-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <label>Tamanho</label>
+                    <select id="tam" disabled required></select>
+                </div>
+                <div>
+                    <label>Cor</label>
+                    <select id="cor" disabled required></select>
+                </div>
+            </div>
+
+            <div id="result" class="result-card">
+                <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 700;">VALOR DO INVESTIMENTO</div>
+                <div class="price-value" id="valor">R$ 0,00</div>
+                <div id="estoque-info" style="font-size: 0.8rem; margin-top: 5px;">Disponível: <span id="qtd-estoque">0</span></div>
+            </div>
+
+            <button type="submit" class="btn-enviar">Enviar Pedido por E-mail</button>
+        </form>
     </div>
 </div>
 
-<div id="myModal" class="modal" onclick="closeModal()">
+<div id="myModal" class="modal" onclick="this.style.display='none'">
     <span class="close">&times;</span>
     <img class="modal-content" id="img01">
 </div>
 
-<a href="https://wa.me/5513991075481" class="whatsapp-float" target="_blank">
-    <i>WA</i>
-</a>
+<a href="https://wa.me/5513991075481" class="whatsapp-float" target="_blank">🟢</a>
 
 <footer>
     <p>&copy; 2026 Camilla Bilha Fitwear. Todos os direitos reservados.</p>
 </footer>
 
 <script>
-    function openModal(element) {
-        var modal = document.getElementById("myModal");
-        var modalImg = document.getElementById("img01");
-        var fullImg = element.getElementsByTagName('img')[0].src;
-        
-        modal.style.display = "block";
-        modalImg.src = fullImg;
-    }
+// CONFIGURAÇÃO DA PLANILHA (IDs do sitecb.html)
+const SHEET_ID = '10PHxjW6F-roUMump4IkhLF4UG0kB_yvX'; 
+const SHEET_NAME = 'cbfitwear'; 
+const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
 
-    function closeModal() {
-        document.getElementById("myModal").style.display = "none";
+let dados = [];
+const selProd = document.getElementById('prod');
+const selTam = document.getElementById('tam');
+const selCor = document.getElementById('cor');
+const cardResult = document.getElementById('result');
+
+async function carregarDados() {
+    try {
+        const response = await fetch(URL);
+        const text = await response.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        dados = json.table.rows.map(row => ({
+            p: row.c[0]?.v || '', t: row.c[1]?.v || '', 
+            c: row.c[2]?.v || '', v: row.c[3]?.v || 0, e: row.c[4]?.v || 0
+        }));
+        initDropdown();
+    } catch (e) { console.error("Erro ao carregar planilha:", e); }
+}
+
+function initDropdown() {
+    const produtos = [...new Set(dados.map(i => i.p))].sort();
+    selProd.innerHTML = '<option value="" disabled selected>Selecione o produto...</option>';
+    produtos.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p; opt.textContent = p;
+        selProd.appendChild(opt);
+    });
+}
+
+function selecionarDaVitrine(nomeProd) {
+    // Tenta encontrar o produto no select
+    selProd.value = nomeProd;
+    // Se não encontrar exatamente (ex: nome na planilha diferente do alt da foto), 
+    // o usuário escolhe manualmente, mas a página rola para o formulário.
+    selProd.dispatchEvent(new Event('change'));
+    document.getElementById('fazer-pedido').scrollIntoView({ behavior: 'smooth' });
+}
+
+selProd.addEventListener('change', () => {
+    const filtrados = dados.filter(d => d.p === selProd.value);
+    const tamanhos = [...new Set(filtrados.map(d => d.t))].sort();
+    selTam.innerHTML = '<option value="" disabled selected>Tam...</option>';
+    tamanhos.forEach(t => { selTam.innerHTML += `<option value="${t}">${t}</option>`; });
+    selTam.disabled = false;
+    cardResult.style.display = 'none';
+});
+
+selTam.addEventListener('change', () => {
+    const filtrados = dados.filter(d => d.p === selProd.value && d.t === selTam.value);
+    const cores = [...new Set(filtrados.map(d => d.c))].sort();
+    selCor.innerHTML = '<option value="" disabled selected>Cor...</option>';
+    cores.forEach(c => { selCor.innerHTML += `<option value="${c}">${c}</option>`; });
+    selCor.disabled = false;
+});
+
+selCor.addEventListener('change', () => {
+    const item = dados.find(d => d.p === selProd.value && d.t === selTam.value && d.c === selCor.value);
+    if(item) {
+        document.getElementById('valor').textContent = `R$ ${item.v.toFixed(2).replace('.',',')}`;
+        document.getElementById('qtd-estoque').textContent = item.e;
+        cardResult.style.display = 'flex';
     }
+});
+
+// Lógica de envio de e-mail
+document.getElementById('vendaForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('nome_cliente').value;
+    const produto = selProd.value;
+    const tamanho = selTam.value;
+    const cor = selCor.value;
+    const valor = document.getElementById('valor').textContent;
+
+    const assunto = `Pedido CB Fitwear - ${nome}`;
+    const corpo = `Olá, gostaria de encomendar:\n\nCliente: ${nome}\nProduto: ${produto}\nTamanho: ${tamanho}\nCor: ${cor}\nValor: ${valor}`;
+    
+    window.location.href = `mailto:SEUEMAIL@AQUI.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+});
+
+window.onload = carregarDados;
 </script>
-
 </body>
 </html>
