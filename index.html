@@ -3,417 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Vendas - CB Fitwear</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Camilla Bilha | Fitwear</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-       :root {
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
-    --bg: #0b0f1a; /* Fundo levemente mais escuro para contraste */
-    --card: rgba(30, 41, 59, 0.7); /* Transparência para Glassmorphism */
-    --text-main: #f8fafc;
-    --text-dim: #94a3b8;
-    --accent: #10b981;
-}
+        :root {
+            --dark-blue: #0a192f;
+            --accent-pink: #d4a373; /* Tom sofisticado para contrastar */
+            --white: #ffffff;
+            --bg-body: #f8f9fa;
+        }
 
-* { 
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-    box-sizing: border-box;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
 
-body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: var(--bg);
-    background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent),
-                      radial-gradient(circle at bottom left, rgba(192, 132, 252, 0.15), transparent);
-    color: var(--text-main);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px;
-}
+        body {
+            background-color: var(--bg-body);
+            color: var(--dark-blue);
+            line-height: 1.6;
+        }
 
-.dashboard-container {
-    background: var(--card);
-    backdrop-filter: blur(16px); /* Efeito de vidro */
-    -webkit-backdrop-filter: blur(16px);
-    padding: 3rem;
-    border-radius: 2.5rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-    width: 100%;
-    max-width: 550px; /* Aumentado para não ficar estreito */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
+        /* --- HEADER --- */
+        header {
+            background-color: var(--dark-blue);
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
 
-h1 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    margin-bottom: 2.5rem;
-    text-align: center;
-    background: linear-gradient(135deg, #818cf8, #c084fc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -0.02em;
-}
+        .logo {
+            max-width: 180px;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
 
-.input-group { margin-bottom: 1.5rem; }
+        .logo:hover {
+            transform: scale(1.05);
+        }
 
-label {
-    display: block;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.8rem;
-    color: var(--text-dim);
-    font-weight: 700;
-}
+        /* --- GALERIA --- */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
 
-select, input {
-    width: 100%;
-    padding: 1rem 1.2rem;
-    background: rgba(15, 23, 42, 0.8);
-    border: 1px solid rgba(51, 65, 85, 0.5);
-    border-radius: 1rem;
-    color: white;
-    font-size: 1rem;
-    outline: none;
-}
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 300;
+        }
 
-select:focus, input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-    transform: translateY(-2px);
-    background: #0f172a;
-}
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
 
-.result-card {
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: rgba(16, 185, 129, 0.05);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: 1.5rem;
-    
-    /* Centralização garantida */
-    display: none; /* Começa escondido */
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
 
-.price-value { 
-    font-size: 2.8rem; 
-    font-weight: 800; 
-    color: var(--accent);
-    text-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
-}
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
 
-.btn-enviar {
-    width: 100%;
-    margin-top: 1.5rem;
-    padding: 1.2rem;
-    background: linear-gradient(135deg, var(--primary), #818cf8);
-    color: white;
-    border: none;
-    border-radius: 1rem;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
-}
+        .product-card img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+        }
 
-.btn-enviar:hover {
-    transform: scale(1.02);
-    filter: brightness(1.1);
-}
+        /* --- MODAL DE ZOOM --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            padding-top: 50px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 25, 47, 0.95);
+            backdrop-filter: blur(5px);
+        }
 
-#btnCopiarPix {
-    transition: all 0.2s;
-}
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 5px;
+            animation: zoom 0.3s;
+        }
 
-#btnCopiarPix:active {
-    transform: scale(0.95);
-}
+        @keyframes zoom {
+            from {transform: scale(0)} 
+            to {transform: scale(1)}
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* --- WHATSAPP --- */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            text-decoration: none;
+            font-size: 30px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--dark-blue);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 600px) {
+            .gallery {
+                grid-template-columns: 1fr 1fr; /* Duas colunas no mobile */
+                gap: 10px;
+            }
+            .product-card img {
+                height: 250px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="dashboard-container">
-    <h1>Catálogo de Preços</h1>
+<header>
+    <img src="LOGO2.jpeg" alt="Camilla Bilha Logo" class="logo">
+</header>
 
-    <form action="" method="POST" id="vendaForm">
-        <div class="input-group">
-            <label>Nome do Cliente</label>
-            <input type="text" name="Nome" id="nome_cliente" placeholder="Digite o nome..." required>
-        </div>
-
-        <div class="input-group">
-            <label>Telefone / WhatsApp</label>
-            <input type="tel" name="Telefone" id="tel_cliente" placeholder="(00) 00000-0000" required>
-        </div>
-
-        <div class="input-group">
-            <label>Produto</label>
-            <select name="Produto" id="prod" required>
-                <option value="" selected disabled>Escolha o produto...</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label>Tamanho</label>
-            <select name="Tamanho" id="tam" disabled required>
-                <option value="">Aguardando produto...</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label>Cor</label>
-            <select name="Cor" id="cor" disabled required>
-                <option value="">Aguardando tamanho...</option>
-            </select>
-        </div>
-
-        <input type="hidden" name="Valor_Venda" id="hidden_valor">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_next" value="https://edugc73.github.io/cbfitwear?sucesso=true">
-       
-      <div id="result" class="result-card">
-    <div class="price-label">Valor de Venda</div>
-    <div class="price-value" id="valor">R$ 0,00</div>
+<div class="container">
+    <h2>Coleção Exclusive</h2>
     
-  <button type="button" id="btnCopiarPix" onclick="copiarPix()" style="display: none; margin: 15px auto 0 auto; background: #ffffff; color: #0f172a; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 0.85rem; width: fit-content; align-items: center; justify-content: center; gap: 8px;">
-    <span>📋</span> COPIAR CHAVE PIX
-</button>
-
-    <div id="estoque-info" style="margin-top: 12px; font-size: 0.9rem; font-weight: 600;">
-        Estoque: <span id="qtd-estoque">0</span> unidades
+    <div class="gallery">
+        <div class="product-card" onclick="openModal(this)">
+            <img src="foto1.jpeg" alt="Conjunto Marrom">
+        </div>
+        <div class="product-card" onclick="openModal(this)">
+            <img src="foto2.jpeg" alt="Conjunto Verde Oliva">
+        </div>
+        <div class="product-card" onclick="openModal(this)">
+            <img src="foto3.jpeg" alt="Conjunto Azul Marinho">
+        </div>
+        <div class="product-card" onclick="openModal(this)">
+            <img src="foto5.jpeg" alt="Conjunto Pink">
+        </div>
+        <div class="product-card" onclick="openModal(this)">
+            <img src="foto6.jpeg" alt="Conjunto Vinho">
+        </div>
+        <div class="product-card" onclick="openModal(this)">
+            <img src="foto7.jpeg" alt="Conjunto Verde Claro">
+        </div>
+        <div class="product-card" onclick="openModal(this)">
+            <img src="foto8.jpeg" alt="Conjunto Rosa Neon">
+        </div>
+        <div class="product-card" onclick="openModal(this)">
+            <img src="foto9.jpeg" alt="Macação Marrom detalhes em branco">
+        </div>
+        <div class="product-card" onclick="openModal(this)">
+            <img src="foto10.png" alt="Conjuntos CBFITWEAR">
+        </div>
     </div>
 </div>
-       
-        <button type="submit" class="btn-enviar" id="btnEnviar">Enviar Pedido por E-mail</button>
-    </form>
 
-<div id="qrcode-container" style="display: none; text-align: center; margin-top: 2rem; padding: 1.5rem; background: rgba(0, 158, 227, 0.05); border-radius: 1.5rem; border: 1px solid rgba(0, 158, 227, 0.2);">
-    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 15px;">
-        <div style="width: 12px; height: 12px; background: #009ee3; border-radius: 50%;"></div>
-        <p style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.05em; margin: 0;">PAGAMENTO VIA MERCADO PAGO</p>
-    </div>
-    
-    <img id="qrcode-img" src="" alt="QR Code" style="width: 180px; height: 180px; border: 8px solid white; border-radius: 1.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin-bottom: 10px;">
-    
-    <p style="font-size: 0.65rem; color: var(--text-dim); font-style: italic;">Escaneie o código acima para pagar</p>
+<div id="myModal" class="modal" onclick="closeModal()">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="img01">
 </div>
 
-<div class="footer-info">Base de dados completa (58 variações)</div>
-</div>
+<a href="https://wa.me/5513991075481" class="whatsapp-float" target="_blank">
+    <i>WA</i>
+</a>
+
+<footer>
+    <p>&copy; 2026 Camilla Bilha Fitwear. Todos os direitos reservados.</p>
+</footer>
 
 <script>
-   // 1. COLE O ID DA SUA PLANILHA AQUI
-
-const SHEET_ID = '10PHxjW6F-roUMump4IkhLF4UG0kB_yvX'; 
-const SHEET_NAME = 'cbfitwear'; 
-const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
-
-let dados = []; // Começa vazio e será preenchido pela planilha
-
-const selProd = document.getElementById('prod');
-const selTam = document.getElementById('tam');
-const selCor = document.getElementById('cor');
-const cardResult = document.getElementById('result');
-const txtValor = document.getElementById('valor');
-const hiddenValor = document.getElementById('hidden_valor');
-const btnEnviar = document.getElementById('btnEnviar');
-const formulario = document.getElementById('vendaForm');
-
-// Função para buscar dados do Google Sheets
-async function carregarDados() {
-    try {
-        const response = await fetch(URL);
-        const text = await response.text();
-        // Limpa o JSON retornado pelo Google
-        const json = JSON.parse(text.substr(47).slice(0, -2));
+    function openModal(element) {
+        var modal = document.getElementById("myModal");
+        var modalImg = document.getElementById("img01");
+        var fullImg = element.getElementsByTagName('img')[0].src;
         
-        // Mapeia as linhas da planilha para o formato do nosso catálogo
-      // Dentro da função carregarDados(), verifique se está assim:
-dados = json.table.rows.map(row => ({
-    p: row.c[0] ? row.c[0].v : '', // Coluna A: PRODUTO
-    t: row.c[1] ? row.c[1].v : '', // Coluna B: TAMANHO
-    c: row.c[2] ? row.c[2].v : '', // Coluna C: COR
-    v: row.c[3] ? row.c[3].v : 0,  // Coluna D: VALOR
-    e: row.c[4] ? row.c[4].v : 0   // Coluna E: ESTOQUE
-}));
-
-        init(); // Inicia o catálogo após carregar os dados
-    } catch (error) {
-        console.error("Erro ao carregar planilha:", error);
-        alert("Erro ao carregar o catálogo. Verifique a conexão.");
+        modal.style.display = "block";
+        modalImg.src = fullImg;
     }
-}
 
-function init() {
-    const produtosUnicos = [...new Set(dados.map(item => item.p))].sort();
-    selProd.innerHTML = '<option value="" selected disabled>Escolha o produto...</option>';
-    produtosUnicos.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p; opt.textContent = p;
-        selProd.appendChild(opt);
-    });
-}
-function animarPreco(valorFinal) {
-    let display = document.getElementById('valor');
-    let start = 0;
-    let duration = 500; // ms
-    let startTime = null;
-
-    function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        let progress = Math.min((timestamp - startTime) / duration, 1);
-        let atual = progress * valorFinal;
-        display.innerHTML = `R$ ${atual.toFixed(2).replace('.', ',')}`;
-        if (progress < 1) window.requestAnimationFrame(step);
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
     }
-    window.requestAnimationFrame(step);
-}
-
-
-    
-// Eventos de seleção (mantêm a mesma lógica do seu código anterior)
-selProd.addEventListener('change', () => {
-    const prod = selProd.value;
-    const tamanhos = [...new Set(dados.filter(d => d.p === prod).map(d => d.t))].sort();
-    selTam.innerHTML = '<option value="" selected disabled>Selecione...</option>';
-    tamanhos.forEach(t => {
-        const opt = document.createElement('option');
-        opt.value = t; opt.textContent = t;
-        selTam.appendChild(opt);
-    });
-    selTam.disabled = false;
-    selCor.disabled = true;
-    selCor.innerHTML = '<option value="">Aguardando...</option>';
-    cardResult.style.display = 'none';
-    btnEnviar.style.display = 'none';
-});
-
-selTam.addEventListener('change', () => {
-    const prod = selProd.value;
-    const tam = selTam.value;
-    const cores = [...new Set(dados.filter(d => d.p === prod && d.t === tam).map(d => d.c))].sort();
-    selCor.innerHTML = '<option value="" selected disabled>Selecione...</option>';
-    cores.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c; opt.textContent = c;
-        selCor.appendChild(opt);
-    });
-    selCor.disabled = false;
-    cardResult.style.display = 'none';
-    btnEnviar.style.display = 'none';
-});
-
-selCor.addEventListener('change', () => {
-    const item = dados.find(d => 
-        d.p === selProd.value && d.t === selTam.value && d.c === selCor.value
-    );
-
-    const txtEstoque = document.getElementById('qtd-estoque');
-    const infoEstoque = document.getElementById('estoque-info');
-    
-    // Variáveis para o QR Code
-    const qrcodeContainer = document.getElementById('qrcode-container');
-    const qrcodeImg = document.getElementById('qrcode-img');
-    const btnCopiar = document.getElementById('btnCopiarPix'); // Pegue a referência do botão
-    
-    if (item) {
-        const valorNumerico = parseFloat(item.v);
-    animarPreco(valorNumerico); // Chama a animação em vez de apenas trocar o texto
-    hiddenValor.value = `R$ ${valorNumerico.toFixed(2).replace('.', ',')}`;
-       
-        const qtd = parseInt(item.e);
-        txtEstoque.textContent = qtd;
-        
-        cardResult.style.display = 'flex';
-
-        if (qtd > 0) {
-            btnCopiar.style.display = 'flex';
-            infoEstoque.style.color = "#10b981";
-            btnEnviar.style.display = 'block';
-            btnEnviar.disabled = false;
-            btnEnviar.innerText = "Enviar Pedido por E-mail";
-
-            // --- LÓGICA DO QR CODE ---
-            // Gera um link que, ao ser escaneado, mostra o produto e o valor (ou link de pagamento)
-
-           const minhaChavePix = "bilhacamilla86@gmail.com";
-           const textoQR = encodeURIComponent(minhaChavePix);
-           qrcodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${textoQR}`;
-           qrcodeContainer.style.display = 'block';
-            // --------------------------
-
-        } else {
-            btnCopiar.style.display = 'none';
-            infoEstoque.style.color = "#ef4444";
-            btnEnviar.disabled = true;
-            btnEnviar.innerText = "Produto Indisponível";
-            btnEnviar.style.opacity = "0.5";
-            qrcodeContainer.style.display = 'none'; // Esconde se não tiver estoque
-        }
-    }
-});
-
-// Envio do formulário e agradecimento (mantidos conforme sua última versão)
-formulario.addEventListener('submit', function(e) {
-    const emailDestino = "camilla.bilha@hotmail.com"; 
-    this.action = `https://formsubmit.co/${emailDestino}`;
-    btnEnviar.innerText = "Enviando Pedido...";
-    btnEnviar.style.opacity = "0.5";
-});
-
-function mostrarAgradecimento() {
-    document.body.innerHTML = `
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px;">
-            <div style="font-size: 5rem; margin-bottom: 20px;">✅</div>
-            <h1 style="font-size: 2.5rem; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; font-family: 'Plus Jakarta Sans', sans-serif;">Pedido Recebido!</h1>
-            <p style="font-size: 1.2rem; color: #94a3b8; max-width: 400px; font-family: 'Plus Jakarta Sans', sans-serif;">Obrigado por confiar na <strong>CB Fitwear</strong>. <br> Seu pedido foi enviado e responderemos em breve!</p>
-            <button onclick="window.location.href='https://edugc73.github.io/cbfitwear'" style="margin-top: 30px; padding: 15px 35px; background: #6366f1; color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-family: 'Plus Jakarta Sans', sans-serif;">Voltar ao Início</button>
-        </div>
-    `;
-}
-
-window.onload = function() {
-    carregarDados(); // Carrega os dados da planilha primeiro
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('sucesso') === 'true') {
-        mostrarAgradecimento();
-    }
-};
-
-    function copiarPix() {
-    const chavePix = "bilhacamilla86@gmail.com"; // Sua chave cadastrada
-    const btn = document.getElementById('btnCopiarPix');
-    
-    // Copia para a área de transferência
-    navigator.clipboard.writeText(chavePix).then(() => {
-        // Feedback visual no botão
-        const textoOriginal = btn.innerHTML;
-        btn.style.background = "#10b981"; // Muda para verde
-        btn.style.color = "#ffffff";
-        btn.innerHTML = "✅ CHAVE COPIADA!";
-        
-        // Volta ao normal após 3 segundos
-        setTimeout(() => {
-            btn.style.background = "#ffffff";
-            btn.style.color = "#0f172a";
-            btn.innerHTML = textoOriginal;
-        }, 3000);
-    }).catch(err => {
-        console.error('Erro ao copiar: ', err);
-        alert("Chave PIX: " + chavePix); // Fallback caso o navegador bloqueie
-    });
-}
-
-    
 </script>
 
 </body>
