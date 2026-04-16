@@ -132,31 +132,49 @@
         </div>
     </div>
 
-    <div class="order-section" id="fazer-pedido">
-        <h3>Finalizar Pedido</h3>
-        <form id="vendaForm">
-            <div class="input-group">
-                <label>Seu Nome</label>
-                <input type="text" id="nome_cliente" placeholder="Como podemos te chamar?" required>
-            </div>
+  <div class="order-section" id="fazer-pedido">
+    <h3>Finalizar Pedido</h3>
+    <form id="vendaForm">
+        <div class="input-group">
+            <label>Seu Nome</label>
+            <input type="text" id="nome_cliente" placeholder="Como podemos te chamar?" required>
+        </div>
 
-            <div class="input-group">
-                <label>Produto Selecionado</label>
-                <select id="prod" required>
-                    <option value="" selected disabled>Clique em uma foto ou escolha aqui...</option>
-                </select>
-            </div>
+        <div class="input-group">
+            <label>Produto Selecionado</label>
+            <select id="prod" required>
+                <option value="" selected disabled>Clique em uma foto ou escolha aqui...</option>
+            </select>
+        </div>
 
-            <div class="input-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div>
-                    <label>Tamanho</label>
-                    <select id="tam" disabled required></select>
-                </div>
-                <div>
-                    <label>Cor</label>
-                    <select id="cor" disabled required></select>
-                </div>
+        <div class="input-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+                <label>Tamanho</label>
+                <select id="tam" disabled required></select>
             </div>
+            <div>
+                <label>Cor</label>
+                <select id="cor" disabled required></select>
+            </div>
+        </div>
+
+        <div id="result" class="result-card">
+            <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 700;">VALOR DO INVESTIMENTO</div>
+            <div class="price-value" id="valor">R$ 0,00</div>
+            <div id="estoque-info" style="font-size: 0.8rem; margin-top: 5px; margin-bottom: 15px;">Disponível: <span id="qtd-estoque">0</span></div>
+            
+            <div id="pix-container" style="width: 100%; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); pt-3">
+                <p style="font-size: 0.75rem; margin-bottom: 10px; color: var(--accent-pink);">Pagamento via PIX</p>
+                <input type="text" id="pix-chave" value="SUA_CHAVE_PIX_AQUI" readonly style="text-align: center; margin-bottom: 10px; background: rgba(0,0,0,0.2);">
+                <button type="button" onclick="copiarPix()" id="btn-pix" class="btn-enviar" style="background: transparent; border: 1px solid var(--accent-pink); color: var(--accent-pink); padding: 8px;">
+                    Copiar Chave PIX
+                </button>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-enviar" style="margin-top: 20px;">Finalizar Pedido por E-mail</button>
+    </form>
+</div>
 
             <div id="result" class="result-card">
                 <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 700;">VALOR DO INVESTIMENTO</div>
@@ -214,7 +232,29 @@ function initDropdown() {
         selProd.appendChild(opt);
     });
 }
+function copiarPix() {
+    const copyText = document.getElementById("pix-chave");
+    const btnPix = document.getElementById("btn-pix");
+    
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); // Para dispositivos móveis
+    navigator.clipboard.writeText(copyText.value);
+    
+    // Feedback visual
+    const originalText = btnPix.innerHTML;
+    btnPix.innerHTML = "✅ Copiado!";
+    btnPix.style.borderColor = "#10b981";
+    btnPix.style.color = "#10b981";
+    
+    setTimeout(() => {
+        btnPix.innerHTML = originalText;
+        btnPix.style.borderColor = "#d4a373";
+        btnPix.style.color = "#d4a373";
+    }, 2000);
+}
 
+// O formulário já cuida de mostrar o 'result' (que agora contém o PIX) 
+// quando a Cor é selecionada, respeitando sua regra anterior.
 function selecionarDaVitrine(nomeProd) {
     // Tenta encontrar o produto no select
     selProd.value = nomeProd;
