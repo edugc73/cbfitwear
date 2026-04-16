@@ -167,11 +167,11 @@
                 <p style="font-size: 0.8rem; color: var(--accent-pink); margin-bottom: 15px; font-weight: 600;">PAGAMENTO INSTANTÂNEO</p>
                 
                 <div style="background: white; padding: 10px; display: inline-block; border-radius: 12px; margin-bottom: 15px;">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SUA_CHAVE_OU_LINK_AQUI" alt="QR Code Pagamento" style="display: block;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bilhacamilla86@gmail.com" alt="QR Code Pagamento" style="display: block;">
                 </div>
 
                 <div style="width: 100%; max-width: 300px; margin: 0 auto;">
-                    <input type="text" id="pix-chave" value="SUA_CHAVE_PIX_AQUI" readonly 
+                    <input type="text" id="pix-chave" value="bilhacamilla86@gmail.com" readonly 
                            style="text-align: center; margin-bottom: 10px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem;">
                     <button type="button" onclick="copiarPix()" id="btn-pix" class="btn-enviar" 
                             style="background: transparent; border: 1px solid var(--accent-pink); color: var(--accent-pink); padding: 8px; font-size: 0.8rem;">
@@ -185,11 +185,7 @@
     </form>
 </div>
 
-        <button type="submit" class="btn-enviar" style="margin-top: 20px;">Finalizar Pedido por E-mail</button>
-    </form>
-</div>
-
-            <div id="result" class="result-card">
+              <div id="result" class="result-card">
                 <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 700;">VALOR DO INVESTIMENTO</div>
                 <div class="price-value" id="valor">R$ 0,00</div>
                 <div id="estoque-info" style="font-size: 0.8rem; margin-top: 5px;">Disponível: <span id="qtd-estoque">0</span></div>
@@ -321,7 +317,7 @@ document.getElementById('vendaForm').addEventListener('submit', (e) => {
     const assunto = `Pedido CB Fitwear - ${nome}`;
     const corpo = `Olá, gostaria de encomendar:\n\nCliente: ${nome}\nProduto: ${produto}\nTamanho: ${tamanho}\nCor: ${cor}\nValor: ${valor}`;
     
-    window.location.href = `mailto:SEUEMAIL@AQUI.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+    window.location.href = `mailto:camilla.bilha@hotmail.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
 });
 
 window.onload = carregarDados;
