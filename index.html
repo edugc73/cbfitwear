@@ -7,9 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* CORES AJUSTADAS PARA COMBINAR COM O LOGO */
-            --brand-main: #1a2a3a; /* Azul elegante */
-            --brand-accent: #d4a373; /* Tom bronze/dourado */
+            --brand-main: #1a2a3a;
+            --brand-accent: #d4a373;
             --brand-light: #f4f4f9;
             --white: #ffffff;
             --success: #10b981;
@@ -32,7 +31,7 @@
         .logo { 
             max-width: 150px; 
             height: auto; 
-            border-radius: 15px; /* Bordas arredondadas para não ser quadrado */
+            border-radius: 15px;
             border: 2px solid var(--brand-accent);
             background: white;
             padding: 5px;
@@ -47,7 +46,6 @@
         .product-card img { width: 100%; height: 400px; object-fit: cover; display: block; }
         .product-info { padding: 15px; text-align: center; font-weight: 600; }
 
-        /* SEÇÃO DO CARRINHO */
         .cart-section {
             background: var(--brand-main);
             color: white;
@@ -63,10 +61,9 @@
         .input-group { margin-bottom: 1.2rem; }
         label { display: block; font-size: 0.75rem; color: #cbd5e1; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; }
         
-        /* CORREÇÃO DO ERRO 1: CAMPOS VISÍVEIS INDEPENDENTE DO MOUSE */
         select, input {
             width: 100%; padding: 12px; 
-            background: #26394e; /* Fundo sólido para visibilidade */
+            background: #26394e; 
             border: 1px solid #3e5671; 
             border-radius: 8px; 
             color: white; 
@@ -76,22 +73,34 @@
 
         select:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        /* MENSAGEM DE ESTOQUE */
+        #estoque-msg {
+            display: none;
+            color: var(--danger);
+            font-weight: 700;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
         .btn-add { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .btn-add:disabled { background: #555; cursor: not-allowed; color: #888; }
+
         .btn-finalize { background: var(--success); color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 20px; }
 
         .cart-items { margin: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); }
         .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
         .remove-btn { color: var(--danger); cursor: pointer; background: none; border: none; margin-left: 10px; }
 
-        /* ÁREA DE PAGAMENTO PÓS-FINALIZAÇÃO */
-        #payment-area { 
+        /* ÁREA DE AGRADECIMENTO E PAGAMENTO */
+        #success-area { 
             display: none; 
             margin-top: 30px; 
             text-align: center; 
-            padding: 20px; 
-            background: rgba(255,255,255,0.05); 
+            padding: 30px; 
+            background: rgba(16, 185, 129, 0.1); 
             border-radius: 15px;
-            border: 1px solid var(--brand-accent);
+            border: 2px solid var(--success);
         }
 
         .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1000; text-decoration: none; font-size: 30px; }
@@ -113,48 +122,56 @@
     <div class="gallery" id="vitrine"></div>
 
     <div class="cart-section" id="fazer-pedido">
-        <h3>Seu Pedido</h3>
-        
-        <div class="input-group">
-            <label>1. Selecione o Produto</label>
-            <select id="prod"></select>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div id="form-container">
+            <h3>Seu Pedido</h3>
+            
             <div class="input-group">
-                <label>2. Tamanho</label>
-                <select id="tam" disabled></select>
+                <label>1. Selecione o Produto</label>
+                <select id="prod"></select>
             </div>
-            <div class="input-group">
-                <label>3. Cor</label>
-                <select id="cor" disabled></select>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group">
+                    <label>2. Tamanho</label>
+                    <select id="tam" disabled></select>
+                </div>
+                <div class="input-group">
+                    <label>3. Cor</label>
+                    <select id="cor" disabled></select>
+                </div>
             </div>
-        </div>
-        
-        <button class="btn-add" onclick="adicionarAoCarrinho()">+ Adicionar ao Carrinho</button>
+            
+            <div id="estoque-msg">SEM PEÇA NO ESTOQUE</div>
+            <button class="btn-add" id="btn-add" onclick="adicionarAoCarrinho()">+ Adicionar ao Carrinho</button>
 
-        <div id="lista-carrinho" class="cart-items"></div>
+            <div id="lista-carrinho" class="cart-items"></div>
 
-        <div style="text-align: right; font-weight: 700; font-size: 1.2rem;">
-            Total: <span id="total-carrinho" style="color: var(--brand-accent);">R$ 0,00</span>
-        </div>
-
-        <div class="input-group" style="margin-top: 20px;">
-            <label>Seu Nome</label>
-            <input type="text" id="nome_cliente" placeholder="Digite seu nome completo">
-        </div>
-
-        <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR E ENVIAR PEDIDO</button>
-
-        <div id="payment-area">
-            <p style="color: var(--brand-accent); font-weight: 700; margin-bottom: 15px;">PEDIDO ENVIADO! PAGAMENTO PIX:</p>
-            <div style="background: white; padding: 10px; display: inline-block; border-radius: 10px; margin-bottom: 15px;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bilhacamilla86@gmail.com" alt="QR Code">
+            <div style="text-align: right; font-weight: 700; font-size: 1.2rem;">
+                Total: <span id="total-carrinho" style="color: var(--brand-accent);">R$ 0,00</span>
             </div>
-            <input type="text" id="pix-chave" value="bilhacamilla86@gmail.com" readonly style="text-align: center; margin-bottom: 10px; background: #000;">
-            <button onclick="copiarPix()" id="btn-pix" style="background: var(--brand-accent); color: #000; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: 700;">
-                COPIAR CHAVE PIX
-            </button>
+
+            <div class="input-group" style="margin-top: 20px;">
+                <label>Seu Nome</label>
+                <input type="text" id="nome_cliente" placeholder="Digite seu nome completo">
+            </div>
+
+            <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR COMPRA</button>
+        </div>
+
+        <div id="success-area">
+            <h2 style="color: var(--success); margin-bottom: 10px;">Obrigada pela compra!</h2>
+            <p style="margin-bottom: 20px; font-weight: 400;">Em breve entraremos em contato para confirmar seu pedido.</p>
+            
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                <p style="color: var(--brand-accent); font-weight: 700; margin-bottom: 15px;">PAGAMENTO PIX:</p>
+                <div style="background: white; padding: 10px; display: inline-block; border-radius: 10px; margin-bottom: 15px;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bilhacamilla86@gmail.com" alt="QR Code">
+                </div>
+                <input type="text" id="pix-chave" value="bilhacamilla86@gmail.com" readonly style="text-align: center; margin-bottom: 10px; background: #000; border: 1px solid var(--brand-accent);">
+                <button onclick="copiarPix()" id="btn-pix" style="background: var(--brand-accent); color: #000; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: 700;">
+                    COPIAR CHAVE PIX
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -214,6 +231,26 @@ function selecionarDaVitrine(nome) {
     document.getElementById('fazer-pedido').scrollIntoView({ behavior: 'smooth' });
 }
 
+// LOGICA DE ESTOQUE (MELHORIA 1)
+function verificarEstoque() {
+    const p = document.getElementById('prod').value;
+    const t = document.getElementById('tam').value;
+    const c = document.getElementById('cor').value;
+    const msg = document.getElementById('estoque-msg');
+    const btn = document.getElementById('btn-add');
+
+    if(p && t && c) {
+        const item = dados.find(d => d.p === p && d.t === t && d.c === c);
+        if(item && item.e <= 0) {
+            msg.style.display = 'block';
+            btn.disabled = true;
+        } else {
+            msg.style.display = 'none';
+            btn.disabled = false;
+        }
+    }
+}
+
 document.getElementById('prod').addEventListener('change', (e) => {
     const filtrados = dados.filter(d => d.p === e.target.value);
     const tamanhos = [...new Set(filtrados.map(d => d.t))].sort();
@@ -221,6 +258,7 @@ document.getElementById('prod').addEventListener('change', (e) => {
     selTam.innerHTML = '<option value="" disabled selected>Tamanho...</option>';
     tamanhos.forEach(t => { selTam.innerHTML += `<option value="${t}">${t}</option>`; });
     selTam.disabled = false;
+    verificarEstoque();
 });
 
 document.getElementById('tam').addEventListener('change', (e) => {
@@ -230,7 +268,10 @@ document.getElementById('tam').addEventListener('change', (e) => {
     selCor.innerHTML = '<option value="" disabled selected>Cor...</option>';
     cores.forEach(c => { selCor.innerHTML += `<option value="${c}">${c}</option>`; });
     selCor.disabled = false;
+    verificarEstoque();
 });
+
+document.getElementById('cor').addEventListener('change', verificarEstoque);
 
 function adicionarAoCarrinho() {
     const p = document.getElementById('prod').value;
@@ -239,7 +280,7 @@ function adicionarAoCarrinho() {
     if(!p || !t || !c) return alert("Selecione todas as opções!");
 
     const item = dados.find(d => d.p === p && d.t === t && d.c === c);
-    if(item) {
+    if(item && item.e > 0) {
         carrinho.push({...item, id: Date.now()});
         atualizarCarrinho();
     }
@@ -272,12 +313,13 @@ function enviarPedido() {
     const corpo = `Olá Camilla, pedido de ${nome}:\n\n${lista}\n\nTOTAL: R$ ${total.toFixed(2)}\n\nChave PIX: bilhacamilla86@gmail.com`;
     const mailto = `mailto:camilla.bilha@hotmail.com?subject=Pedido Fitwear - ${nome}&body=${encodeURIComponent(corpo)}`;
     
-    // Abre o e-mail
+    // Abre o e-mail em segundo plano
     window.location.href = mailto;
 
-    // MOSTRA ÁREA DE PAGAMENTO (ERRO 3)
-    document.getElementById('payment-area').style.display = 'block';
-    document.getElementById('payment-area').scrollIntoView({ behavior: 'smooth' });
+    // MELHORIA 2: OCULTA FORMULÁRIO E MOSTRA AGRADECIMENTO
+    document.getElementById('form-container').style.display = 'none';
+    document.getElementById('success-area').style.display = 'block';
+    window.scrollTo({ top: document.getElementById('fazer-pedido').offsetTop, behavior: 'smooth' });
 }
 
 function copiarPix() {
