@@ -14,7 +14,8 @@
             --brand-secondary: #1e293b; 
             --brand-accent: #d4a373; 
             --bg-color: #faf9f6; 
-            --header-bg: #f3e5e8; 
+            /* Rosa suave com transparência (RGBA: 243, 229, 232 com 30% de opacidade) */
+            --header-bg: rgba(243, 229, 232, 0.3); 
             --white: #ffffff;
             --success: #10b981;
             --danger: #ef4444;
@@ -36,7 +37,7 @@
             position: relative;
         }
 
-        /* CONFIGURAÇÃO DA FOTO DE FUNDO SUAVE */
+        /* AJUSTE DO TAMANHO DA FOTO DE FUNDO */
         body::before {
             content: "";
             position: fixed;
@@ -44,23 +45,25 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('foto1.png'); /* Nome do arquivo conforme enviado */
-            background-size: cover;
+            background-image: url('foto1.jpg');
+            background-repeat: no-repeat;
+            background-size: 400px; /* Tamanho reduzido para não ficar desproporcional */
             background-position: center;
-            opacity: 0.08; 
+            opacity: 0.07; /* Levemente mais suave */
             z-index: -1; 
             pointer-events: none;
         }
 
         header { 
             background: var(--header-bg); 
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             padding: 20px; 
             text-align: center; 
             position: sticky; 
             top: 0; 
             z-index: 1000; 
-            border-bottom: 1px solid rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(0,0,0,0.02);
         }
         .logo { max-width: 140px; border-radius: 8px; }
 
@@ -72,7 +75,8 @@
             text-transform: uppercase; 
             letter-spacing: 3px; 
             font-weight: 300; 
-            font-size: 1.6rem;
+            font-size: 1.4rem;
+            color: var(--brand-secondary);
         }
 
         .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; margin-bottom: 60px; }
@@ -102,12 +106,6 @@
         }
         .close-modal { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; color: #9ca3af; }
 
-        .input-group { margin-bottom: 1.5rem; }
-        label { display: block; font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; }
-        select, input { width: 100%; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; }
-
-        #aviso-estoque { display: none; background: #fffbeb; color: var(--warning); padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; text-align: center; margin-bottom: 20px; }
-
         .cart-section { 
             background: var(--brand-secondary); color: var(--white); padding: 40px; 
             border-radius: var(--radius-lg); max-width: 600px; margin: 0 auto 60px auto; 
@@ -125,12 +123,13 @@
         .whatsapp-float { 
             position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white;
             width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; 
-            justify-content: center; z-index: 1000; font-size: 32px; text-decoration: none;
+            justify-content: center; z-index: 1000;
         }
 
         @media (max-width: 768px) { 
             .gallery { grid-template-columns: 1fr 1fr; gap: 15px; } 
             .img-wrapper { height: 260px; } 
+            body::before { background-size: 250px; } /* Menor ainda no celular */
         }
     </style>
 </head>
@@ -153,16 +152,13 @@
             <div style="text-align: right; font-weight: 600; margin-bottom: 20px;">
                 Total: <span id="total-carrinho" style="color: var(--brand-accent);">R$ 0,00</span>
             </div>
-            <div class="input-group">
-                <label>Seu Nome</label>
-                <input type="text" id="nome_cliente" placeholder="Seu nome completo">
-            </div>
+            <input type="text" id="nome_cliente" placeholder="Seu nome completo" style="width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px; outline: none;">
             <button class="btn-finalize" onclick="enviarPedido()">Finalizar Compra</button>
         </div>
 
         <div id="success-area">
-            <h2 style="color: var(--success); margin-bottom: 15px;">Obrigada pela compra! ✨</h2>
-            <p style="margin-bottom: 20px;">Seu pedido foi enviado. Realize o pagamento PIX abaixo:</p>
+            <h2 style="color: var(--success); margin-bottom: 15px;">Pedido Enviado! ✨</h2>
+            <p style="margin-bottom: 20px;">Para agilizar, realize o pagamento PIX:</p>
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bilhacamilla86@gmail.com" style="margin-bottom: 20px; background: white; padding: 10px; border-radius: 10px;">
             <p style="font-weight: 600; margin-bottom: 20px;">bilhacamilla86@gmail.com</p>
             <button onclick="copiarPix()" class="btn-action">Copiar Chave PIX</button>
@@ -174,22 +170,25 @@
     <div class="modal-content">
         <span class="close-modal" onclick="fecharModal()">&times;</span>
         <h3 id="modal-titulo" style="margin-bottom: 20px; text-align: center;">Produto</h3>
-        <div id="aviso-estoque">⚠️ Última peça disponível!</div>
-        <div class="input-group">
-            <label>Tamanho</label>
-            <select id="modal-tam"></select>
+        <div id="aviso-estoque" style="display: none; background: #fffbeb; color: var(--warning); padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; text-align: center; margin-bottom: 20px;">⚠️ Última peça disponível!</div>
+        
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; font-size: 0.7rem; font-weight: 700; margin-bottom: 5px;">TAMANHO</label>
+            <select id="modal-tam" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"></select>
         </div>
-        <div class="input-group">
-            <label>Cor</label>
-            <select id="modal-cor" disabled></select>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display:block; font-size: 0.7rem; font-weight: 700; margin-bottom: 5px;">COR</label>
+            <select id="modal-cor" disabled style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"></select>
         </div>
+
         <p id="modal-preco" style="text-align: right; font-weight: 600; font-size: 1.2rem; margin-bottom: 20px;"></p>
         <button class="btn-action" onclick="confirmarAdicao()">Adicionar ao Carrinho</button>
     </div>
 </div>
 
 <a href="https://wa.me/5513996526566" class="whatsapp-float" target="_blank">
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.025 3.107l-.696 2.541 2.596-.681c.851.488 1.803.747 2.843.748h.002c3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.585-5.764-5.767-5.764z"/></svg>
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="white" style="margin-top: 15px; margin-left: 15px;"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.025 3.107l-.696 2.541 2.596-.681c.851.488 1.803.747 2.843.748h.002c3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.585-5.764-5.767-5.764z"/></svg>
 </a>
 
 <script>
@@ -201,13 +200,12 @@ let dados = [];
 let carrinho = [];
 let produtoSelecionadoAtual = "";
 
-// Corrigido para .jpg para coincidir com a imagem de fundo e o arquivo enviado
 const fotosVitrine = [
-    {n: 'CONJUNTO MARROM', f: 'foto1.jpeg'}, {n: 'CONJUNTO VERDE OLIVA', f: 'foto2.jpeg'},
+    {n: 'CONJUNTO MARROM', f: 'foto1.jpg'}, {n: 'CONJUNTO VERDE OLIVA', f: 'foto2.jpeg'},
     {n: 'Conjunto bicolor poliamida', f: 'foto3.jpeg'}, {n: 'CONJUNTO PINK', f: 'foto5.jpeg'},
     {n: 'CONJUNTO VINHO', f: 'foto6.jpeg'}, {n: 'CONJUNTO VERDE CLARO', f: 'foto7.jpeg'},
     {n: 'Top Nadador', f: 'foto8.jpeg'}, {n: 'Macacão sem manga', f: 'foto9.jpeg'},
-    {n: 'Conjunto unicolor poliamida', f: 'foto2.png'}
+    {n: 'ROUPAS CBFITEAR', f: 'foto10.png'}
 ];
 
 async function carregarDados() {
@@ -299,7 +297,7 @@ function atualizarCarrinho() {
     lista.innerHTML = carrinho.map(i => `
         <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">
             <div><strong>${i.p}</strong><br><small>${i.t} | ${i.c}</small></div>
-            <div>R$ ${i.v.toFixed(2).replace('.',',')} <button onclick="remover(${i.id})" style="background:none; border:none; color:white; cursor:pointer;">✕</button></div>
+            <div>R$ ${i.v.toFixed(2).replace('.',',')} <button onclick="remover(${i.id})" style="background:none; border:none; color:white; cursor:pointer; margin-left:10px;">✕</button></div>
         </div>
     `).join('');
     const total = carrinho.reduce((acc, i) => acc + i.v, 0);
