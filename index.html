@@ -13,6 +13,7 @@
             --white: #ffffff;
             --success: #10b981;
             --danger: #ef4444;
+            --warning: #f59e0b;
             --overlay: rgba(0,0,0,0.7);
         }
 
@@ -25,13 +26,11 @@
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         h2 { text-align: center; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; font-weight: 300; }
 
-        /* GALERIA */
         .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 50px; }
         .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; position: relative; }
         .product-card img { width: 100%; height: 400px; object-fit: cover; display: block; }
         .product-info { padding: 15px; text-align: center; font-weight: 600; }
 
-        /* MODAL DE SELEÇÃO (POP-UP) */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
             background-color: var(--overlay); align-items: center; justify-content: center;
@@ -42,12 +41,12 @@
         }
         .close-modal { position: absolute; right: 20px; top: 15px; font-size: 25px; cursor: pointer; color: var(--brand-accent); }
 
-        /* CAMPOS DO MODAL */
         .input-group { margin-bottom: 1.2rem; }
         label { display: block; font-size: 0.75rem; color: #cbd5e1; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; }
         select, input { width: 100%; padding: 12px; background: #26394e; border: 1px solid #3e5671; border-radius: 8px; color: white; font-size: 1rem; }
 
-        /* CARRINHO */
+        #aviso-estoque { display: none; color: var(--warning); font-weight: 700; font-size: 0.85rem; text-align: center; margin-bottom: 15px; text-transform: uppercase; }
+
         .cart-section { background: var(--brand-main); color: white; padding: 30px; border-radius: 20px; max-width: 700px; margin: 0 auto 50px auto; }
         .cart-items { margin: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); }
         .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
@@ -104,6 +103,8 @@
         <span class="close-modal" onclick="fecharModal()">&times;</span>
         <h3 id="modal-titulo" style="color: var(--brand-accent); margin-bottom: 20px;">Produto</h3>
         
+        <div id="aviso-estoque">⚠️ Última peça disponível!</div>
+
         <div class="input-group">
             <label>Tamanho</label>
             <select id="modal-tam"></select>
@@ -131,9 +132,9 @@ let produtoSelecionadoAtual = "";
 
 const fotosVitrine = [
     {n: 'CONJUNTO MARROM', f: 'foto1.jpeg'}, {n: 'CONJUNTO VERDE OLIVA', f: 'foto2.jpeg'},
-    {n: 'CONJUNTO AZUL MARINHO', f: 'foto3.jpeg'}, {n: 'CONJUNTO PINK', f: 'foto5.jpeg'},
-    {n: 'Top Nadador', f: 'foto6.jpeg'}, {n: 'CONJUNTO VERDE CLARO', f: 'foto7.jpeg'},
-    {n: 'CONJUNTO ROSA NEON', f: 'foto8.jpeg'}, {n: 'Macacão sem manga', f: 'foto9.jpeg'},
+    {n: 'Conjunto bicolor poliamida', f: 'foto3.jpeg'}, {n: 'CONJUNTO PINK', f: 'foto5.jpeg'},
+    {n: 'CONJUNTO VINHO', f: 'foto6.jpeg'}, {n: 'CONJUNTO VERDE CLARO', f: 'foto7.jpeg'},
+    {n: 'Top Nadador', f: 'foto8.jpeg'}, {n: 'Macacão sem manga', f: 'foto9.jpeg'},
     {n: 'ROUPAS CBFITEAR', f: 'foto10.png'}
 ];
 
@@ -158,28 +159,22 @@ function renderVitrine() {
             <div class="product-card" onclick="abrirModal('${item.n}')">
                 <img src="${item.f}" style="${estoque <= 0 ? 'filter: grayscale(1); opacity: 0.5;' : ''}">
                 <div class="product-info">${item.n}<br>
-                <small style="color:${estoque > 0 ? 'var(--success)' : 'var(--danger)'}">${estoque > 0 ? 'Disponível' : 'Esgotado'}</small>
+                <small style="color:${estoque > 0 ? 'var(--success)' : 'var(--danger)'}">${estoque > 0 ? (estoque === 1 ? 'Última Peça!' : 'Disponível') : 'Esgotado'}</small>
                 </div>
             </div>
         `;
     }).join('');
 }
 
-// LÓGICA DO MODAL (MELHORIA SOLICITADA)
 function abrirModal(nome) {
-    const estoqueTotal = dados.filter(d => d.p === nome).reduce((acc, curr) => acc + curr.e, 0);
-    if(estoqueTotal <= 0) return alert("Produto sem estoque no momento!");
-
     produtoSelecionadoAtual = nome;
     document.getElementById('modal-titulo').textContent = nome;
-    
-    // Filtrar tamanhos com estoque > 0
     const tamanhos = [...new Set(dados.filter(d => d.p === nome && d.e > 0).map(d => d.t))].sort();
     const selTam = document.getElementById('modal-tam');
     selTam.innerHTML = '<option value="" selected disabled>Escolha o tamanho</option>';
     tamanhos.forEach(t => selTam.innerHTML += `<option value="${t}">${t}</option>`);
     
-    document.getElementById('modal-cor').innerHTML = '';
+    document.getElementById('aviso-estoque').style.display = 'none';
     document.getElementById('modal-cor').disabled = true;
     document.getElementById('modal-preco').textContent = "";
     document.getElementById('modal-selecao').style.display = 'flex';
@@ -191,11 +186,17 @@ document.getElementById('modal-tam').addEventListener('change', (e) => {
     selCor.innerHTML = '<option value="" selected disabled>Escolha a cor</option>';
     cores.forEach(c => selCor.innerHTML += `<option value="${c}">${c}</option>`);
     selCor.disabled = false;
+    document.getElementById('aviso-estoque').style.display = 'none';
 });
 
 document.getElementById('modal-cor').addEventListener('change', (e) => {
     const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === e.target.value);
-    if(item) document.getElementById('modal-preco').textContent = `Preço: R$ ${item.v.toFixed(2).replace('.',',')}`;
+    if(item) {
+        document.getElementById('modal-preco').textContent = `Preço: R$ ${item.v.toFixed(2).replace('.',',')}`;
+        // Lógica de "Última Peça"
+        const aviso = document.getElementById('aviso-estoque');
+        aviso.style.display = (item.e === 1) ? 'block' : 'none';
+    }
 });
 
 function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
@@ -206,12 +207,21 @@ function confirmarAdicao() {
     if(!t || !c) return alert("Selecione tamanho e cor!");
 
     const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === t && d.c === c);
+    
+    // BLOQUEIO DE ESTOQUE DE 1 UNIDADE (MELHORIA SOLICITADA)
+    if (item.e === 1) {
+        const jaNoCarrinho = carrinho.some(i => i.p === item.p && i.t === item.t && i.c === item.c);
+        if (jaNoCarrinho) {
+            alert("Não é possível adicionar novamente. Esta é a última peça em estoque e ela já está no seu carrinho!");
+            return;
+        }
+    }
+
     carrinho.push({...item, id: Date.now()});
     atualizarCarrinho();
     fecharModal();
 }
 
-// CARRINHO E ENVIO
 function atualizarCarrinho() {
     const lista = document.getElementById('lista-carrinho');
     if (carrinho.length === 0) {
@@ -237,11 +247,9 @@ function remover(id) {
 function enviarPedido() {
     const nome = document.getElementById('nome_cliente').value;
     if(!nome || carrinho.length === 0) return alert("Preencha seu nome e o carrinho!");
-
     const lista = carrinho.map(i => `- ${i.p} [${i.t}/${i.c}]: R$ ${i.v.toFixed(2)}`).join('\n');
     const corpo = `Olá Camilla, pedido de ${nome}:\n\n${lista}\n\nTOTAL: R$ ${carrinho.reduce((a,b)=>a+b.v,0).toFixed(2)}`;
     window.location.href = `mailto:camilla.bilha@hotmail.com?subject=Pedido-${nome}&body=${encodeURIComponent(corpo)}`;
-
     document.getElementById('form-container').style.display = 'none';
     document.getElementById('success-area').style.display = 'block';
 }
