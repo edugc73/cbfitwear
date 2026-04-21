@@ -4,136 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camilla Bilha | Fitwear</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-   <style>
-    :root {
-        --brand-main: #111827; 
-        --brand-secondary: #1e293b; 
-        --brand-accent: #d4a373; 
-        --bg-color: #faf9f6; 
-        /* Rosa do cabeçalho ainda mais transparente (15% de opacidade) */
-        --header-bg: rgba(243, 229, 232, 0.15); 
-        --white: #ffffff;
-        --success: #10b981;
-        --danger: #ef4444;
-        --warning: #f59e0b;
-        --overlay: rgba(17, 24, 39, 0.6); 
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-main: #1a2a3a;
+            --brand-accent: #d4a373;
+            --brand-light: #f4f4f9;
+            /* Suavizando ainda mais o rosa atrás do logo (Opacidade em 0.1) */
+            --header-bg: rgba(243, 229, 232, 0.1); 
+            --white: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --overlay: rgba(0,0,0,0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; transition: all 0.2s ease; }
         
-        --radius-md: 12px;
-        --radius-lg: 20px;
-        --shadow-soft: 0 10px 25px rgba(0,0,0,0.05);
-    }
+        body { 
+            background-color: var(--brand-light); 
+            color: var(--brand-main); 
+            line-height: 1.6; 
+            position: relative;
+        }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        /* AJUSTE DA FOTO DE FUNDO: Expandida por todo o site */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('foto1.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.05; /* Bem suave para não atrapalhar a leitura */
+            z-index: -1;
+            pointer-events: none;
+        }
 
-    body { 
-        background-color: var(--bg-color); 
-        color: var(--brand-main); 
-        line-height: 1.6; 
-        -webkit-font-smoothing: antialiased;
-        position: relative;
-    }
-
-    /* AJUSTE PARA EXPANDIR A FOTO POR TODO O SITE */
-    body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url('foto1.png');
-        background-repeat: no-repeat;
-        /* 'cover' faz a foto ocupar todo o espaço disponível proporcionalmente */
-        background-size: cover; 
-        background-position: center;
-        /* Como a foto agora é maior, baixei a opacidade para 0.05 para ficar bem discreta */
-        opacity: 0.05; 
-        z-index: -1; 
-        pointer-events: none;
-    }
-
-    header { 
-        background: var(--header-bg); 
-        /* Mantive o desfoque para dar um aspeto premium */
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-        padding: 20px; 
-        text-align: center; 
-        position: sticky; 
-        top: 0; 
-        z-index: 1000; 
-        border-bottom: 1px solid rgba(0,0,0,0.01);
-    }
-        .logo { max-width: 140px; border-radius: 8px; }
-
-        .container { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
-        
-        h2 { 
+        header { 
+            background-color: var(--header-bg); 
+            padding: 20px; 
             text-align: center; 
-            margin-bottom: 40px; 
-            text-transform: uppercase; 
-            letter-spacing: 3px; 
-            font-weight: 300; 
-            font-size: 1.4rem;
-            color: var(--brand-secondary);
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(0,0,0,0.02);
         }
+        .logo { max-width: 150px; border-radius: 12px; background: white; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; margin-bottom: 60px; }
-        .product-card { 
-            background: var(--white); 
-            border-radius: var(--radius-md); 
-            overflow: hidden; 
-            box-shadow: var(--shadow-soft); 
-            cursor: pointer; 
-            transition: transform 0.3s ease;
-        }
-        .product-card:hover { transform: translateY(-8px); }
-        
-        .img-wrapper { overflow: hidden; height: 380px; width: 100%; }
-        .product-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        
-        .product-info { padding: 20px 15px; text-align: center; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        h2 { text-align: center; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; font-weight: 300; }
 
+        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 50px; }
+        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; position: relative; }
+        .product-card img { width: 100%; height: 400px; object-fit: cover; display: block; }
+        .product-info { padding: 15px; text-align: center; font-weight: 600; }
+
+        /* MODAL */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: var(--overlay); align-items: center; justify-content: center;
-            backdrop-filter: blur(4px);
+            background-color: var(--overlay); align-items: center; justify-content: center; backdrop-filter: blur(4px);
         }
         .modal-content {
-            background: var(--white); padding: 35px; border-radius: var(--radius-lg);
-            width: 90%; max-width: 420px; position: relative;
+            background: var(--brand-main); color: white; padding: 30px; border-radius: 20px;
+            width: 90%; max-width: 450px; position: relative;
         }
-        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; color: #9ca3af; }
+        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 25px; cursor: pointer; color: var(--brand-accent); }
 
-        .cart-section { 
-            background: var(--brand-secondary); color: var(--white); padding: 40px; 
-            border-radius: var(--radius-lg); max-width: 600px; margin: 0 auto 60px auto; 
-        }
+        .input-group { margin-bottom: 1.2rem; }
+        label { display: block; font-size: 0.75rem; color: #cbd5e1; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; }
+        select, input { width: 100%; padding: 12px; background: #26394e; border: 1px solid #3e5671; border-radius: 8px; color: white; font-size: 1rem; outline: none; }
 
-        .btn-action, .btn-finalize { 
-            border: none; padding: 16px; border-radius: 8px; width: 100%; 
-            font-weight: 600; cursor: pointer; text-transform: uppercase; 
-        }
-        .btn-action { background: var(--brand-accent); color: var(--white); }
-        .btn-finalize { background: var(--white); color: var(--brand-secondary); margin-top: 25px; }
+        #aviso-estoque { display: none; color: var(--warning); font-weight: 700; font-size: 0.85rem; text-align: center; margin-bottom: 15px; }
 
-        #success-area { display: none; text-align: center; }
+        .cart-section { background: var(--brand-main); color: white; padding: 30px; border-radius: 20px; max-width: 700px; margin: 0 auto 50px auto; }
+        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; }
+        .remove-btn { color: var(--danger); cursor: pointer; background: none; border: none; font-size: 1.1rem; }
 
+        .btn-action { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+        .btn-finalize { background: var(--success); color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 20px; text-transform: uppercase; }
+
+        #success-area { display: none; text-align: center; padding: 20px; }
+
+        /* BOTÃO WHATSAPP CORRIGIDO E PROFISSIONAL */
         .whatsapp-float { 
-            position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white;
-            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; 
-            justify-content: center; z-index: 1000;
+            position: fixed; 
+            bottom: 30px; 
+            right: 30px; 
+            background: #25d366; 
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1000; 
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            text-decoration: none;
         }
+        .whatsapp-float:hover { transform: scale(1.1); }
 
-        @media (max-width: 768px) { 
-            .gallery { grid-template-columns: 1fr 1fr; gap: 15px; } 
-            .img-wrapper { height: 260px; } 
-            body::before { background-size: 250px; } /* Menor ainda no celular */
-        }
+        @media (max-width: 600px) { .gallery { grid-template-columns: 1fr 1fr; gap: 10px; } .product-card img { height: 220px; } }
     </style>
 </head>
 <body>
@@ -148,23 +123,26 @@
 
     <div class="cart-section">
         <div id="form-container">
-            <h3 style="text-align: center; margin-bottom: 20px;">Seu Carrinho</h3>
-            <div id="lista-carrinho" style="margin-bottom: 20px;">
-                <p style="text-align: center; opacity: 0.5;">O carrinho está vazio.</p>
+            <h3>Seu Carrinho</h3>
+            <div id="lista-carrinho" style="margin: 20px 0; border-top: 1px solid rgba(255,255,255,0.1);">
+                <p style="text-align: center; opacity: 0.5; padding: 20px;">O carrinho está vazio.</p>
             </div>
-            <div style="text-align: right; font-weight: 600; margin-bottom: 20px;">
+            <div style="text-align: right; font-weight: 700; font-size: 1.2rem; margin-bottom: 20px;">
                 Total: <span id="total-carrinho" style="color: var(--brand-accent);">R$ 0,00</span>
             </div>
-            <input type="text" id="nome_cliente" placeholder="Seu nome completo" style="width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 20px; outline: none;">
-            <button class="btn-finalize" onclick="enviarPedido()">Finalizar Compra</button>
+            <div class="input-group">
+                <label>Seu Nome</label>
+                <input type="text" id="nome_cliente" placeholder="Nome Completo">
+            </div>
+            <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR COMPRA</button>
         </div>
 
         <div id="success-area">
-            <h2 style="color: var(--success); margin-bottom: 15px;">Pedido Enviado! ✨</h2>
-            <p style="margin-bottom: 20px;">Para agilizar, realize o pagamento PIX:</p>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bilhacamilla86@gmail.com" style="margin-bottom: 20px; background: white; padding: 10px; border-radius: 10px;">
+            <h2 style="color: var(--success); margin-bottom: 10px;">Pedido Enviado! ✨</h2>
+            <p>Realize o pagamento PIX abaixo:</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bilhacamilla86@gmail.com" style="margin: 20px 0; border-radius: 10px; background: white; padding: 10px;">
             <p style="font-weight: 600; margin-bottom: 20px;">bilhacamilla86@gmail.com</p>
-            <button onclick="copiarPix()" class="btn-action">Copiar Chave PIX</button>
+            <button onclick="copiarPix()" class="btn-action">COPIAR CHAVE PIX</button>
         </div>
     </div>
 </div>
@@ -172,26 +150,25 @@
 <div id="modal-selecao" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="fecharModal()">&times;</span>
-        <h3 id="modal-titulo" style="margin-bottom: 20px; text-align: center;">Produto</h3>
-        <div id="aviso-estoque" style="display: none; background: #fffbeb; color: var(--warning); padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; text-align: center; margin-bottom: 20px;">⚠️ Última peça disponível!</div>
-        
-        <div style="margin-bottom: 15px;">
-            <label style="display:block; font-size: 0.7rem; font-weight: 700; margin-bottom: 5px;">TAMANHO</label>
-            <select id="modal-tam" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"></select>
+        <h3 id="modal-titulo" style="color: var(--brand-accent); margin-bottom: 20px;">Produto</h3>
+        <div id="aviso-estoque">⚠️ Última peça disponível!</div>
+        <div class="input-group">
+            <label>Tamanho</label>
+            <select id="modal-tam"></select>
         </div>
-        
-        <div style="margin-bottom: 20px;">
-            <label style="display:block; font-size: 0.7rem; font-weight: 700; margin-bottom: 5px;">COR</label>
-            <select id="modal-cor" disabled style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0;"></select>
+        <div class="input-group">
+            <label>Cor</label>
+            <select id="modal-cor" disabled></select>
         </div>
-
-        <p id="modal-preco" style="text-align: right; font-weight: 600; font-size: 1.2rem; margin-bottom: 20px;"></p>
-        <button class="btn-action" onclick="confirmarAdicao()">Adicionar ao Carrinho</button>
+        <p id="modal-preco" style="text-align: right; font-weight: 700; margin-bottom: 15px; font-size: 1.2rem;"></p>
+        <button class="btn-action" onclick="confirmarAdicao()">ADICIONAR AO CARRINHO</button>
     </div>
 </div>
 
 <a href="https://wa.me/5513996526566" class="whatsapp-float" target="_blank">
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="white" style="margin-top: 15px; margin-left: 15px;"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.025 3.107l-.696 2.541 2.596-.681c.851.488 1.803.747 2.843.748h.002c3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.585-5.764-5.767-5.764z"/></svg>
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.025 3.107l-.696 2.541 2.596-.681c.851.488 1.803.747 2.843.748h.002c3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.585-5.764-5.767-5.764zm3.37 8.202c-.147.415-.852.767-1.2.8-.297.028-.685.16-1.962-.348-1.633-.65-2.685-2.316-2.766-2.425-.08-.108-.658-.876-.658-1.67 0-.794.415-1.184.562-1.348.147-.163.32-.204.426-.204.107 0 .213 0 .307.005.101.005.237-.038.37.28.147.35.503 1.226.546 1.316.044.09.073.194.014.312-.058.118-.088.193-.174.296-.087.103-.183.23-.261.307-.087.086-.177.18-.076.353.101.173.448.736.96 1.192.658.587 1.212.77 1.385.856.173.086.273.072.373-.044.1-.117.433-.503.549-.675.117-.172.233-.144.39-.087.158.058 1.003.474 1.178.561.174.088.291.13.333.204.043.074.043.428-.104.843z"/>
+    </svg>
 </a>
 
 <script>
@@ -230,12 +207,9 @@ function renderVitrine() {
         const estoque = dados.filter(d => d.p === item.n).reduce((acc, curr) => acc + curr.e, 0);
         return `
             <div class="product-card" onclick="abrirModal('${item.n}')">
-                <div class="img-wrapper">
-                    <img src="${item.f}" style="${estoque <= 0 ? 'filter: grayscale(1); opacity: 0.6;' : ''}">
-                </div>
-                <div class="product-info">
-                    <strong>${item.n}</strong><br>
-                    <small style="color:${estoque > 0 ? 'var(--success)' : 'var(--danger)'}">${estoque > 0 ? (estoque === 1 ? 'Última Peça!' : 'Disponível') : 'Esgotado'}</small>
+                <img src="${item.f}" style="${estoque <= 0 ? 'filter: grayscale(1); opacity: 0.5;' : ''}">
+                <div class="product-info">${item.n}<br>
+                <small style="color:${estoque > 0 ? 'var(--success)' : 'var(--danger)'}">${estoque > 0 ? (estoque === 1 ? 'Última Peça!' : 'Disponível') : 'Esgotado'}</small>
                 </div>
             </div>
         `;
@@ -251,7 +225,6 @@ function abrirModal(nome) {
     tamanhos.forEach(t => selTam.innerHTML += `<option value="${t}">${t}</option>`);
     
     document.getElementById('aviso-estoque').style.display = 'none';
-    document.getElementById('modal-cor').innerHTML = '<option value="" selected disabled>Selecione o tamanho</option>';
     document.getElementById('modal-cor').disabled = true;
     document.getElementById('modal-preco').textContent = "";
     document.getElementById('modal-selecao').style.display = 'flex';
@@ -268,7 +241,7 @@ document.getElementById('modal-tam').addEventListener('change', (e) => {
 document.getElementById('modal-cor').addEventListener('change', (e) => {
     const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === e.target.value);
     if(item) {
-        document.getElementById('modal-preco').textContent = `R$ ${item.v.toFixed(2).replace('.',',')}`;
+        document.getElementById('modal-preco').textContent = `Preço: R$ ${item.v.toFixed(2).replace('.',',')}`;
         document.getElementById('aviso-estoque').style.display = (item.e === 1) ? 'block' : 'none';
     }
 });
@@ -293,14 +266,14 @@ function confirmarAdicao() {
 function atualizarCarrinho() {
     const lista = document.getElementById('lista-carrinho');
     if (carrinho.length === 0) {
-        lista.innerHTML = '<p style="text-align: center; opacity: 0.5;">O carrinho está vazio.</p>';
+        lista.innerHTML = '<p style="text-align: center; opacity: 0.5; padding: 20px;">O carrinho está vazio.</p>';
         document.getElementById('total-carrinho').textContent = "R$ 0,00";
         return;
     }
     lista.innerHTML = carrinho.map(i => `
-        <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">
+        <div class="cart-item">
             <div><strong>${i.p}</strong><br><small>${i.t} | ${i.c}</small></div>
-            <div>R$ ${i.v.toFixed(2).replace('.',',')} <button onclick="remover(${i.id})" style="background:none; border:none; color:white; cursor:pointer; margin-left:10px;">✕</button></div>
+            <span>R$ ${i.v.toFixed(2).replace('.',',')} <button class="remove-btn" onclick="remover(${i.id})">✕</button></span>
         </div>
     `).join('');
     const total = carrinho.reduce((acc, i) => acc + i.v, 0);
@@ -314,17 +287,17 @@ function remover(id) {
 
 function enviarPedido() {
     const nome = document.getElementById('nome_cliente').value;
-    if(!nome || carrinho.length === 0) return alert("Preencha o nome e adicione itens!");
+    if(!nome || carrinho.length === 0) return alert("Preencha seu nome e o carrinho!");
     const lista = carrinho.map(i => `- ${i.p} [${i.t}/${i.c}]: R$ ${i.v.toFixed(2)}`).join('\n');
     const corpo = `Olá Camilla, pedido de ${nome}:\n\n${lista}\n\nTOTAL: R$ ${carrinho.reduce((a,b)=>a+b.v,0).toFixed(2)}`;
-    window.location.href = `mailto:camilla.bilha@hotmail.com?subject=Pedido - ${nome}&body=${encodeURIComponent(corpo)}`;
+    window.location.href = `mailto:camilla.bilha@hotmail.com?subject=Pedido-${nome}&body=${encodeURIComponent(corpo)}`;
     document.getElementById('form-container').style.display = 'none';
     document.getElementById('success-area').style.display = 'block';
 }
 
 function copiarPix() {
     navigator.clipboard.writeText("bilhacamilla86@gmail.com");
-    alert("Chave PIX copiada!");
+    alert("Chave copiada!");
 }
 
 window.onload = carregarDados;
