@@ -13,9 +13,7 @@
             --brand-main: #111827; 
             --brand-secondary: #1e293b; 
             --brand-accent: #d4a373; 
-            --brand-accent-hover: #c4915f;
             --bg-color: #faf9f6; 
-            /* Nova cor: Rosa claro/Nude sofisticado para o cabeçalho e detalhes */
             --header-bg: #f3e5e8; 
             --white: #ffffff;
             --success: #10b981;
@@ -26,24 +24,43 @@
             --radius-md: 12px;
             --radius-lg: 20px;
             --shadow-soft: 0 10px 25px rgba(0,0,0,0.05);
-            --shadow-hover: 0 15px 35px rgba(0,0,0,0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--brand-main); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 
-        /* Cabeçalho ajustado com o Rosa Claro solicitado */
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--brand-main); 
+            line-height: 1.6; 
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        /* CONFIGURAÇÃO DA FOTO DE FUNDO SUAVE */
+        body::before {
+            content: "";
+            position: fixed; /* Fica parada enquanto você rola o site */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('foto1.jpg'); /* Nome do arquivo enviado */
+            background-size: cover;
+            background-position: center;
+            opacity: 0.08; /* Ajuste aqui: 0.1 é 10%, bem transparente */
+            z-index: -1; /* Garante que fique atrás de tudo */
+            pointer-events: none;
+        }
+
         header { 
             background: var(--header-bg); 
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             padding: 20px; 
             text-align: center; 
             position: sticky; 
             top: 0; 
             z-index: 1000; 
             border-bottom: 1px solid rgba(0,0,0,0.03);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         }
         .logo { max-width: 140px; border-radius: 8px; }
 
@@ -56,7 +73,6 @@
             letter-spacing: 3px; 
             font-weight: 300; 
             font-size: 1.6rem;
-            color: var(--brand-secondary);
         }
 
         .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; margin-bottom: 60px; }
@@ -66,75 +82,38 @@
             overflow: hidden; 
             box-shadow: var(--shadow-soft); 
             cursor: pointer; 
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease;
         }
-        .product-card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: var(--shadow-hover);
-        }
+        .product-card:hover { transform: translateY(-8px); }
         
         .img-wrapper { overflow: hidden; height: 380px; width: 100%; }
-        .product-card img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            display: block; 
-            transition: transform 0.5s ease;
-        }
-        .product-card:hover img { transform: scale(1.05); }
+        .product-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
         
         .product-info { padding: 20px 15px; text-align: center; }
-        .product-info strong { display: block; font-weight: 600; font-size: 0.95rem; margin-bottom: 5px; color: var(--brand-secondary); }
-        .product-info small { font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
 
-        .modal {
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: var(--overlay); align-items: center; justify-content: center;
-            backdrop-filter: blur(4px);
-        }
-        .modal-content {
-            background: var(--white); color: var(--brand-main); padding: 35px; border-radius: var(--radius-lg);
-            width: 90%; max-width: 420px; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-        }
-        
-        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; color: #9ca3af; }
-        
-        #modal-titulo { font-weight: 600; font-size: 1.2rem; margin-bottom: 25px; text-align: center; }
-
-        .input-group { margin-bottom: 1.5rem; text-align: left; }
-        label { display: block; font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; }
-        select, input { 
-            width: 100%; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; 
-            border-radius: 8px; color: var(--brand-main); font-size: 0.95rem; outline: none;
-        }
-
-        #aviso-estoque { display: none; background: #fffbeb; color: var(--warning); padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; text-align: center; margin-bottom: 20px; }
-
+        /* Estilização do Carrinho para manter legibilidade sobre o fundo */
         .cart-section { 
-            background: var(--brand-secondary); color: var(--white); padding: 40px; 
-            border-radius: var(--radius-lg); max-width: 600px; margin: 0 auto 60px auto; 
+            background: var(--brand-secondary); 
+            color: var(--white); 
+            padding: 40px; 
+            border-radius: var(--radius-lg); 
+            max-width: 600px; 
+            margin: 0 auto 60px auto;
+            position: relative;
+            z-index: 1;
         }
-        .cart-section h3 { font-weight: 500; letter-spacing: 1px; margin-bottom: 20px; text-align: center; }
-        .cart-items { margin: 25px 0; border-top: 1px solid rgba(255,255,255,0.05); }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; }
-        .remove-btn { color: var(--white); cursor: pointer; background: rgba(239, 68, 68, 0.2); border: none; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; margin-left: 10px; }
 
         .btn-action, .btn-finalize { 
             border: none; padding: 16px; border-radius: 8px; width: 100%; 
-            font-weight: 600; font-size: 0.95rem; letter-spacing: 1px; cursor: pointer; 
-            text-transform: uppercase; transition: transform 0.2s, background 0.2s; 
+            font-weight: 600; cursor: pointer; text-transform: uppercase; 
         }
-        .btn-action { background: var(--brand-accent); color: var(--white); margin-top: 10px; }
+        .btn-action { background: var(--brand-accent); color: var(--white); }
         .btn-finalize { background: var(--white); color: var(--brand-secondary); margin-top: 25px; }
 
-        #success-area { display: none; text-align: center; padding: 20px 0; }
-        #success-area h2 { color: var(--success); text-transform: none; font-weight: 500; margin-bottom: 10px; }
-        
         .whatsapp-float { 
             position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white;
             width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; 
             justify-content: center; z-index: 1000; font-size: 32px; text-decoration: none;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
         }
 
         @media (max-width: 768px) { 
@@ -155,57 +134,18 @@
 
     <div class="cart-section">
         <div id="form-container">
-            <h3>Seu Carrinho</h3>
-            <div id="lista-carrinho" class="cart-items">
-                <p style="text-align: center; opacity: 0.5; padding: 20px;">O carrinho está vazio.</p>
+            <h3 style="text-align: center; margin-bottom: 20px;">Seu Carrinho</h3>
+            <div id="lista-carrinho" style="margin-bottom: 20px;">
+                <p style="text-align: center; opacity: 0.5;">O carrinho está vazio.</p>
             </div>
-            <div style="text-align: right; font-weight: 600; font-size: 1.25rem; margin-bottom: 25px;">
+            <div style="text-align: right; font-weight: 600; margin-bottom: 20px;">
                 Total: <span id="total-carrinho" style="color: var(--brand-accent);">R$ 0,00</span>
             </div>
-            
-            <div class="input-group">
-                <label>Como podemos te chamar?</label>
-                <input type="text" id="nome_cliente" placeholder="Seu nome completo" style="color: var(--brand-main);">
-            </div>
+            <input type="text" id="nome_cliente" placeholder="Seu nome completo" style="width: 100%; padding: 12px; border-radius: 8px; border: none; margin-bottom: 20px;">
             <button class="btn-finalize" onclick="enviarPedido()">Finalizar Compra</button>
         </div>
-
-        <div id="success-area">
-            <h2>Obrigada pela compra! ✨</h2>
-            <p>Seu pedido foi registrado. Para agilizar, efetue o pagamento via PIX abaixo.</p>
-            <div style="background: white; padding: 15px; border-radius: 12px; display: inline-block; margin-bottom: 20px;">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bilhacamilla86@gmail.com">
-            </div>
-            <p style="font-size: 0.85rem; font-weight: 600; letter-spacing: 1px;">bilhacamilla86@gmail.com</p>
-            <button onclick="copiarPix()" class="btn-action">Copiar Chave PIX</button>
-        </div>
     </div>
 </div>
-
-<div id="modal-selecao" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="fecharModal()">&times;</span>
-        <h3 id="modal-titulo">Produto</h3>
-        
-        <div id="aviso-estoque">⚠️ Última peça disponível!</div>
-
-        <div class="input-group">
-            <label>Tamanho</label>
-            <select id="modal-tam"></select>
-        </div>
-        <div class="input-group">
-            <label>Cor</label>
-            <select id="modal-cor" disabled></select>
-        </div>
-        <p id="modal-preco" style="text-align: right; font-weight: 600; font-size: 1.2rem; color: var(--brand-secondary); margin-bottom: 20px;"></p>
-        
-        <button class="btn-action" id="btn-add-modal" onclick="confirmarAdicao()">Adicionar ao Carrinho</button>
-    </div>
-</div>
-
-<a href="https://wa.me/5513996526566" class="whatsapp-float" target="_blank">
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-</a>
 
 <script>
 const SHEET_ID = '10PHxjW6F-roUMump4IkhLF4UG0kB_yvX'; 
