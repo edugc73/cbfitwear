@@ -39,16 +39,16 @@
         /* CONFIGURAÇÃO DA FOTO DE FUNDO SUAVE */
         body::before {
             content: "";
-            position: fixed; /* Fica parada enquanto você rola o site */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('foto1.jpg'); /* Nome do arquivo enviado */
+            background-image: url('foto1.jpg'); /* Nome do arquivo conforme enviado */
             background-size: cover;
             background-position: center;
-            opacity: 0.08; /* Ajuste aqui: 0.1 é 10%, bem transparente */
-            z-index: -1; /* Garante que fique atrás de tudo */
+            opacity: 0.08; 
+            z-index: -1; 
             pointer-events: none;
         }
 
@@ -91,16 +91,26 @@
         
         .product-info { padding: 20px 15px; text-align: center; }
 
-        /* Estilização do Carrinho para manter legibilidade sobre o fundo */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: var(--overlay); align-items: center; justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: var(--white); padding: 35px; border-radius: var(--radius-lg);
+            width: 90%; max-width: 420px; position: relative;
+        }
+        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; color: #9ca3af; }
+
+        .input-group { margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.7rem; color: #64748b; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; }
+        select, input { width: 100%; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; }
+
+        #aviso-estoque { display: none; background: #fffbeb; color: var(--warning); padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; text-align: center; margin-bottom: 20px; }
+
         .cart-section { 
-            background: var(--brand-secondary); 
-            color: var(--white); 
-            padding: 40px; 
-            border-radius: var(--radius-lg); 
-            max-width: 600px; 
-            margin: 0 auto 60px auto;
-            position: relative;
-            z-index: 1;
+            background: var(--brand-secondary); color: var(--white); padding: 40px; 
+            border-radius: var(--radius-lg); max-width: 600px; margin: 0 auto 60px auto; 
         }
 
         .btn-action, .btn-finalize { 
@@ -109,6 +119,8 @@
         }
         .btn-action { background: var(--brand-accent); color: var(--white); }
         .btn-finalize { background: var(--white); color: var(--brand-secondary); margin-top: 25px; }
+
+        #success-area { display: none; text-align: center; }
 
         .whatsapp-float { 
             position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white;
@@ -141,11 +153,44 @@
             <div style="text-align: right; font-weight: 600; margin-bottom: 20px;">
                 Total: <span id="total-carrinho" style="color: var(--brand-accent);">R$ 0,00</span>
             </div>
-            <input type="text" id="nome_cliente" placeholder="Seu nome completo" style="width: 100%; padding: 12px; border-radius: 8px; border: none; margin-bottom: 20px;">
+            <div class="input-group">
+                <label>Seu Nome</label>
+                <input type="text" id="nome_cliente" placeholder="Seu nome completo">
+            </div>
             <button class="btn-finalize" onclick="enviarPedido()">Finalizar Compra</button>
+        </div>
+
+        <div id="success-area">
+            <h2 style="color: var(--success); margin-bottom: 15px;">Obrigada pela compra! ✨</h2>
+            <p style="margin-bottom: 20px;">Seu pedido foi enviado. Realize o pagamento PIX abaixo:</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=bilhacamilla86@gmail.com" style="margin-bottom: 20px; background: white; padding: 10px; border-radius: 10px;">
+            <p style="font-weight: 600; margin-bottom: 20px;">bilhacamilla86@gmail.com</p>
+            <button onclick="copiarPix()" class="btn-action">Copiar Chave PIX</button>
         </div>
     </div>
 </div>
+
+<div id="modal-selecao" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="fecharModal()">&times;</span>
+        <h3 id="modal-titulo" style="margin-bottom: 20px; text-align: center;">Produto</h3>
+        <div id="aviso-estoque">⚠️ Última peça disponível!</div>
+        <div class="input-group">
+            <label>Tamanho</label>
+            <select id="modal-tam"></select>
+        </div>
+        <div class="input-group">
+            <label>Cor</label>
+            <select id="modal-cor" disabled></select>
+        </div>
+        <p id="modal-preco" style="text-align: right; font-weight: 600; font-size: 1.2rem; margin-bottom: 20px;"></p>
+        <button class="btn-action" onclick="confirmarAdicao()">Adicionar ao Carrinho</button>
+    </div>
+</div>
+
+<a href="https://wa.me/5513996526566" class="whatsapp-float" target="_blank">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.025 3.107l-.696 2.541 2.596-.681c.851.488 1.803.747 2.843.748h.002c3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.585-5.764-5.767-5.764z"/></svg>
+</a>
 
 <script>
 const SHEET_ID = '10PHxjW6F-roUMump4IkhLF4UG0kB_yvX'; 
@@ -156,8 +201,9 @@ let dados = [];
 let carrinho = [];
 let produtoSelecionadoAtual = "";
 
+// Corrigido para .jpg para coincidir com a imagem de fundo e o arquivo enviado
 const fotosVitrine = [
-    {n: 'CONJUNTO MARROM', f: 'foto1.jpeg'}, {n: 'CONJUNTO VERDE OLIVA', f: 'foto2.jpeg'},
+    {n: 'CONJUNTO MARROM', f: 'foto1.jpg'}, {n: 'CONJUNTO VERDE OLIVA', f: 'foto2.jpeg'},
     {n: 'Conjunto bicolor poliamida', f: 'foto3.jpeg'}, {n: 'CONJUNTO PINK', f: 'foto5.jpeg'},
     {n: 'CONJUNTO VINHO', f: 'foto6.jpeg'}, {n: 'CONJUNTO VERDE CLARO', f: 'foto7.jpeg'},
     {n: 'Top Nadador', f: 'foto8.jpeg'}, {n: 'Macacão sem manga', f: 'foto9.jpeg'},
@@ -187,7 +233,7 @@ function renderVitrine() {
                     <img src="${item.f}" style="${estoque <= 0 ? 'filter: grayscale(1); opacity: 0.6;' : ''}">
                 </div>
                 <div class="product-info">
-                    <strong>${item.n}</strong>
+                    <strong>${item.n}</strong><br>
                     <small style="color:${estoque > 0 ? 'var(--success)' : 'var(--danger)'}">${estoque > 0 ? (estoque === 1 ? 'Última Peça!' : 'Disponível') : 'Esgotado'}</small>
                 </div>
             </div>
@@ -204,7 +250,7 @@ function abrirModal(nome) {
     tamanhos.forEach(t => selTam.innerHTML += `<option value="${t}">${t}</option>`);
     
     document.getElementById('aviso-estoque').style.display = 'none';
-    document.getElementById('modal-cor').innerHTML = '<option value="" selected disabled>Selecione o tamanho primeiro</option>';
+    document.getElementById('modal-cor').innerHTML = '<option value="" selected disabled>Selecione o tamanho</option>';
     document.getElementById('modal-cor').disabled = true;
     document.getElementById('modal-preco').textContent = "";
     document.getElementById('modal-selecao').style.display = 'flex';
@@ -216,16 +262,13 @@ document.getElementById('modal-tam').addEventListener('change', (e) => {
     selCor.innerHTML = '<option value="" selected disabled>Escolha a cor</option>';
     cores.forEach(c => selCor.innerHTML += `<option value="${c}">${c}</option>`);
     selCor.disabled = false;
-    document.getElementById('aviso-estoque').style.display = 'none';
-    document.getElementById('modal-preco').textContent = "";
 });
 
 document.getElementById('modal-cor').addEventListener('change', (e) => {
     const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === e.target.value);
     if(item) {
         document.getElementById('modal-preco').textContent = `R$ ${item.v.toFixed(2).replace('.',',')}`;
-        const aviso = document.getElementById('aviso-estoque');
-        aviso.style.display = (item.e === 1) ? 'block' : 'none';
+        document.getElementById('aviso-estoque').style.display = (item.e === 1) ? 'block' : 'none';
     }
 });
 
@@ -234,16 +277,11 @@ function fecharModal() { document.getElementById('modal-selecao').style.display 
 function confirmarAdicao() {
     const t = document.getElementById('modal-tam').value;
     const c = document.getElementById('modal-cor').value;
-    if(!t || !c) return alert("Por favor, selecione tamanho e cor antes de adicionar.");
+    if(!t || !c) return alert("Selecione tamanho e cor!");
 
     const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === t && d.c === c);
-    
-    if (item.e === 1) {
-        const jaNoCarrinho = carrinho.some(i => i.p === item.p && i.t === item.t && i.c === item.c);
-        if (jaNoCarrinho) {
-            alert("Você já adicionou a última peça disponível deste modelo ao carrinho!");
-            return;
-        }
+    if (item.e === 1 && carrinho.some(i => i.p === item.p && i.t === item.t && i.c === item.c)) {
+        return alert("Última peça já está no carrinho!");
     }
 
     carrinho.push({...item, id: Date.now()});
@@ -254,20 +292,14 @@ function confirmarAdicao() {
 function atualizarCarrinho() {
     const lista = document.getElementById('lista-carrinho');
     if (carrinho.length === 0) {
-        lista.innerHTML = '<p style="text-align: center; opacity: 0.5; padding: 20px;">Seu carrinho está vazio.</p>';
+        lista.innerHTML = '<p style="text-align: center; opacity: 0.5;">O carrinho está vazio.</p>';
         document.getElementById('total-carrinho').textContent = "R$ 0,00";
         return;
     }
     lista.innerHTML = carrinho.map(i => `
-        <div class="cart-item">
-            <div>
-                <strong>${i.p}</strong><br>
-                <small>${i.t} | ${i.c}</small>
-            </div>
-            <div style="display: flex; align-items: center;">
-                <span style="font-weight: 600;">R$ ${i.v.toFixed(2).replace('.',',')}</span>
-                <button class="remove-btn" onclick="remover(${i.id})">✕</button>
-            </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">
+            <div><strong>${i.p}</strong><br><small>${i.t} | ${i.c}</small></div>
+            <div>R$ ${i.v.toFixed(2).replace('.',',')} <button onclick="remover(${i.id})" style="background:none; border:none; color:white; cursor:pointer;">✕</button></div>
         </div>
     `).join('');
     const total = carrinho.reduce((acc, i) => acc + i.v, 0);
@@ -281,29 +313,23 @@ function remover(id) {
 
 function enviarPedido() {
     const nome = document.getElementById('nome_cliente').value;
-    if(!nome || carrinho.length === 0) return alert("Por favor, preencha seu nome e adicione itens ao carrinho.");
-    
+    if(!nome || carrinho.length === 0) return alert("Preencha o nome e adicione itens!");
     const lista = carrinho.map(i => `- ${i.p} [${i.t}/${i.c}]: R$ ${i.v.toFixed(2)}`).join('\n');
     const corpo = `Olá Camilla, pedido de ${nome}:\n\n${lista}\n\nTOTAL: R$ ${carrinho.reduce((a,b)=>a+b.v,0).toFixed(2)}`;
-    
     window.location.href = `mailto:camilla.bilha@hotmail.com?subject=Pedido - ${nome}&body=${encodeURIComponent(corpo)}`;
-    
     document.getElementById('form-container').style.display = 'none';
     document.getElementById('success-area').style.display = 'block';
 }
 
 function copiarPix() {
     navigator.clipboard.writeText("bilhacamilla86@gmail.com");
-    alert("Chave PIX copiada com sucesso!");
+    alert("Chave PIX copiada!");
 }
 
 window.onload = carregarDados;
 
 window.onclick = function(event) {
-    const modal = document.getElementById('modal-selecao');
-    if (event.target === modal) {
-        fecharModal();
-    }
+    if (event.target === document.getElementById('modal-selecao')) fecharModal();
 }
 </script>
 </body>
