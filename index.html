@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camilla Bilha | Fitwear</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --brand-main: #1a2a3a;
             --brand-accent: #d4a373;
             --brand-light: #f4f4f9;
-            /* Suavizando ainda mais o rosa atrás do logo (Opacidade em 0.4) */
             --header-bg: rgba(243, 229, 232, 0.4); 
             --white: #ffffff;
             --success: #10b981;
@@ -19,7 +18,8 @@
             --overlay: rgba(0,0,0,0.7);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; transition: all 0.2s ease; }
+        /* Aplicando a fonte Inter como principal */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: all 0.2s ease; }
         
         body { 
             background-color: var(--brand-light); 
@@ -28,7 +28,6 @@
             position: relative;
         }
 
-        /* AJUSTE DA FOTO DE FUNDO: Expandida por todo o site */
         body::before {
             content: "";
             position: fixed;
@@ -38,7 +37,7 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0.10; /* Bem suave para não atrapalhar a leitura */
+            opacity: 0.05; /* Reduzido para maior elegância */
             z-index: -1;
             pointer-events: none;
         }
@@ -64,6 +63,26 @@
         .product-card img { width: 100%; height: 400px; object-fit: cover; display: block; }
         .product-info { padding: 15px; text-align: center; font-weight: 600; }
 
+        /* --- ESTILOS DA NOVA GALERIA NO MODAL --- */
+        .modal-gallery {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            margin-bottom: 20px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: thin;
+        }
+        .modal-gallery img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            scroll-snap-align: center;
+            flex-shrink: 0;
+        }
+        .modal-gallery::-webkit-scrollbar { height: 6px; }
+        .modal-gallery::-webkit-scrollbar-thumb { background: var(--brand-accent); border-radius: 10px; }
+
         /* MODAL */
         .modal {
             display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
@@ -71,9 +90,9 @@
         }
         .modal-content {
             background: var(--brand-main); color: white; padding: 30px; border-radius: 20px;
-            width: 90%; max-width: 450px; position: relative;
+            width: 95%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto;
         }
-        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 25px; cursor: pointer; color: var(--brand-accent); }
+        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 25px; cursor: pointer; color: var(--brand-accent); z-index: 10; }
 
         .input-group { margin-bottom: 1.2rem; }
         label { display: block; font-size: 0.75rem; color: #cbd5e1; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; }
@@ -90,7 +109,6 @@
 
         #success-area { display: none; text-align: center; padding: 20px; }
 
-        /* BOTÃO WHATSAPP CORRIGIDO E PROFISSIONAL */
         .whatsapp-float { 
             position: fixed; 
             bottom: 30px; 
@@ -150,6 +168,9 @@
 <div id="modal-selecao" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="fecharModal()">&times;</span>
+        
+        <div id="modal-imagens" class="modal-gallery"></div>
+
         <h3 id="modal-titulo" style="color: var(--brand-accent); margin-bottom: 20px;">Produto</h3>
         <div id="aviso-estoque">⚠️ Última peça disponível!</div>
         <div class="input-group">
@@ -180,15 +201,18 @@ let dados = [];
 let carrinho = [];
 let produtoSelecionadoAtual = "";
 
+// LISTA DE FOTOS ATUALIZADA PARA ARRAY (Pode colocar várias fotos por item)
 const fotosVitrine = [
-    {n: 'Conjunto Basic(Top alcina e Bermuda)', f: 'foto5.jpeg'}, {n: 'Conjunto Bolso(Top alcina e Bermuda c/bolso)', f: 'foto2.jpeg'},
-    {n: 'Macacão Bicolor Poliamida', f: 'foto11.jpeg'}, {n: 'Macacao Basic Poliamida', f: 'foto7.jpeg'},
-    {n: 'Conjunto Basic Calça(Top alcina e Calça)', f: 'foto9.jpeg'}, 
-    {n: 'Conjunto Bicolor Poliamida', f: 'foto15.jpeg'}, 
-    {n: 'Conjunto Basic(Top nadador e Bermuda)', f: 'foto16.jpeg'}, 
-    {n: 'Conjunto Bolso(Top nadador e Bermuda com bolso)', f: 'foto20.jpeg'},
-    {n: 'Conjunto Short Poliamida Importado', f: 'foto21.jpeg'},
-    {n: 'Camiseta dry fit', f: 'foto3.png'}
+    {n: 'Conjunto Basic(Top alcina e Bermuda)', f: ['foto5.jpeg', 'foto5_v2.jpeg']}, 
+    {n: 'Conjunto Bolso(Top alcina e Bermuda c/bolso)', f: ['foto2.jpeg']},
+    {n: 'Macacão Bicolor Poliamida', f: ['foto6.jpeg', 'foto11.jpeg', 'foto4.jpeg']}, 
+    {n: 'Macacao Basic Poliamida', f: ['foto7.jpeg']},
+    {n: 'Conjunto Basic Calça(Top alcina e Calça)', f: ['foto9.jpeg']}, 
+    {n: 'Conjunto Bicolor Poliamida', f: ['foto15.jpeg']}, 
+    {n: 'Conjunto Basic(Top nadador e Bermuda)', f: ['foto16.jpeg']}, 
+    {n: 'Conjunto Bolso(Top nadador e Bermuda com bolso)', f: ['foto20.jpeg']},
+    {n: 'Conjunto Short Poliamida Importado', f: ['foto21.jpeg']},
+    {n: 'Camiseta dry fit', f: ['foto3.png']}
 ];
 
 async function carregarDados() {
@@ -210,7 +234,7 @@ function renderVitrine() {
         const estoque = dados.filter(d => d.p === item.n).reduce((acc, curr) => acc + curr.e, 0);
         return `
             <div class="product-card" onclick="abrirModal('${item.n}')">
-                <img src="${item.f}" style="${estoque <= 0 ? 'filter: grayscale(1); opacity: 0.5;' : ''}">
+                <img src="${item.f[0]}" style="${estoque <= 0 ? 'filter: grayscale(1); opacity: 0.5;' : ''}">
                 <div class="product-info">${item.n}<br>
                 <small style="color:${estoque > 0 ? 'var(--success)' : 'var(--danger)'}">${estoque > 0 ? (estoque === 1 ? 'Última Peça!' : 'Disponível') : 'Esgotado'}</small>
                 </div>
@@ -221,7 +245,14 @@ function renderVitrine() {
 
 function abrirModal(nome) {
     produtoSelecionadoAtual = nome;
+    const produtoData = fotosVitrine.find(item => item.n === nome);
+    
     document.getElementById('modal-titulo').textContent = nome;
+
+    // Galeria de imagens no modal
+    const containerImagens = document.getElementById('modal-imagens');
+    containerImagens.innerHTML = produtoData.f.map(img => `<img src="${img}" alt="${nome}">`).join('');
+
     const tamanhos = [...new Set(dados.filter(d => d.p === nome && d.e > 0).map(d => d.t))].sort();
     const selTam = document.getElementById('modal-tam');
     selTam.innerHTML = '<option value="" selected disabled>Escolha o tamanho</option>';
@@ -288,33 +319,20 @@ function remover(id) {
     atualizarCarrinho();
 }
 
+// NOVO CHECKOUT VIA WHATSAPP (MELHORIA 1)
 function enviarPedido() {
     const nome = document.getElementById('nome_cliente').value;
-    const telefoneVendedora = "5513996526566"; // Seu número já configurado no site
+    const telefoneVendedora = "5513996526566"; 
 
-    if(!nome || carrinho.length === 0) {
-        return alert("Por favor, preencha seu nome e adicione itens ao carrinho!");
-    }
-
-    // Formatação da lista de produtos para o WhatsApp
-    const listaProdutos = carrinho.map(i => 
-        `• *${i.p}* (Tam: ${i.t} | Cor: ${i.c}) - R$ ${i.v.toFixed(2).replace('.',',')}`
-    ).join('%0A');
-
-    const total = carrinho.reduce((a, b) => a + b.v, 0).toFixed(2).replace('.',',');
-
-    // Montagem da mensagem estruturada
-    const mensagem = `*Novo Pedido - Camilla Bilha Fitwear*%0A%0A` +
-                     `*Cliente:* ${nome}%0A` +
-                     `*Itens:*%0A${listaProdutos}%0A%0A` +
-                     `*TOTAL: R$ ${total}*%0A%0A` +
-                     `_Aguardo as instruções para o pagamento._`;
-
-    // Redirecionamento para o WhatsApp (abre em nova aba)
-    const urlWhatsapp = `https://wa.me/${telefoneVendedora}?text=${mensagem}`;
-    window.open(urlWhatsapp, '_blank');
-
-    // Fluxo visual do site
+    if(!nome || carrinho.length === 0) return alert("Preencha seu nome e o carrinho!");
+    
+    const listaProdutos = carrinho.map(i => `• *${i.p}* [${i.t}/${i.c}]: R$ ${i.v.toFixed(2).replace('.',',')}`).join('%0A');
+    const total = carrinho.reduce((a,b)=>a+b.v,0).toFixed(2).replace('.',',');
+    
+    const mensagem = `*Novo Pedido - Camilla Bilha Fitwear*%0A%0A*Cliente:* ${nome}%0A*Itens:*%0A${listaProdutos}%0A%0A*TOTAL: R$ ${total}*%0A%0AAguardo instruções para o pagamento.`;
+    
+    window.open(`https://wa.me/${telefoneVendedora}?text=${mensagem}`, '_blank');
+    
     document.getElementById('form-container').style.display = 'none';
     document.getElementById('success-area').style.display = 'block';
 }
