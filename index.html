@@ -290,10 +290,31 @@ function remover(id) {
 
 function enviarPedido() {
     const nome = document.getElementById('nome_cliente').value;
-    if(!nome || carrinho.length === 0) return alert("Preencha seu nome e o carrinho!");
-    const lista = carrinho.map(i => `- ${i.p} [${i.t}/${i.c}]: R$ ${i.v.toFixed(2)}`).join('\n');
-    const corpo = `Olá Camilla, pedido de ${nome}:\n\n${lista}\n\nTOTAL: R$ ${carrinho.reduce((a,b)=>a+b.v,0).toFixed(2)}`;
-    window.location.href = `mailto:camilla.bilha@hotmail.com?subject=Pedido-${nome}&body=${encodeURIComponent(corpo)}`;
+    const telefoneVendedora = "5513996526566"; // Seu número já configurado no site
+
+    if(!nome || carrinho.length === 0) {
+        return alert("Por favor, preencha seu nome e adicione itens ao carrinho!");
+    }
+
+    // Formatação da lista de produtos para o WhatsApp
+    const listaProdutos = carrinho.map(i => 
+        `• *${i.p}* (Tam: ${i.t} | Cor: ${i.c}) - R$ ${i.v.toFixed(2).replace('.',',')}`
+    ).join('%0A');
+
+    const total = carrinho.reduce((a, b) => a + b.v, 0).toFixed(2).replace('.',',');
+
+    // Montagem da mensagem estruturada
+    const mensagem = `*Novo Pedido - Camilla Bilha Fitwear*%0A%0A` +
+                     `*Cliente:* ${nome}%0A` +
+                     `*Itens:*%0A${listaProdutos}%0A%0A` +
+                     `*TOTAL: R$ ${total}*%0A%0A` +
+                     `_Aguardo as instruções para o pagamento._`;
+
+    // Redirecionamento para o WhatsApp (abre em nova aba)
+    const urlWhatsapp = `https://wa.me/${telefoneVendedora}?text=${mensagem}`;
+    window.open(urlWhatsapp, '_blank');
+
+    // Fluxo visual do site
     document.getElementById('form-container').style.display = 'none';
     document.getElementById('success-area').style.display = 'block';
 }
