@@ -18,7 +18,6 @@
             --overlay: rgba(0,0,0,0.7);
         }
 
-        /* Aplicando a fonte Inter como principal */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: all 0.2s ease; }
         
         body { 
@@ -37,7 +36,7 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0.05; /* Reduzido para maior elegância */
+            opacity: 0.05;
             z-index: -1;
             pointer-events: none;
         }
@@ -63,7 +62,7 @@
         .product-card img { width: 100%; height: 400px; object-fit: cover; display: block; }
         .product-info { padding: 15px; text-align: center; font-weight: 600; }
 
-        /* --- ESTILOS DA NOVA GALERIA NO MODAL --- */
+        /* GALERIA NO MODAL */
         .modal-gallery {
             display: flex;
             overflow-x: auto;
@@ -71,14 +70,13 @@
             margin-bottom: 20px;
             scroll-snap-type: x mandatory;
             scrollbar-width: thin;
+            background: #0f1a24; /* Fundo escuro para destacar as fotos */
+            border-radius: 12px;
         }
         .modal-gallery img {
             width: 100%;
-            max-height: 400px; /* Limita a altura para caber na tela */
-            /* --- CORREÇÃO AQUI: Mudado de cover para contain --- */
-            object-fit: contain; /* Garante que a foto apareça inteira */
-            background: rgba(255,255,255,0.05); /* Adiciona um fundo leve se a foto não preencher tudo */
-            /* ----------------------------------------------- */
+            max-height: 400px;
+            object-fit: contain; /* FOTO INTEIRA SEM CORTES */
             border-radius: 12px;
             scroll-snap-align: center;
             flex-shrink: 0;
@@ -171,9 +169,7 @@
 <div id="modal-selecao" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="fecharModal()">&times;</span>
-        
         <div id="modal-imagens" class="modal-gallery"></div>
-
         <h3 id="modal-titulo" style="color: var(--brand-accent); margin-bottom: 20px;">Produto</h3>
         <div id="aviso-estoque">⚠️ Última peça disponível!</div>
         <div class="input-group">
@@ -204,10 +200,8 @@ let dados = [];
 let carrinho = [];
 let produtoSelecionadoAtual = "";
 
-// LISTA DE FOTOS ATUALIZADA PARA ARRAY
-// Exemplo: {n: 'Nome', f: ['foto1.jpg', 'foto2.jpg']}
 const fotosVitrine = [
-     {n: 'Conjunto Basic(Top alcina e Bermuda)', f: ['foto5.jpeg', 'foto5_v2.jpeg']}, 
+    {n: 'Conjunto Basic(Top alcina e Bermuda)', f: ['foto5.jpeg', 'foto5_v2.jpeg']}, 
     {n: 'Conjunto Bolso(Top alcina e Bermuda c/bolso)', f: ['foto2.jpeg']},
     {n: 'Macacão Bicolor Poliamida', f: ['foto6.jpeg', 'foto11.jpeg', 'foto4.jpeg']}, 
     {n: 'Macacao Basic Poliamida', f: ['foto7.jpeg']},
@@ -235,4 +229,115 @@ async function carregarDados() {
 function renderVitrine() {
     const vitrine = document.getElementById('vitrine');
     vitrine.innerHTML = fotosVitrine.map(item => {
-        const estoque = dados.filter(d
+        const estoque = dados.filter(d => d.p === item.n).reduce((acc, curr) => acc + curr.e, 0);
+        return `
+            <div class="product-card" onclick="abrirModal('${item.n}')">
+                <img src="${item.f[0]}" style="${estoque <= 0 ? 'filter: grayscale(1); opacity: 0.5;' : ''}">
+                <div class="product-info">${item.n}<br>
+                <small style="color:${estoque > 0 ? 'var(--success)' : 'var(--danger)'}">${estoque > 0 ? (estoque === 1 ? 'Última Peça!' : 'Disponível') : 'Esgotado'}</small>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function abrirModal(nome) {
+    produtoSelecionadoAtual = nome;
+    const produtoData = fotosVitrine.find(item => item.n === nome);
+    document.getElementById('modal-titulo').textContent = nome;
+
+    const containerImagens = document.getElementById('modal-imagens');
+    containerImagens.innerHTML = produtoData.f.map(img => `<img src="${img}" alt="${nome}">`).join('');
+
+    const tamanhos = [...new Set(dados.filter(d => d.p === nome && d.e > 0).map(d => d.t))].sort();
+    const selTam = document.getElementById('modal-tam');
+    selTam.innerHTML = '<option value="" selected disabled>Escolha o tamanho</option>';
+    tamanhos.forEach(t => selTam.innerHTML += `<option value="${t}">${t}</option>`);
+    
+    document.getElementById('aviso-estoque').style.display = 'none';
+    document.getElementById('modal-cor').disabled = true;
+    document.getElementById('modal-preco').textContent = "";
+    document.getElementById('modal-selecao').style.display = 'flex';
+}
+
+document.getElementById('modal-tam').addEventListener('change', (e) => {
+    const cores = [...new Set(dados.filter(d => d.p === produtoSelecionadoAtual && d.t === e.target.value && d.e > 0).map(d => d.c))].sort();
+    const selCor = document.getElementById('modal-cor');
+    selCor.innerHTML = '<option value="" selected disabled>Escolha a cor</option>';
+    cores.forEach(c => selCor.innerHTML += `<option value="${c}">${c}</option>`);
+    selCor.disabled = false;
+});
+
+document.getElementById('modal-cor').addEventListener('change', (e) => {
+    const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === e.target.value);
+    if(item) {
+        document.getElementById('modal-preco').textContent = `Preço: R$ ${item.v.toFixed(2).replace('.',',')}`;
+        document.getElementById('aviso-estoque').style.display = (item.e === 1) ? 'block' : 'none';
+    }
+});
+
+function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
+
+function confirmarAdicao() {
+    const t = document.getElementById('modal-tam').value;
+    const c = document.getElementById('modal-cor').value;
+    if(!t || !c) return alert("Selecione tamanho e cor!");
+
+    const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === t && d.c === c);
+    if (item.e === 1 && carrinho.some(i => i.p === item.p && i.t === item.t && i.c === item.c)) {
+        return alert("Última peça já está no carrinho!");
+    }
+
+    carrinho.push({...item, id: Date.now()});
+    atualizarCarrinho();
+    fecharModal();
+}
+
+function atualizarCarrinho() {
+    const lista = document.getElementById('lista-carrinho');
+    if (carrinho.length === 0) {
+        lista.innerHTML = '<p style="text-align: center; opacity: 0.5; padding: 20px;">O carrinho está vazio.</p>';
+        document.getElementById('total-carrinho').textContent = "R$ 0,00";
+        return;
+    }
+    lista.innerHTML = carrinho.map(i => `
+        <div class="cart-item">
+            <div><strong>${i.p}</strong><br><small>${i.t} | ${i.c}</small></div>
+            <span>R$ ${i.v.toFixed(2).replace('.',',')} <button class="remove-btn" onclick="remover(${i.id})">✕</button></span>
+        </div>
+    `).join('');
+    const total = carrinho.reduce((acc, i) => acc + i.v, 0);
+    document.getElementById('total-carrinho').textContent = `R$ ${total.toFixed(2).replace('.',',')}`;
+}
+
+function remover(id) {
+    carrinho = carrinho.filter(i => i.id !== id);
+    atualizarCarrinho();
+}
+
+function enviarPedido() {
+    const nome = document.getElementById('nome_cliente').value;
+    const telefoneVendedora = "5513996526566"; 
+    if(!nome || carrinho.length === 0) return alert("Preencha seu nome e o carrinho!");
+    
+    const listaProdutos = carrinho.map(i => `• *${i.p}* [${i.t}/${i.c}]: R$ ${i.v.toFixed(2).replace('.',',')}`).join('%0A');
+    const total = carrinho.reduce((a,b)=>a+b.v,0).toFixed(2).replace('.',',');
+    const mensagem = `*Novo Pedido - Camilla Bilha Fitwear*%0A%0A*Cliente:* ${nome}%0A*Itens:*%0A${listaProdutos}%0A%0A*TOTAL: R$ ${total}*%0A%0AAguardo instruções para o pagamento.`;
+    
+    window.open(`https://wa.me/${telefoneVendedora}?text=${mensagem}`, '_blank');
+    document.getElementById('form-container').style.display = 'none';
+    document.getElementById('success-area').style.display = 'block';
+}
+
+function copiarPix() {
+    navigator.clipboard.writeText("bilhacamilla86@gmail.com");
+    alert("Chave copiada!");
+}
+
+window.onload = carregarDados;
+window.onclick = function(event) {
+    if (event.target === document.getElementById('modal-selecao')) fecharModal();
+}
+</script>
+</body>
+</html>
