@@ -200,17 +200,49 @@ let dados = [];
 let carrinho = [];
 let produtoSelecionadoAtual = "";
 
+
+// LISTA DE FOTOS ATUALIZADA COM LINKS REAIS (Conceito Wellness)
 const fotosVitrine = [
-    {n: 'Conjunto Basic(Top alcina e Bermuda)', f: ['foto5.jpeg', 'foto5_v2.jpeg']}, 
-    {n: 'Conjunto Bolso(Top alcina e Bermuda c/bolso)', f: ['foto2.jpeg']},
-    {n: 'Macacão Bicolor Poliamida', f: ['foto6.jpeg', 'foto11.jpeg', 'foto4.jpeg']}, 
-    {n: 'Macacao Basic Poliamida', f: ['foto7.jpeg']},
-    {n: 'Conjunto Basic Calça(Top alcina e Calça)', f: ['foto9.jpeg']}, 
-    {n: 'Conjunto Bicolor Poliamida', f: ['foto15.jpeg']}, 
-    {n: 'Conjunto Basic(Top nadador e Bermuda)', f: ['foto16.jpeg']}, 
-    {n: 'Conjunto Bolso(Top nadador e Bermuda com bolso)', f: ['foto20.jpeg']},
-    {n: 'Conjunto Short Poliamida Importado', f: ['foto21.jpeg']},
-    {n: 'Camiseta dry fit', f: ['foto3.png']}
+    {
+        n: 'Conjunto Basic(Top alcina e Bermuda)', 
+        f: ['https://images.unsplash.com/photo-1518310383802-640c2de311b2?q=80&w=800']
+    }, 
+    {
+        n: 'Conjunto Bolso(Top alcina e Bermuda c/bolso)', 
+        f: ['https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800']
+    },
+    {
+        n: 'Macacão Bicolor Poliamida', 
+        f: ['https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800']
+    }, 
+    {
+        n: 'Macacao Basic Poliamida', 
+        f: ['https://images.unsplash.com/photo-1599447421416-3414500d18a5?q=80&w=800']
+    },
+    {
+        n: 'Conjunto Basic Calça(Top alcina e Calça)', 
+        f: ['https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=800']
+    }, 
+    {
+        n: 'Conjunto Bicolor Poliamida', 
+        f: ['https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=800']
+    }, 
+    {
+        n: 'Conjunto Basic(Top nadador e Bermuda)', 
+        f: ['https://images.unsplash.com/photo-1434682881908-b43d0467b798?q=80&w=800']
+    }, 
+    {
+        n: 'Conjunto Bolso(Top nadador e Bermuda com bolso)', 
+        f: ['https://images.unsplash.com/photo-1552196564-972b2046ca9a?q=80&w=800']
+    },
+    {
+        n: 'Conjunto Short Poliamida Importado', 
+        f: ['https://images.unsplash.com/photo-1593164842264-854604db2260?q=80&w=800']
+    },
+    {
+        n: 'Camiseta dry fit', 
+        f: ['https://images.unsplash.com/photo-1594381898411-846e7d193883?q=80&w=800']
+    }
 ];
 
 async function carregarDados() {
