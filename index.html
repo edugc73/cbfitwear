@@ -175,37 +175,29 @@ let carrinho = [];
 let categoriaAtual = 'tudo';
 let produtoSelecionadoAtual = "";
 
-//const fotosVitrine = [
-  //  {n: 'Conjunto Basic(Top alcina e Bermuda)', f: ['foto5.jpeg', 'foto5_v2.jpeg'], cat: 'conjunto'}, 
-  //  {n: 'Conjunto Bolso(Top alcina e Bermuda c/bolso)', f: ['foto2.jpeg'], cat: 'conjunto'},
-  //  {n: 'Macacão Bicolor Poliamida', f: ['foto6.jpeg', 'foto11.jpeg', 'foto4.jpeg'], cat: 'macacao'}, 
-  //  {n: 'Macacao Basic Poliamida', f: ['foto7.jpeg'], cat: 'macacao'},
-//    {n: 'Conjunto Basic Calça(Top alcina e Calça)', f: ['foto10.png', 'foto14.png', 'foto9.jpeg'], cat: 'conjunto'}, 
-//    {n: 'Conjunto Bicolor Poliamida', f: ['foto15.jpeg'], cat: 'conjunto'}, 
-//    {n: 'Conjunto Basic(Top nadador e Bermuda)', f: ['foto15.png', 'foto11.png', 'foto16.jpeg'], cat: 'conjunto'}, 
-//    {n: 'Conjunto Bolso(Top nadador e Bermuda com bolso)', f: ['foto20.png', 'foto20.jpeg'], cat: 'conjunto'},
-//    {n: 'Conjunto Short Poliamida Importado', f: ['foto21.jpeg'], cat: 'conjunto'},
-//    {n: 'Camiseta dry fit', f: ['foto19.png', 'foto18.png', 'foto3.png'], cat: 'camiseta'}
-//];
-
+// 1. CARREGAR DADOS DA PLANILHA
 async function carregarDados() {
-    const r = await fetch(URL);
-    const t = await r.text();
-    const j = JSON.parse(t.substr(47).slice(0, -2));
-    
-    // Mapeando a nova coluna de fotos (row.c[5])
-    dados = j.table.rows.map(row => ({ 
-        p: row.c[0]?.v, // Produto
-        t: row.c[1]?.v, // Tamanho
-        c: row.c[2]?.v, // Cor
-        v: row.c[3]?.v, // Valor
-        e: row.c[4]?.v, // Estoque
-        f: row.c[5]?.v  // FOTOS (Links separados por vírgula)
-    }));
-    
-    renderVitrine();
+    try {
+        const r = await fetch(URL);
+        const t = await r.text();
+        const j = JSON.parse(t.substr(47).slice(0, -2));
+        
+        dados = j.table.rows.map(row => ({ 
+            p: row.c[0]?.v || "", // Produto
+            t: row.c[1]?.v || "", // Tamanho
+            c: row.c[2]?.v || "", // Cor
+            v: row.c[3]?.v || 0,  // Valor
+            e: row.c[4]?.v || 0,  // Estoque
+            f: row.c[5]?.v || ""  // FOTOS (Links na coluna F)
+        }));
+        
+        renderVitrine();
+    } catch (err) {
+        console.error("Erro ao carregar planilha:", err);
+    }
 }
-    
+
+// 2. FILTRAR CATEGORIAS
 function filtrarCategoria(cat, btn) {
     categoriaAtual = cat;
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -213,22 +205,16 @@ function filtrarCategoria(cat, btn) {
     renderVitrine();
 }
 
+// 3. RENDERIZAR VITRINE DINÂMICA
 function renderVitrine() {
     const v = document.getElementById('vitrine');
-    
-    // Cria uma lista de produtos únicos baseada no nome (p)
     const produtosUnicos = [...new Set(dados.map(d => d.p))];
     
-    // Filtra e prepara os itens para a vitrine
     const itensVitrine = produtosUnicos.map(nomeProd => {
         const variacoes = dados.filter(d => d.p === nomeProd);
-        const primeiraVariacao = variacoes[0];
+        const itemPrincipal = variacoes[0];
+        const fotosArray = itemPrincipal.f ? itemPrincipal.f.split(',').map(s => s.trim()) : ['placeholder.jpg'];
         
-        // Converte a string de fotos da planilha em um array
-        const fotosArray = primeiraVariacao.f ? primeiraVariacao.f.split(',').map(s => s.trim()) : ['placeholder.jpg'];
-        
-        // Define a categoria (você pode adicionar uma coluna de categoria na planilha também!)
-        // Por enquanto, vamos inferir pelo nome ou manter fixo
         return {
             n: nomeProd,
             f: fotosArray,
@@ -236,7 +222,11 @@ function renderVitrine() {
         };
     });
 
-    const itensFiltrados = categoriaAtual === 'tudo' ? itensVitrine : itensVitrine.filter(i => i.n.toLowerCase().includes(categoriaAtual));
+    // Filtro inteligente (remove acentos e espaços para comparar)
+    const itensFiltrados = categoriaAtual === 'tudo' ? itensVitrine : itensVitrine.filter(i => {
+        const nomeNorm = i.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return nomeNorm.includes(categoriaAtual);
+    });
 
     v.innerHTML = itensFiltrados.map(i => {
         const estaDisponivel = i.estoqueTotal > 0;
@@ -257,11 +247,16 @@ function renderVitrine() {
     }).join('');
 }
 
+// 4. ABRIR MODAL (CORRIGIDO: Busca fotos dos dados dinâmicos)
 function abrirModal(nome) {
     produtoSelecionadoAtual = nome;
-    const info = fotosVitrine.find(f => f.n === nome);
+    
+    // Busca o produto nos dados que vieram da planilha
+    const itemDados = dados.find(d => d.p === nome);
+    const fotosArray = itemDados && itemDados.f ? itemDados.f.split(',').map(s => s.trim()) : ['placeholder.jpg'];
+
     const imagensDiv = document.getElementById('modal-imagens');
-    imagensDiv.innerHTML = info.f.map(img => `<img src="${img}">`).join('');
+    imagensDiv.innerHTML = fotosArray.map(img => `<img src="${img}">`).join('');
     
     document.getElementById('modal-titulo').innerText = nome;
     const tamSelect = document.getElementById('modal-tam');
@@ -272,6 +267,9 @@ function abrirModal(nome) {
     document.getElementById('modal-selecao').style.display = 'flex';
 }
 
+// --- MANTENHA AS OUTRAS FUNÇÕES (atualizarCores, fecharModal, etc.) IGUAIS ---
+// (certifique-se de que verificarEscassezVariacao e copiarPix estão logo abaixo)
+
 function atualizarCores() {
     const nome = produtoSelecionadoAtual;
     const tam = document.getElementById('modal-tam').value;
@@ -279,12 +277,10 @@ function atualizarCores() {
     const variacoes = dados.filter(d => d.p === nome && d.t === tam);
     
     corSelect.innerHTML = variacoes.map(v => `<option value="${v.c}">${v.c} (${v.e} un)</option>`).join('');
-    document.getElementById('modal-preco').innerText = `R$ ${variacoes[0].v.toFixed(2).replace('.',',')}`;
-    
-    // Define o comportamento quando o usuário muda a cor no select
+    if(variacoes[0]) {
+        document.getElementById('modal-preco').innerText = `R$ ${variacoes[0].v.toFixed(2).replace('.',',')}`;
+    }
     corSelect.onchange = verificarEscassezVariacao;
-    
-    // Executa a verificação inicial para a primeira cor da lista
     verificarEscassezVariacao();
 }
 
@@ -293,14 +289,11 @@ function verificarEscassezVariacao() {
     const tam = document.getElementById('modal-tam').value;
     const cor = document.getElementById('modal-cor').value;
     const alerta = document.getElementById('modal-alerta-estoque');
-    
-    // Encontra o item específico na base de dados
     const item = dados.find(d => d.p === nome && d.t === tam && d.c === cor);
-    
     if (item && item.e > 0 && item.e <= 2) {
         alerta.innerText = `🔥 Garanta a sua! Restam apenas ${item.e} unidades.`;
     } else {
-        alerta.innerText = ""; // Limpa o alerta se houver estoque suficiente
+        alerta.innerText = "";
     }
 }
 
@@ -311,9 +304,11 @@ function confirmarAdicao() {
     const tam = document.getElementById('modal-tam').value;
     const cor = document.getElementById('modal-cor').value;
     const item = dados.find(d => d.p === nome && d.t === tam && d.c === cor);
-    carrinho.push({ ...item, id: Date.now() });
-    atualizarCarrinho();
-    fecharModal();
+    if(item) {
+        carrinho.push({ ...item, id: Date.now() });
+        atualizarCarrinho();
+        fecharModal();
+    }
 }
 
 function atualizarCarrinho() {
@@ -327,27 +322,18 @@ function copiarPix() {
     const chave = document.getElementById('chave-pix').innerText;
     navigator.clipboard.writeText(chave).then(() => {
         const btn = document.querySelector('.btn-copy');
-        const textoOriginal = btn.innerHTML;
-        
+        const original = btn.innerHTML;
         btn.innerHTML = "✅ COPIADO!";
-        btn.style.background = "var(--success)";
-        
-        setTimeout(() => {
-            btn.innerHTML = textoOriginal;
-            btn.style.background = "#009ee3";
-        }, 2000);
+        setTimeout(() => btn.innerHTML = original, 2000);
     });
 }
-    
+
 function enviarPedido() {
     const nome = document.getElementById('nome_cliente').value;
     if(!nome || carrinho.length === 0) return alert("Preencha seu nome e adicione itens!");
-    
     const total = document.getElementById('total-carrinho').innerText;
     const itens = carrinho.map(i => `- ${i.p} (${i.t}/${i.c})`).join('%0A');
-    
-    const msg = `Olá! Meu nome é ${nome}. Gostaria de confirmar o seguinte pedido:%0A%0A${itens}%0A%0A*Total: ${total}*%0A%0AEstou enviando o comprovante do PIX em anexo.`;
-    
+    const msg = `Olá! Meu nome é ${nome}. Pedido:%0A%0A${itens}%0A%0A*Total: ${total}*`;
     window.open(`https://wa.me/5513996526566?text=${msg}`, '_blank');
 }
 
