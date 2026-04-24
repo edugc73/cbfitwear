@@ -46,24 +46,9 @@
         .modal-content { background: var(--brand-main); color: white; padding: 30px; border-radius: 20px; width: 95%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; }
         .close-modal { position: absolute; right: 20px; top: 15px; font-size: 25px; cursor: pointer; color: var(--brand-accent); }
 
-   .modal-gallery { 
-    display: block !important; /* Mudamos de flex para block para evitar que a imagem estique o contentor */
-    width: 100%;
-    max-height: 280px !important; /* Altura máxima rigorosa */
-    overflow: hidden; /* Corta qualquer coisa que tente sair do limite */
-    margin-bottom: 20px;
-    border-radius: 12px;
-    background: #f0f0f0; /* Um fundo cinza leve para ver o limite da foto */
-}
+        .modal-gallery { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 20px; scroll-snap-type: x mandatory; }
+        .modal-gallery img { width: 100%; max-height: 400px; object-fit: contain; background: rgba(255,255,255,0.05); border-radius: 12px; scroll-snap-align: center; flex-shrink: 0; }
 
-.modal-gallery img { 
-    display: block;
-    width: 100% !important;
-    height: 280px !important; /* Forçamos a altura a ser exatamente esta */
-    object-fit: contain !important; /* O "contain" garante que a camiseta apareça inteira sem cortes */
-    background: transparent;
-}
-        
         .input-group { margin-bottom: 1.2rem; }
         label { display: block; font-size: 0.75rem; color: #cbd5e1; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; }
         select, input { width: 100%; padding: 12px; background: #26394e; border: 1px solid #3e5671; border-radius: 8px; color: white; }
