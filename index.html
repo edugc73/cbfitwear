@@ -76,6 +76,45 @@
         .btn-action { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 10px; }
         .btn-finalize { background: var(--success); color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 20px; }
 
+/* Estilos para a área de Pagamento */
+.payment-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed var(--brand-accent);
+    padding: 15px;
+    border-radius: 12px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.pix-key {
+    display: block;
+    font-family: monospace;
+    background: #1e293b;
+    padding: 10px;
+    border-radius: 6px;
+    margin: 10px 0;
+    color: var(--brand-accent);
+    font-size: 0.9rem;
+    word-break: break-all;
+}
+
+.btn-copy {
+    background: #009ee3; /* Azul Mercado Pago */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-copy:active { transform: scale(0.95); }
+
+        
         .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 1000; }
 
         @media (max-width: 600px) { .gallery { grid-template-columns: 1fr 1fr; gap: 10px; } .product-card img { height: 220px; } }
@@ -95,13 +134,21 @@
     </div>
     <div class="gallery" id="vitrine"></div>
 
-    <div class="cart-section">
-        <h3>Seu Carrinho</h3>
-        <div id="lista-carrinho"></div>
-        <div style="text-align: right; margin: 20px 0;">Total: <span id="total-carrinho" style="color: var(--brand-accent);">R$ 0,00</span></div>
-        <input type="text" id="nome_cliente" placeholder="Seu Nome">
-        <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR COMPRA</button>
+   <div class="cart-section">
+    <h3>Seu Carrinho</h3>
+    <div id="lista-carrinho"></div>
+    <div style="text-align: right; margin: 20px 0;">Total: <span id="total-carrinho" style="color: var(--brand-accent);">R$ 0,00</span></div>
+    
+    <div class="payment-box">
+        <label style="color: white; margin-bottom: 5px;">Pague via PIX (Mercado Pago)</label>
+        <span class="pix-key" id="chave-pix">suachavepixaqui@email.com</span>
+        <button class="btn-copy" onclick="copiarPix()">
+            <span>📋</span> COPIAR CHAVE PIX
+        </button>
     </div>
+
+    <input type="text" id="nome_cliente" placeholder="Seu Nome Completo">
+    <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR E ENVIAR COMPROVANTE</button>
 </div>
 
 <div id="modal-selecao" class="modal">
@@ -256,10 +303,31 @@ function atualizarCarrinho() {
     document.getElementById('total-carrinho').innerText = `R$ ${total.toFixed(2).replace('.',',')}`;
 }
 
+function copiarPix() {
+    const chave = document.getElementById('chave-pix').innerText;
+    navigator.clipboard.writeText(chave).then(() => {
+        const btn = document.querySelector('.btn-copy');
+        const textoOriginal = btn.innerHTML;
+        
+        btn.innerHTML = "✅ COPIADO!";
+        btn.style.background = "var(--success)";
+        
+        setTimeout(() => {
+            btn.innerHTML = textoOriginal;
+            btn.style.background = "#009ee3";
+        }, 2000);
+    });
+}
+    
 function enviarPedido() {
     const nome = document.getElementById('nome_cliente').value;
-    if(!nome || carrinho.length === 0) return alert("Preencha o nome e adicione itens!");
-    const msg = `Pedido de ${nome}:%0A` + carrinho.map(i => `- ${i.p} (${i.t}/${i.c})`).join('%0A');
+    if(!nome || carrinho.length === 0) return alert("Preencha seu nome e adicione itens!");
+    
+    const total = document.getElementById('total-carrinho').innerText;
+    const itens = carrinho.map(i => `- ${i.p} (${i.t}/${i.c})`).join('%0A');
+    
+    const msg = `Olá! Meu nome é ${nome}. Gostaria de confirmar o seguinte pedido:%0A%0A${itens}%0A%0A*Total: ${total}*%0A%0AEstou enviando o comprovante do PIX em anexo.`;
+    
     window.open(`https://wa.me/5513996526566?text=${msg}`, '_blank');
 }
 
