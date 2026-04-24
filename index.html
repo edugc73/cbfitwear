@@ -112,6 +112,9 @@
         <div class="input-group"><label>Tamanho</label><select id="modal-tam" onchange="atualizarCores()"></select></div>
         <div class="input-group"><label>Cor</label><select id="modal-cor"></select></div>
         <p id="modal-preco" style="text-align: right; font-weight: 700; font-size: 1.2rem;"></p>
+        
+        <p id="modal-alerta-estoque" style="color: var(--brand-accent); font-weight: 700; text-align: center; margin-top: 10px; font-size: 0.85rem; height: 1.2rem;"></p>
+        
         <button class="btn-action" onclick="confirmarAdicao()">ADICIONAR AO CARRINHO</button>
     </div>
 </div>
@@ -207,8 +210,31 @@ function atualizarCores() {
     const tam = document.getElementById('modal-tam').value;
     const corSelect = document.getElementById('modal-cor');
     const variacoes = dados.filter(d => d.p === nome && d.t === tam);
+    
     corSelect.innerHTML = variacoes.map(v => `<option value="${v.c}">${v.c} (${v.e} un)</option>`).join('');
     document.getElementById('modal-preco').innerText = `R$ ${variacoes[0].v.toFixed(2).replace('.',',')}`;
+    
+    // Define o comportamento quando o usuário muda a cor no select
+    corSelect.onchange = verificarEscassezVariacao;
+    
+    // Executa a verificação inicial para a primeira cor da lista
+    verificarEscassezVariacao();
+}
+
+function verificarEscassezVariacao() {
+    const nome = produtoSelecionadoAtual;
+    const tam = document.getElementById('modal-tam').value;
+    const cor = document.getElementById('modal-cor').value;
+    const alerta = document.getElementById('modal-alerta-estoque');
+    
+    // Encontra o item específico na base de dados
+    const item = dados.find(d => d.p === nome && d.t === tam && d.c === cor);
+    
+    if (item && item.e > 0 && item.e <= 2) {
+        alerta.innerText = `🔥 Garanta a sua! Restam apenas ${item.e} unidades.`;
+    } else {
+        alerta.innerText = ""; // Limpa o alerta se houver estoque suficiente
+    }
 }
 
 function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
