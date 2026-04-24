@@ -137,12 +137,32 @@ function filtrarCategoria(cat, btn) {
 function renderVitrine() {
     const v = document.getElementById('vitrine');
     const itens = categoriaAtual === 'tudo' ? fotosVitrine : fotosVitrine.filter(i => i.cat === categoriaAtual);
-    v.innerHTML = itens.map(i => `
-        <div class="product-card" onclick="abrirModal('${i.n}')">
-            <img src="${i.f[0]}">
-            <div class="product-info">${i.n}</div>
-        </div>
-    `).join('');
+    
+    v.innerHTML = itens.map(i => {
+        // BUSCA O ESTOQUE TOTAL DO PRODUTO (Soma de todos os tamanhos e cores)
+        const estoqueTotal = dados
+            .filter(d => d.p === i.n)
+            .reduce((acc, curr) => acc + (Number(curr.e) || 0), 0);
+
+        const estaDisponivel = estoqueTotal > 0;
+
+        return `
+            <div class="product-card" 
+                 onclick="${estaDisponivel ? `abrirModal('${i.n}')` : ''}" 
+                 style="cursor: ${estaDisponivel ? 'pointer' : 'default'};">
+                
+                <img src="${i.f[0]}" 
+                     style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
+                
+                <div class="product-info">
+                    ${i.n}<br>
+                    <small style="color: ${estaDisponivel ? 'var(--success)' : 'var(--danger)'}; font-size: 0.7rem;">
+                        ${estaDisponivel ? 'DISPONÍVEL' : 'PRODUTO INDISPONÍVEL'}
+                    </small>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 function abrirModal(nome) {
