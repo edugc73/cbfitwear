@@ -192,10 +192,20 @@ async function carregarDados() {
     const r = await fetch(URL);
     const t = await r.text();
     const j = JSON.parse(t.substr(47).slice(0, -2));
-    dados = j.table.rows.map(row => ({ p: row.c[0]?.v, t: row.c[1]?.v, c: row.c[2]?.v, v: row.c[3]?.v, e: row.c[4]?.v }));
+    
+    // Mapeando a nova coluna de fotos (row.c[5])
+    dados = j.table.rows.map(row => ({ 
+        p: row.c[0]?.v, // Produto
+        t: row.c[1]?.v, // Tamanho
+        c: row.c[2]?.v, // Cor
+        v: row.c[3]?.v, // Valor
+        e: row.c[4]?.v, // Estoque
+        f: row.c[5]?.v  // FOTOS (Links separados por vírgula)
+    }));
+    
     renderVitrine();
 }
-
+    
 function filtrarCategoria(cat, btn) {
     categoriaAtual = cat;
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -205,31 +215,41 @@ function filtrarCategoria(cat, btn) {
 
 function renderVitrine() {
     const v = document.getElementById('vitrine');
-    const itens = categoriaAtual === 'tudo' ? fotosVitrine : fotosVitrine.filter(i => i.cat === categoriaAtual);
     
-    v.innerHTML = itens.map(i => {
-        // BUSCA O ESTOQUE TOTAL DO PRODUTO
-        const estoqueTotal = dados
-            .filter(d => d.p === i.n)
-            .reduce((acc, curr) => acc + (Number(curr.e) || 0), 0);
+    // Cria uma lista de produtos únicos baseada no nome (p)
+    const produtosUnicos = [...new Set(dados.map(d => d.p))];
+    
+    // Filtra e prepara os itens para a vitrine
+    const itensVitrine = produtosUnicos.map(nomeProd => {
+        const variacoes = dados.filter(d => d.p === nomeProd);
+        const primeiraVariacao = variacoes[0];
+        
+        // Converte a string de fotos da planilha em um array
+        const fotosArray = primeiraVariacao.f ? primeiraVariacao.f.split(',').map(s => s.trim()) : ['placeholder.jpg'];
+        
+        // Define a categoria (você pode adicionar uma coluna de categoria na planilha também!)
+        // Por enquanto, vamos inferir pelo nome ou manter fixo
+        return {
+            n: nomeProd,
+            f: fotosArray,
+            estoqueTotal: variacoes.reduce((acc, curr) => acc + (Number(curr.e) || 0), 0)
+        };
+    });
 
-        const estaDisponivel = estoqueTotal > 0;
-        const poucasUnidades = estoqueTotal > 0 && estoqueTotal <= 2; // Gatilho de escassez
+    const itensFiltrados = categoriaAtual === 'tudo' ? itensVitrine : itensVitrine.filter(i => i.n.toLowerCase().includes(categoriaAtual));
+
+    v.innerHTML = itensFiltrados.map(i => {
+        const estaDisponivel = i.estoqueTotal > 0;
+        const poucasUnidades = i.estoqueTotal > 0 && i.estoqueTotal <= 2;
 
         return `
-            <div class="product-card" 
-                 onclick="${estaDisponivel ? `abrirModal('${i.n}')` : ''}" 
-                 style="cursor: ${estaDisponivel ? 'pointer' : 'default'};">
-                
+            <div class="product-card" onclick="${estaDisponivel ? `abrirModal('${i.n}')` : ''}">
                 ${poucasUnidades ? '<div class="badge-escassez">Últimas Unidades!</div>' : ''}
-                
-                <img src="${i.f[0]}" 
-                     style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
-                
+                <img src="${i.f[0]}" style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
                 <div class="product-info">
                     ${i.n}<br>
-                    <small style="color: ${estaDisponivel ? (poucasUnidades ? 'var(--warning)' : 'var(--success)') : 'var(--danger)'}; font-size: 0.7rem;">
-                        ${estaDisponivel ? (poucasUnidades ? 'CORRA! RESTAM POUCAS' : 'DISPONÍVEL') : 'PRODUTO INDISPONÍVEL'}
+                    <small style="color: ${estaDisponivel ? (poucasUnidades ? 'var(--warning)' : 'var(--success)') : 'var(--danger)'};">
+                        ${estaDisponivel ? (poucasUnidades ? 'CORRA! RESTAM POUCAS' : 'DISPONÍVEL') : 'INDISPONÍVEL'}
                     </small>
                 </div>
             </div>
