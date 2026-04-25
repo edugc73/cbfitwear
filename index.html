@@ -10,7 +10,7 @@
             --brand-main: #5c131a;       /* Vinho Profundo */
             --brand-accent: #c5a059;     /* Dourado */
             --brand-light: #fdfaf9;      
-            --header-bg: #5c131a;        
+            --header-bg: #ffffff;        /* Fundo do cabeçalho claro para destacar o logo PNG */
             --white: #ffffff;
             --success: #10b981;
             --danger: #ef4444;
@@ -28,22 +28,22 @@
             opacity: 0.04; z-index: -1; pointer-events: none;
         }
 
-        /* Cabeçalho e Ajuste do Logo */
+        /* Cabeçalho Ajustado para Logo PNG */
         header { 
             background-color: var(--header-bg); 
-            padding: 12px; 
+            padding: 15px; 
             text-align: center; 
             position: sticky; 
             top: 0; 
             z-index: 1000; 
-            border-bottom: 2px solid var(--brand-accent);
+            border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         .logo { 
-            max-width: 120px; 
-            /* O filtro abaixo ajuda a integrar logos de fundo branco no fundo vinho */
-            mix-blend-mode: multiply; 
-            filter: contrast(1.1);
-            border-radius: 8px;
+            max-width: 140px; 
+            /* Removido o mix-blend-mode para não escurecer o PNG */
+            display: inline-block;
+            vertical-align: middle;
         }
 
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
@@ -61,25 +61,17 @@
         .product-info { padding: 15px; text-align: center; }
         
         .preco-venda { font-weight: 700; font-size: 1.1rem; color: var(--brand-main); }
-        .em-promo { color: #d32f2f; } /* Vermelho para destaque no preço novo */
+        .em-promo { color: #d32f2f; }
         
-        /* CORREÇÃO DO PREÇO RISCADO */
         .preco-original { 
             text-decoration: line-through; 
-            color: #888; /* Cinza para ser visível no fundo branco da vitrine */
+            color: #888; 
             font-size: 0.85rem; 
             margin-right: 8px; 
             display: inline-block;
         }
 
-        /* Modal: Preço riscado precisa ser claro aqui */
-        .modal-content .preco-original { color: rgba(255,255,255,0.6); }
-
-        /* Badges */
-        .badge-tag { position: absolute; top: 15px; left: 15px; background: var(--brand-main); color: var(--brand-accent); padding: 5px 12px; font-size: 0.7rem; font-weight: 700; border: 1px solid var(--brand-accent); z-index: 10; }
-        .badge-escassez { position: absolute; top: 15px; right: 15px; background: white; color: var(--danger); padding: 5px 8px; font-size: 0.65rem; font-weight: 800; border-radius: 2px; z-index: 10; }
-
-        /* Modal e Selects (Corrigido para aparecer sem hover) */
+        /* Modal e Selects (Corrigidos) */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: var(--overlay); align-items: center; justify-content: center; backdrop-filter: blur(6px); padding: 20px; }
         .modal-content { background: var(--brand-main); color: white; padding: 30px; width: 100%; max-width: 500px; position: relative; border-radius: 20px; border: 1px solid var(--brand-accent); }
         .close-modal { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: var(--brand-accent); }
@@ -96,11 +88,9 @@
             border-radius: 8px;
             font-size: 1rem;
             display: block;
-            opacity: 1 !important;
-            visibility: visible !important;
         }
 
-        /* Carrinho e PIX */
+        /* Carrinho e PIX Suave */
         .cart-section { 
             background: var(--brand-main); 
             color: white; 
@@ -177,7 +167,7 @@
             <select id="modal-cor" onchange="verificarEscassezVariacao()"></select>
         </div>
         
-        <p id="modal-preco" style="text-align: right; font-weight: 700; font-size: 1.4rem; margin-bottom: 15px;"></p>
+        <p id="modal-preco" style="text-align: right; font-weight: 700; font-size: 1.4rem; margin-bottom: 15px; color: white;"></p>
         <p id="modal-alerta-estoque" style="color: var(--brand-accent); font-weight: 700; text-align: center; font-size: 0.85rem; min-height: 1.2rem;"></p>
         <button class="btn-action" onclick="confirmarAdicao()">ADICIONAR AO CARRINHO</button>
     </div>
@@ -229,8 +219,6 @@ function renderVitrine() {
     v.innerHTML = itensFiltrados.map(i => {
         const estaDisponivel = i.estoqueTotal > 0;
         const temPromo = i.vPromo !== null && i.vPromo > 0;
-        
-        // Lógica do preço com condicional para o riscado
         const precoHTML = temPromo 
             ? `<span class="preco-original">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span><span class="preco-venda em-promo">R$ ${i.vPromo.toFixed(2).replace('.',',')}</span>` 
             : `<span class="preco-venda">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span>`;
