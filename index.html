@@ -7,172 +7,73 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-    /* Paleta Profunda e Metálica */
-    --brand-main: #0f172a;       /* Azul Marinho Profundo */
-    --brand-accent: #c5a059;     /* Dourado Metálico / Champanhe */
-    --brand-light: #f8fafc;      /* Gelo Moderno */
-    --header-bg: rgba(15, 23, 42, 0.85); /* Navy com transparência */
-    --white: #ffffff;
-    --success: #10b981;
-    --danger: #ef4444;
-    --warning: #fbbf24;
-    --overlay: rgba(15, 23, 42, 0.9);
-}
+            /* Paleta Vinho Premium & Gold */
+            --brand-main: #5c131a;       /* Vinho Profundo (Bordeaux) */
+            --brand-accent: #c5a059;     /* Dourado Champanhe */
+            --brand-light: #fdfaf9;      /* Gelo Suave */
+            --header-bg: rgba(92, 19, 26, 0.9); /* Vinho com transparência */
+            --white: #ffffff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #fbbf24;
+            --overlay: rgba(45, 8, 12, 0.95); /* Overlay Vinho Escuro */
+        }
 
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
-    font-family: 'Inter', sans-serif; 
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: all 0.2s ease; }
+        
+        body { background-color: var(--brand-light); color: var(--brand-main); line-height: 1.6; position: relative; }
 
-body { 
-    background-color: var(--brand-light); 
-    color: var(--brand-main); 
-    line-height: 1.6; 
-}
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('logo3.png'); background-size: 30%; background-position: center; 
+            opacity: 0.04; z-index: -1; pointer-events: none;
+        }
 
-/* Background suave com logo */
-body::before {
-    content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background-image: url('logo3.png'); background-size: 30%; background-position: center; 
-    opacity: 0.03; z-index: -1; pointer-events: none;
-}
+        header { background-color: var(--header-bg); padding: 15px; text-align: center; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(8px); border-bottom: 2px solid var(--brand-accent); }
+        .logo { max-width: 130px; filter: brightness(1.1); }
 
-header { 
-    background-color: var(--header-bg); 
-    padding: 15px; 
-    text-align: center; 
-    position: sticky; 
-    top: 0; 
-    z-index: 1000; 
-    backdrop-filter: blur(12px); 
-    border-bottom: 1px solid rgba(197, 160, 89, 0.2); 
-}
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        h2 { text-align: center; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 3px; font-weight: 300; font-family: 'Montserrat'; }
 
-.logo { 
-    max-width: 130px; 
-    filter: brightness(1.1);
-    padding: 5px;
-}
+        .category-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+        .filter-btn { background: white; border: 1px solid #ddd; color: #666; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .filter-btn.active { background: var(--brand-main); color: var(--brand-accent); border-color: var(--brand-main); }
 
-.container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        /* Vitrine */
+        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .product-card { background: white; border-radius: 0; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; position: relative; border: 1px solid #eee; }
+        .product-card img { width: 100%; height: 420px; object-fit: cover; }
+        .product-info { padding: 15px; text-align: center; }
+        
+        .badge-tag { position: absolute; top: 15px; left: 15px; background: var(--brand-main); color: var(--brand-accent); padding: 5px 12px; font-size: 0.7rem; font-weight: 700; border: 1px solid var(--brand-accent); z-index: 10; }
+        .badge-escassez { position: absolute; top: 15px; right: 15px; background: white; color: var(--danger); padding: 5px 8px; font-size: 0.65rem; font-weight: 800; border-radius: 2px; z-index: 10; }
 
-h2 { 
-    text-align: center; 
-    margin-bottom: 35px; 
-    text-transform: uppercase; 
-    letter-spacing: 4px; 
-    font-weight: 300; 
-    font-family: 'Montserrat', sans-serif;
-    color: var(--brand-main);
-}
+        /* MODAL FIX (O que estava faltando) */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: var(--overlay); align-items: center; justify-content: center; backdrop-filter: blur(6px); padding: 20px; }
+        .modal-content { background: var(--brand-main); color: white; padding: 30px; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid var(--brand-accent); }
+        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: var(--brand-accent); }
+        
+        .modal-gallery { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 20px; scroll-snap-type: x mandatory; }
+        .modal-gallery img { width: 100%; max-height: 350px; object-fit: contain; flex-shrink: 0; }
 
-/* Filtros Minimalistas */
-.category-filters { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap; }
-.filter-btn { 
-    background: transparent; 
-    border: 1px solid #e2e8f0; 
-    color: #64748b; 
-    padding: 8px 25px; 
-    border-radius: 4px; 
-    cursor: pointer; 
-    font-size: 0.75rem; 
-    font-weight: 600; 
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-.filter-btn.active { 
-    background: var(--brand-main); 
-    color: var(--brand-accent); 
-    border-color: var(--brand-main);
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
-}
+        .input-group { margin-bottom: 1.2rem; }
+        label { display: block; font-size: 0.7rem; color: var(--brand-accent); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
+        select, input { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(197,160,89,0.3); color: white; border-radius: 0; }
 
-/* Badges e Selos */
-.badge-tag {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: var(--brand-main);
-    color: var(--brand-accent);
-    padding: 4px 12px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    z-index: 15;
-    border: 1px solid var(--brand-accent);
-}
+        /* Checkout e Carrinho */
+        .cart-section { background: var(--brand-main); color: white; padding: 30px; margin-top: 50px; border-top: 4px solid var(--brand-accent); }
+        .btn-action { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-finalize { background: transparent; border: 1px solid var(--success); color: var(--success); padding: 15px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 15px; }
+        .btn-finalize:hover { background: var(--success); color: white; }
 
-.badge-escassez {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: #fff;
-    color: var(--danger);
-    padding: 4px 8px;
-    font-size: 0.6rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    border-radius: 2px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+        .payment-box { background: rgba(0,0,0,0.2); border: 1px dashed var(--brand-accent); padding: 15px; margin: 20px auto; text-align: center; max-width: 400px; } /* Proporção do PIX ajustada */
+        .pix-key { display: block; font-family: monospace; background: #000; padding: 10px; margin: 10px 0; color: var(--brand-accent); font-size: 0.85rem; word-break: break-all; }
+        .btn-copy { background: #009ee3; color: white; border: none; padding: 8px 15px; cursor: pointer; font-size: 0.75rem; font-weight: 700; }
 
-/* Cards de Produto */
-.gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-.product-card { 
-    background: white; 
-    border-radius: 0px; /* Estética mais editorial/seca */
-    overflow: hidden; 
-    box-shadow: 0 10px 25px -10px rgba(0,0,0,0.05); 
-    border: 1px solid #f1f5f9;
-}
-.product-card:hover { transform: translateY(-5px); box-shadow: 0 20px 30px -10px rgba(0,0,0,0.1); }
-.product-card img { width: 100%; height: 420px; object-fit: cover; }
+        .preco-original { text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px; }
+        .em-promo { color: var(--brand-accent); }
 
-.product-info { padding: 20px; text-align: center; }
-.preco-venda { color: var(--brand-main); font-size: 1.1rem; font-weight: 700; }
-.em-promo { color: var(--brand-accent); }
-
-/* Modal Premium */
-.modal-content { 
-    background: var(--brand-main); 
-    border: 1px solid var(--brand-accent);
-    padding: 40px; 
-    border-radius: 0; 
-}
-.close-modal { color: var(--brand-accent); }
-
-.input-group label { color: var(--brand-accent); letter-spacing: 1px; }
-select, input { 
-    background: rgba(255,255,255,0.05); 
-    border: 1px solid rgba(197, 160, 89, 0.3); 
-    border-radius: 0;
-}
-
-/* Carrinho e Checkout */
-.cart-section { 
-    background: var(--brand-main); 
-    border-top: 4px solid var(--brand-accent);
-    border-radius: 0;
-}
-.btn-action { 
-    background: var(--brand-accent); 
-    color: var(--brand-main); 
-    border-radius: 0; 
-    text-transform: uppercase; 
-    letter-spacing: 2px;
-}
-.btn-finalize { 
-    background: transparent; 
-    border: 1px solid var(--success); 
-    color: var(--success); 
-    border-radius: 0;
-}
-.btn-finalize:hover { background: var(--success); color: white; }
-
-.payment-box { border: 1px solid rgba(197, 160, 89, 0.4); border-radius: 0; }
+        @media (max-width: 600px) { .gallery { grid-template-columns: 1fr 1fr; gap: 10px; } .product-card img { height: 250px; } }
     </style>
 </head>
 <body>
@@ -188,42 +89,48 @@ select, input {
         <button class="filter-btn" onclick="filtrarCategoria('camiseta', this)">Camisetas</button>
     </div>
     <div class="gallery" id="vitrine"></div>
+</div>
 
-   <div class="cart-section">
-    <h3>Seu Carrinho</h3>
-    <div id="lista-carrinho"></div>
-    <div style="text-align: right; margin: 20px 0;">Total: <span id="total-carrinho" style="color: var(--brand-accent);">R$ 0,00</span></div>
-    
-    <div class="payment-box">
-        <label style="color: white; margin-bottom: 5px;">Pague via PIX (Mercado Pago)</label>
-        <span class="pix-key" id="chave-pix">bilhacamilla86@gmail.com</span>
-        <button class="btn-copy" onclick="copiarPix()">
-            <span>📋</span> COPIAR CHAVE PIX
-        </button>
+<div class="cart-section">
+    <div class="container">
+        <h3>Seu Carrinho</h3>
+        <div id="lista-carrinho"></div>
+        <div style="text-align: right; margin: 20px 0; font-size: 1.2rem;">Total: <span id="total-carrinho" style="color: var(--brand-accent); font-weight: 800;">R$ 0,00</span></div>
+        
+        <div class="payment-box">
+            <label style="color: white;">Pague via PIX (Mercado Pago)</label>
+            <span class="pix-key" id="chave-pix">bilhacamilla86@gmail.com</span>
+            <button class="btn-copy" onclick="copiarPix()">📋 COPIAR CHAVE PIX</button>
+        </div>
+
+        <input type="text" id="nome_cliente" placeholder="Seu Nome Completo" style="margin-bottom: 10px;">
+        <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR E ENVIAR COMPROVANTE</button>
     </div>
-
-    <input type="text" id="nome_cliente" placeholder="Seu Nome Completo">
-    <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR E ENVIAR COMPROVANTE</button>
 </div>
 
 <div id="modal-selecao" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="fecharModal()">&times;</span>
         <div id="modal-imagens" class="modal-gallery"></div>
-        <h3 id="modal-titulo" style="color: var(--brand-accent); margin-bottom: 20px;"></h3>
-        <div class="input-group"><label>Tamanho</label><select id="modal-tam" onchange="atualizarCores()"></select></div>
-        <div class="input-group"><label>Cor</label><select id="modal-cor"></select></div>
-        <p id="modal-preco" style="text-align: right; font-weight: 700; font-size: 1.2rem;"></p>
+        <h3 id="modal-titulo" style="color: var(--brand-accent); margin-bottom: 20px; font-family: 'Montserrat';"></h3>
         
-        <p id="modal-alerta-estoque" style="color: var(--brand-accent); font-weight: 700; text-align: center; margin-top: 10px; font-size: 0.85rem; height: 1.2rem;"></p>
+        <div class="input-group">
+            <label>Tamanho</label>
+            <select id="modal-tam" onchange="atualizarCores()"></select>
+        </div>
+        <div class="input-group">
+            <label>Cor</label>
+            <select id="modal-cor" onchange="verificarEscassezVariacao()"></select>
+        </div>
+        
+        <p id="modal-preco" style="text-align: right; font-weight: 700; font-size: 1.4rem; margin-bottom: 15px;"></p>
+        <p id="modal-alerta-estoque" style="color: var(--brand-accent); font-weight: 700; text-align: center; font-size: 0.85rem; min-height: 1.2rem; margin-bottom: 15px;"></p>
         
         <button class="btn-action" onclick="confirmarAdicao()">ADICIONAR AO CARRINHO</button>
     </div>
 </div>
 
 <script>
-// ID extraído da sua planilha cbfitwear
-// Configurações da Planilha
 const SHEET_ID = '10PHxjW6F-roUMump4IkhLF4UG0kB_yvX'; 
 const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=cbfitwear`;
 
@@ -232,7 +139,6 @@ let carrinho = [];
 let categoriaAtual = 'tudo';
 let produtoSelecionadoAtual = "";
 
-// 1. Carregar Dados
 async function carregarDados() {
     try {
         const r = await fetch(URL);
@@ -249,14 +155,12 @@ async function carregarDados() {
             tag: row.c[6]?.v || "", 
             vPromo: row.c[7]?.v || null 
         }));
-        
         renderVitrine();
     } catch (err) {
         console.error("Erro ao carregar planilha:", err);
     }
 }
 
-// 2. Filtros
 function filtrarCategoria(cat, btn) {
     categoriaAtual = cat;
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -264,7 +168,6 @@ function filtrarCategoria(cat, btn) {
     renderVitrine();
 }
 
-// 3. Renderizar Vitrine (Corrigida)
 function renderVitrine() {
     const v = document.getElementById('vitrine');
     const produtosUnicos = [...new Set(dados.map(d => d.p))];
@@ -306,7 +209,7 @@ function renderVitrine() {
                 ${poucasUnidades && !i.tag ? '<div class="badge-escassez">Últimas Unidades!</div>' : ''}
                 <img src="${i.f[0]}" style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
                 <div class="product-info">
-                    ${i.n}<br>
+                    <strong>${i.n}</strong><br>
                     ${precoHTML}<br>
                     <small style="color: ${estaDisponivel ? (poucasUnidades ? 'var(--warning)' : 'var(--success)') : 'var(--danger)'};">
                         ${estaDisponivel ? (poucasUnidades ? 'CORRA! RESTAM POUCAS' : 'DISPONÍVEL') : 'INDISPONÍVEL'}
@@ -317,7 +220,6 @@ function renderVitrine() {
     }).join('');
 }
 
-// 4. Modal e Variantes
 function abrirModal(nome) {
     produtoSelecionadoAtual = nome;
     const itemDados = dados.find(d => d.p === nome);
@@ -364,7 +266,6 @@ function verificarEscassezVariacao() {
 
 function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
 
-// 5. Carrinho e Pedido
 function confirmarAdicao() {
     const nome = produtoSelecionadoAtual;
     const tam = document.getElementById('modal-tam').value;
@@ -381,7 +282,7 @@ function confirmarAdicao() {
 function atualizarCarrinho() {
     const lista = document.getElementById('lista-carrinho');
     lista.innerHTML = carrinho.map(i => `
-        <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #333;">
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
             <span>${i.p} (${i.t}/${i.c})</span>
             <span>R$ ${i.vFinal.toFixed(2).replace('.',',')}</span>
         </div>`).join('');
