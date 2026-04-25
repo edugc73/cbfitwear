@@ -10,7 +10,7 @@
             --brand-main: #5c131a;       /* Vinho Profundo */
             --brand-accent: #c5a059;     /* Dourado */
             --brand-light: #fdfaf9;      
-            --header-bg: #5c131a;        /* Cabeçalho Vinho como solicitado */
+            --header-bg: #5c131a;        
             --white: #ffffff;
             --success: #10b981;
             --danger: #ef4444;
@@ -28,7 +28,7 @@
             opacity: 0.04; z-index: -1; pointer-events: none;
         }
 
-        /* Cabeçalho Vinho - Ajuste do Logo para não parecer quadrado */
+        /* Cabeçalho e Ajuste do Logo */
         header { 
             background-color: var(--header-bg); 
             padding: 12px; 
@@ -37,13 +37,13 @@
             top: 0; 
             z-index: 1000; 
             border-bottom: 2px solid var(--brand-accent);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         .logo { 
             max-width: 120px; 
-            border-radius: 4px; /* Suaviza as pontas do quadrado da foto */
-            display: inline-block;
-            vertical-align: middle;
+            /* O filtro abaixo ajuda a integrar logos de fundo branco no fundo vinho */
+            mix-blend-mode: multiply; 
+            filter: contrast(1.1);
+            border-radius: 8px;
         }
 
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
@@ -54,40 +54,53 @@
         .filter-btn { background: white; border: 1px solid #ddd; color: #666; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
         .filter-btn.active { background: var(--brand-main); color: var(--brand-accent); border-color: var(--brand-main); }
 
-        /* Vitrine */
+        /* Vitrine e Preços */
         .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
         .product-card { background: white; border-radius: 0; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; position: relative; border: 1px solid #eee; }
         .product-card img { width: 100%; height: 420px; object-fit: cover; }
         .product-info { padding: 15px; text-align: center; }
         
+        .preco-venda { font-weight: 700; font-size: 1.1rem; color: var(--brand-main); }
+        .em-promo { color: #d32f2f; } /* Vermelho para destaque no preço novo */
+        
+        /* CORREÇÃO DO PREÇO RISCADO */
+        .preco-original { 
+            text-decoration: line-through; 
+            color: #888; /* Cinza para ser visível no fundo branco da vitrine */
+            font-size: 0.85rem; 
+            margin-right: 8px; 
+            display: inline-block;
+        }
+
+        /* Modal: Preço riscado precisa ser claro aqui */
+        .modal-content .preco-original { color: rgba(255,255,255,0.6); }
+
+        /* Badges */
         .badge-tag { position: absolute; top: 15px; left: 15px; background: var(--brand-main); color: var(--brand-accent); padding: 5px 12px; font-size: 0.7rem; font-weight: 700; border: 1px solid var(--brand-accent); z-index: 10; }
         .badge-escassez { position: absolute; top: 15px; right: 15px; background: white; color: var(--danger); padding: 5px 8px; font-size: 0.65rem; font-weight: 800; border-radius: 2px; z-index: 10; }
 
-        /* Modal e Correção do Menu de Seleção (Tamanho/Cor) */
+        /* Modal e Selects (Corrigido para aparecer sem hover) */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: var(--overlay); align-items: center; justify-content: center; backdrop-filter: blur(6px); padding: 20px; }
-        .modal-content { background: var(--brand-main); color: white; padding: 30px; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid var(--brand-accent); border-radius: 20px; }
+        .modal-content { background: var(--brand-main); color: white; padding: 30px; width: 100%; max-width: 500px; position: relative; border-radius: 20px; border: 1px solid var(--brand-accent); }
         .close-modal { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: var(--brand-accent); }
-        .modal-gallery { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 20px; scroll-snap-type: x mandatory; }
-        .modal-gallery img { width: 100%; max-height: 350px; object-fit: contain; flex-shrink: 0; border-radius: 12px; }
-
+        
         .input-group { margin-bottom: 1.2rem; }
         label { display: block; font-size: 0.7rem; color: var(--brand-accent); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
         
-        /* CORREÇÃO VISUAL DOS SELECTS */
         select, input { 
             width: 100%; 
             padding: 12px; 
-            background: #ffffff !important; /* Fundo branco para garantir visibilidade */
+            background: white !important; 
+            color: #333 !important; 
             border: 2px solid var(--brand-accent); 
-            color: #333 !important; /* Texto escuro */
-            border-radius: 8px; 
+            border-radius: 8px;
             font-size: 1rem;
-            cursor: pointer;
-            appearance: auto; /* Garante que a seta do sistema apareça */
+            display: block;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
-        option { background: white; color: black; padding: 10px; }
 
-        /* Carrinho e Área do PIX */
+        /* Carrinho e PIX */
         .cart-section { 
             background: var(--brand-main); 
             color: white; 
@@ -96,7 +109,6 @@
             max-width: 700px; 
             margin: 40px auto 60px auto; 
             border-top: 4px solid var(--brand-accent);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .payment-box { 
@@ -108,29 +120,14 @@
             border-radius: 12px;
         }
 
-        .pix-key { 
-            display: block; 
-            font-family: monospace; 
-            background: rgba(255, 255, 255, 0.1); 
-            padding: 12px; 
-            margin: 10px 0; 
-            color: var(--brand-accent); 
-            font-size: 0.9rem; 
-            word-break: break-all; 
-            border-radius: 8px; 
-        }
-
-        .btn-copy { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 10px 20px; cursor: pointer; font-size: 0.75rem; font-weight: 700; border-radius: 6px; text-transform: uppercase; }
+        .pix-key { display: block; background: rgba(255, 255, 255, 0.1); padding: 12px; margin: 10px 0; color: var(--brand-accent); border-radius: 8px; font-family: monospace; word-break: break-all; }
+        .btn-copy { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 10px 20px; cursor: pointer; font-weight: 700; border-radius: 6px; }
         .btn-action { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; text-transform: uppercase; border-radius: 8px; margin-top: 10px; }
         .btn-finalize { background: var(--success); color: white; border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 15px; border-radius: 8px; }
-
-        .preco-original { text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px; color: #fff; }
-        .em-promo { color: var(--brand-accent); }
 
         @media (max-width: 600px) { 
             .gallery { grid-template-columns: 1fr 1fr; gap: 10px; } 
             .product-card img { height: 230px; }
-            .cart-section { margin: 20px; padding: 20px; }
         }
     </style>
 </head>
@@ -149,39 +146,39 @@
     <div class="gallery" id="vitrine"></div>
 
     <div class="cart-section">
-        <h3 style="text-align: center; text-transform: uppercase; letter-spacing: 2px;">Seu Carrinho</h3>
+        <h3 style="text-align: center; text-transform: uppercase;">Seu Carrinho</h3>
         <div id="lista-carrinho" style="margin-top: 15px;"></div>
         <div style="text-align: right; margin: 20px 0; font-size: 1.2rem;">Total: <span id="total-carrinho" style="color: var(--brand-accent); font-weight: 800;">R$ 0,00</span></div>
         
         <div class="payment-box">
-            <label style="color: white; margin-bottom: 10px; display: block;">Pague via PIX (Mercado Pago)</label>
+            <label style="color: white; margin-bottom: 10px; display: block;">Pague via PIX</label>
             <span class="pix-key" id="chave-pix">bilhacamilla86@gmail.com</span>
             <button class="btn-copy" onclick="copiarPix()">📋 COPIAR CHAVE PIX</button>
         </div>
 
         <label style="color: white; margin-bottom: 5px; display: block; font-size: 0.8rem;">NOME COMPLETO</label>
-        <input type="text" id="nome_cliente" placeholder="Digite seu nome" style="color: #333 !important; background: white !important;">
-        <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR E ENVIAR COMPROVANTE</button>
+        <input type="text" id="nome_cliente" placeholder="Digite seu nome">
+        <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR E ENVIAR WHATSAPP</button>
     </div>
 </div>
 
 <div id="modal-selecao" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="fecharModal()">&times;</span>
-        <div id="modal-imagens" class="modal-gallery"></div>
+        <div id="modal-imagens" class="modal-gallery" style="display:flex; overflow-x:auto; gap:10px; margin-bottom:15px;"></div>
         <h3 id="modal-titulo" style="color: var(--brand-accent); margin-bottom: 20px;"></h3>
         
         <div class="input-group">
-            <label>ESCOLHA O TAMANHO</label>
+            <label>TAMANHO</label>
             <select id="modal-tam" onchange="atualizarCores()"></select>
         </div>
         <div class="input-group">
-            <label>ESCOLHA A COR</label>
+            <label>COR</label>
             <select id="modal-cor" onchange="verificarEscassezVariacao()"></select>
         </div>
         
-        <p id="modal-preco" style="text-align: right; font-weight: 700; font-size: 1.4rem; margin-bottom: 15px; color: white;"></p>
-        <p id="modal-alerta-estoque" style="color: var(--brand-accent); font-weight: 700; text-align: center; font-size: 0.85rem; min-height: 1.2rem; margin-bottom: 15px;"></p>
+        <p id="modal-preco" style="text-align: right; font-weight: 700; font-size: 1.4rem; margin-bottom: 15px;"></p>
+        <p id="modal-alerta-estoque" style="color: var(--brand-accent); font-weight: 700; text-align: center; font-size: 0.85rem; min-height: 1.2rem;"></p>
         <button class="btn-action" onclick="confirmarAdicao()">ADICIONAR AO CARRINHO</button>
     </div>
 </div>
@@ -231,17 +228,23 @@ function renderVitrine() {
 
     v.innerHTML = itensFiltrados.map(i => {
         const estaDisponivel = i.estoqueTotal > 0;
-        const poucasUnidades = i.estoqueTotal > 0 && i.estoqueTotal <= 2;
         const temPromo = i.vPromo !== null && i.vPromo > 0;
-        const precoHTML = temPromo ? `<span class="preco-original">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span><span class="preco-venda em-promo">R$ ${i.vPromo.toFixed(2).replace('.',',')}</span>` : `<span class="preco-venda" style="color: var(--brand-main)">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span>`;
+        
+        // Lógica do preço com condicional para o riscado
+        const precoHTML = temPromo 
+            ? `<span class="preco-original">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span><span class="preco-venda em-promo">R$ ${i.vPromo.toFixed(2).replace('.',',')}</span>` 
+            : `<span class="preco-venda">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span>`;
 
         return `
             <div class="product-card" onclick="${estaDisponivel ? `abrirModal('${i.n}')` : ''}">
                 ${i.tag ? `<div class="badge-tag">${i.tag}</div>` : ''}
-                ${poucasUnidades && !i.tag ? '<div class="badge-escassez">Últimas Unidades!</div>' : ''}
                 <img src="${i.f[0]}" style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
-                <div class="product-info"><strong>${i.n}</strong><br>${precoHTML}<br>
-                <small style="color: ${estaDisponivel ? (poucasUnidades ? 'var(--warning)' : 'var(--success)') : 'var(--danger)'}; font-weight: bold;">${estaDisponivel ? (poucasUnidades ? 'ÚLTIMAS PEÇAS!' : 'DISPONÍVEL') : 'INDISPONÍVEL'}</small>
+                <div class="product-info">
+                    <strong>${i.n}</strong><br>
+                    ${precoHTML}<br>
+                    <small style="color: ${estaDisponivel ? 'var(--success)' : 'var(--danger)'}; font-weight: bold;">
+                        ${estaDisponivel ? 'DISPONÍVEL' : 'ESGOTADO'}
+                    </small>
                 </div>
             </div>`;
     }).join('');
@@ -250,8 +253,8 @@ function renderVitrine() {
 function abrirModal(nome) {
     produtoSelecionadoAtual = nome;
     const itemDados = dados.find(d => d.p === nome);
-    const fotosArray = itemDados && itemDados.f ? itemDados.f.split(',').map(s => s.trim()) : ['https://via.placeholder.com/400x500?text=Sem+Foto'];
-    document.getElementById('modal-imagens').innerHTML = fotosArray.map(img => `<img src="${img}">`).join('');
+    const fotosArray = itemDados && itemDados.f ? itemDados.f.split(',').map(s => s.trim()) : [];
+    document.getElementById('modal-imagens').innerHTML = fotosArray.map(img => `<img src="${img}" style="width:100%; max-height:300px; object-fit:contain; flex-shrink:0; border-radius:10px;">`).join('');
     document.getElementById('modal-titulo').innerText = nome;
     const tamanhos = [...new Set(dados.filter(d => d.p === nome).map(d => d.t))];
     document.getElementById('modal-tam').innerHTML = tamanhos.map(t => `<option value="${t}">${t}</option>`).join('');
@@ -267,14 +270,16 @@ function atualizarCores() {
     if(variacoes[0]) {
         const item = variacoes[0];
         const temPromo = item.vPromo !== null && item.vPromo > 0;
-        document.getElementById('modal-preco').innerHTML = temPromo ? `<span class="preco-original">R$ ${item.v.toFixed(2).replace('.',',')}</span> R$ ${item.vPromo.toFixed(2).replace('.',',')}` : `R$ ${item.v.toFixed(2).replace('.',',')}`;
+        document.getElementById('modal-preco').innerHTML = temPromo 
+            ? `<span class="preco-original">R$ ${item.v.toFixed(2).replace('.',',')}</span> R$ ${item.vPromo.toFixed(2).replace('.',',')}` 
+            : `R$ ${item.v.toFixed(2).replace('.',',')}`;
     }
     verificarEscassezVariacao();
 }
 
 function verificarEscassezVariacao() {
     const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === document.getElementById('modal-cor').value);
-    document.getElementById('modal-alerta-estoque').innerText = (item && item.e > 0 && item.e <= 2) ? `🔥 Garanta a sua! Restam apenas ${item.e} unidades.` : "";
+    document.getElementById('modal-alerta-estoque').innerText = (item && item.e > 0 && item.e <= 2) ? `🔥 Restam apenas ${item.e} unidades!` : "";
 }
 
 function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
@@ -296,9 +301,7 @@ function atualizarCarrinho() {
 
 function copiarPix() {
     navigator.clipboard.writeText(document.getElementById('chave-pix').innerText).then(() => {
-        const btn = document.querySelector('.btn-copy');
-        btn.innerHTML = "✅ COPIADO!";
-        setTimeout(() => btn.innerHTML = "📋 COPIAR CHAVE PIX", 2000);
+        alert("Chave PIX copiada!");
     });
 }
 
