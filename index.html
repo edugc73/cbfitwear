@@ -14,7 +14,7 @@
             --white: #ffffff;
             --success: #10b981;
             --danger: #ef4444;
-            --warning: #fbbf24;
+            --warning: #f59e0b;          /* Amarelo/Laranja para alerta */
             --overlay: rgba(45, 8, 12, 0.95);
         }
 
@@ -59,34 +59,29 @@
         .product-card img { width: 100%; height: 420px; object-fit: cover; }
         .product-info { padding: 15px; text-align: center; }
         
-        /* Ajuste do Selo para formato de BOTÃO DISCRETO */
+        /* Selos: Tag/Desconto na Esquerda, Escassez na Direita */
         .badge-tag { 
-            position: absolute; 
-            top: 12px; 
-            left: 12px; 
-            background: var(--brand-accent); 
-            color: var(--brand-main); 
-            padding: 5px 10px; 
-            font-size: 0.65rem; 
-            font-weight: 800; 
-            border-radius: 4px; 
-            z-index: 10; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-block; 
-            width: auto;
+            position: absolute; top: 12px; left: 12px; 
+            background: var(--brand-accent); color: var(--brand-main); 
+            padding: 5px 10px; font-size: 0.65rem; font-weight: 800; 
+            border-radius: 4px; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .badge-escassez { 
+            position: absolute; top: 12px; right: 12px; 
+            background: white; color: var(--danger); 
+            padding: 5px 8px; font-size: 0.65rem; font-weight: 800; 
+            border-radius: 4px; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
         .preco-venda { font-weight: 700; font-size: 1.1rem; color: var(--brand-main); }
         .em-promo { color: #d32f2f; }
         
         .preco-original { 
-            text-decoration: line-through; 
-            color: #888; 
-            font-size: 0.85rem; 
-            margin-right: 8px; 
-            display: inline-block;
+            text-decoration: line-through; color: #888; 
+            font-size: 0.85rem; margin-right: 8px; display: inline-block;
         }
 
         /* Modal e Outros */
@@ -205,13 +200,13 @@ function renderVitrine() {
         return { n: nomeProd, f: fotosArray, tag: itemPrincipal.tag, vOriginal: itemPrincipal.v, vPromo: itemPrincipal.vPromo, estoqueTotal: estoqueTotal };
     });
 
-    // CORREÇÃO: Usando normalize("NFD") para ignorar acentos na busca
     const itensFiltrados = categoriaAtual === 'tudo' 
         ? itensVitrine 
         : itensVitrine.filter(i => i.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(categoriaAtual));
 
     v.innerHTML = itensFiltrados.map(i => {
         const estaDisponivel = i.estoqueTotal > 0;
+        const poucasUnidades = i.estoqueTotal > 0 && i.estoqueTotal <= 2; // RESTAURADA VERIFICAÇÃO DE ESCASSEZ
         const temPromo = i.vPromo !== null && i.vPromo > 0;
         
         let seloHTML = '';
@@ -222,19 +217,30 @@ function renderVitrine() {
             seloHTML = `<div class="badge-tag">${perc}% OFF</div>`;
         }
 
+        // RESTAURADO SELO E ESTILOS DE ESCASSEZ
+        let seloEscassez = '';
+        if (poucasUnidades) {
+            seloEscassez = `<div class="badge-escassez">Últimas Unidades!</div>`;
+        }
+
         const precoHTML = temPromo 
             ? `<span class="preco-original">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span><span class="preco-venda em-promo">R$ ${i.vPromo.toFixed(2).replace('.',',')}</span>` 
             : `<span class="preco-venda">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span>`;
 
+        // Cores e Textos Dinâmicos dependendo do estoque
+        const statusCor = estaDisponivel ? (poucasUnidades ? 'var(--warning)' : 'var(--success)') : 'var(--danger)';
+        const statusTexto = estaDisponivel ? (poucasUnidades ? '🔥 ÚLTIMAS PEÇAS!' : 'DISPONÍVEL') : 'ESGOTADO';
+
         return `
             <div class="product-card" onclick="${estaDisponivel ? `abrirModal('${i.n}')` : ''}">
                 ${seloHTML}
+                ${seloEscassez}
                 <img src="${i.f[0]}" style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
                 <div class="product-info">
                     <strong>${i.n}</strong><br>
                     ${precoHTML}<br>
-                    <small style="color: ${estaDisponivel ? 'var(--success)' : 'var(--danger)'}; font-weight: bold;">
-                        ${estaDisponivel ? 'DISPONÍVEL' : 'ESGOTADO'}
+                    <small style="color: ${statusCor}; font-weight: bold;">
+                        ${statusTexto}
                     </small>
                 </div>
             </div>`;
@@ -246,7 +252,6 @@ function abrirModal(nome) {
     const itemDados = dados.find(d => d.p === nome);
     const fotosArray = itemDados && itemDados.f ? itemDados.f.split(',').map(s => s.trim()) : [];
     
-    // Mostra todas as fotos do produto no modal
     document.getElementById('modal-imagens').innerHTML = fotosArray.map(img => 
         `<img src="${img}" style="width:100%; max-height:350px; object-fit:contain; flex-shrink:0; border-radius:10px; scroll-snap-align: center;">`
     ).join('');
