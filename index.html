@@ -71,6 +71,20 @@
     border: 1px solid var(--brand-accent);
 }
 
+.preco-original {
+    text-decoration: line-through;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-right: 8px;
+}
+.preco-venda {
+    color: var(--brand-main);
+    font-weight: 700;
+}
+.em-promo {
+    color: var(--danger); /* Cor vermelha para destacar o desconto */
+}
+        
 .product-card { position: relative; } /* Garante que o selo fique dentro do card */
 
         
@@ -202,13 +216,14 @@ async function carregarDados() {
         const j = JSON.parse(t.substr(47).slice(0, -2));
         
         dados = j.table.rows.map(row => ({ 
-            p: row.c[0]?.v || "", // Produto
-            t: row.c[1]?.v || "", // Tamanho
-            c: row.c[2]?.v || "", // Cor
-            v: row.c[3]?.v || 0,  // Valor
-            e: row.c[4]?.v || 0,  // Estoque
-            f: row.c[5]?.v || "", // FOTOS
-            tag: row.c[6]?.v || "" // NOVA COLUNA G: TAG (Promo, Novo, etc)
+            p: row.c[0]?.v || "", 
+            t: row.c[1]?.v || "", 
+            c: row.c[2]?.v || "", 
+            v: row.c[3]?.v || 0,  
+            e: row.c[4]?.v || 0,  
+            f: row.c[5]?.v || "", 
+            tag: row.c[6]?.v || "", 
+            vPromo: row.c[7]?.v || null // CAPTURA A COLUNA H (Preço Promo)
         }));
         
         renderVitrine();
@@ -216,7 +231,7 @@ async function carregarDados() {
         console.error("Erro ao carregar planilha:", err);
     }
 }
-
+    
 function filtrarCategoria(cat, btn) {
     categoriaAtual = cat;
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -228,18 +243,30 @@ function renderVitrine() {
     const v = document.getElementById('vitrine');
     const produtosUnicos = [...new Set(dados.map(d => d.p))];
     
-    const itensVitrine = produtosUnicos.map(nomeProd => {
+    v.innerHTML = produtosUnicos.map(nomeProd => {
         const variacoes = dados.filter(d => d.p === nomeProd);
-        const itemPrincipal = variacoes[0];
-        const fotosArray = itemPrincipal.f ? itemPrincipal.f.split(',').map(s => s.trim()) : ['https://via.placeholder.com/400x500?text=Sem+Foto'];
+        const item = variacoes[0];
+        const fotosArray = item.f ? item.f.split(',').map(s => s.trim()) : ['https://via.placeholder.com/400x500?text=Sem+Foto'];
+        const estoqueTotal = variacoes.reduce((acc, curr) => acc + (Number(curr.e) || 0), 0);
         
-        return {
-            n: nomeProd,
-            f: fotosArray,
-            tag: itemPrincipal.tag,
-            estoqueTotal: variacoes.reduce((acc, curr) => acc + (Number(curr.e) || 0), 0)
-        };
-    });
+        // Lógica de Preço
+        const temPromo = item.vPromo !== null && item.vPromo > 0;
+        const precoHTML = temPromo 
+            ? `<span class="preco-original">R$ ${item.v.toFixed(2).replace('.',',')}</span>
+               <span class="preco-venda em-promo">R$ ${item.vPromo.toFixed(2).replace('.',',')}</span>`
+            : `<span class="preco-venda">R$ ${item.v.toFixed(2).replace('.',',')}</span>`;
+
+        return `
+            <div class="product-card" onclick="${estoqueTotal > 0 ? `abrirModal('${nomeProd}')` : ''}">
+                ${item.tag ? `<div class="badge-tag">${item.tag}</div>` : ''}
+                <img src="${fotosArray[0]}" style="${estoqueTotal > 0 ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
+                <div class="product-info">
+                    ${item.p}<br>${precoHTML}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
 
     const itensFiltrados = categoriaAtual === 'tudo' ? itensVitrine : itensVitrine.filter(i => {
         const nomeNorm = i.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -290,10 +317,14 @@ function atualizarCores() {
     const variacoes = dados.filter(d => d.p === nome && d.t === tam);
     
     corSelect.innerHTML = variacoes.map(v => `<option value="${v.c}">${v.c} (${v.e} un)</option>`).join('');
+    
     if(variacoes[0]) {
-        document.getElementById('modal-preco').innerText = `R$ ${variacoes[0].v.toFixed(2).replace('.',',')}`;
+        const item = variacoes[0];
+        const temPromo = item.vPromo !== null && item.vPromo > 0;
+        document.getElementById('modal-preco').innerHTML = temPromo
+            ? `<span class="preco-original">R$ ${item.v.toFixed(2).replace('.',',')}</span> R$ ${item.vPromo.toFixed(2).replace('.',',')}`
+            : `R$ ${item.v.toFixed(2).replace('.',',')}`;
     }
-    corSelect.onchange = verificarEscassezVariacao;
     verificarEscassezVariacao();
 }
 
@@ -318,7 +349,9 @@ function confirmarAdicao() {
     const cor = document.getElementById('modal-cor').value;
     const item = dados.find(d => d.p === nome && d.t === tam && d.c === cor);
     if(item) {
-        carrinho.push({ ...item, id: Date.now() });
+        // DEFINE O PREÇO QUE VAI PARA O CARRINHO (Usa o promo se existir)
+        const precoFinal = (item.vPromo !== null && item.vPromo > 0) ? item.vPromo : item.v;
+        carrinho.push({ ...item, vFinal: precoFinal, id: Date.now() });
         atualizarCarrinho();
         fecharModal();
     }
@@ -326,8 +359,12 @@ function confirmarAdicao() {
 
 function atualizarCarrinho() {
     const lista = document.getElementById('lista-carrinho');
-    lista.innerHTML = carrinho.map(i => `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #333;"><span>${i.p} (${i.t}/${i.c})</span><span>R$ ${i.v.toFixed(2)}</span></div>`).join('');
-    const total = carrinho.reduce((a, b) => a + b.v, 0);
+    lista.innerHTML = carrinho.map(i => `
+        <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #333;">
+            <span>${i.p} (${i.t}/${i.c})</span>
+            <span>R$ ${i.vFinal.toFixed(2).replace('.',',')}</span>
+        </div>`).join('');
+    const total = carrinho.reduce((a, b) => a + b.vFinal, 0);
     document.getElementById('total-carrinho').innerText = `R$ ${total.toFixed(2).replace('.',',')}`;
 }
 
