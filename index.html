@@ -264,9 +264,7 @@ function renderVitrine() {
                     ${item.p}<br>${precoHTML}
                 </div>
             </div>
-        `;
-    }).join('');
-}
+       }
 
     const itensFiltrados = categoriaAtual === 'tudo' ? itensVitrine : itensVitrine.filter(i => {
         const nomeNorm = i.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -289,9 +287,7 @@ function renderVitrine() {
                     </small>
                 </div>
             </div>
-        `;
-    }).join('');
-}
+        }
 
 function abrirModal(nome) {
     produtoSelecionadoAtual = nome;
