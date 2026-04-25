@@ -167,9 +167,9 @@
 </div>
 
 <script>
-const SHEET_ID = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzZH_Y2vjYIClUKSeVBVdfvx8y4b81c66zJoc-wnLbM-mza5hRP-sPPuaQhTloew/pub?gid=1503843495&single=true&output=csv'; 
+const SHEET_ID = '10PHxjW6F-roUMump4IkhLF4UG0kB_yvX'; 
 const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=cbfitwear`;
-
+    
 let dados = [];
 let carrinho = [];
 let categoriaAtual = 'tudo';
@@ -182,14 +182,29 @@ async function carregarDados() {
         const t = await r.text();
         const j = JSON.parse(t.substr(47).slice(0, -2));
         
-        dados = j.table.rows.map(row => ({ 
-            p: row.c[0]?.v || "", // Produto
-            t: row.c[1]?.v || "", // Tamanho
-            c: row.c[2]?.v || "", // Cor
-            v: row.c[3]?.v || 0,  // Valor
-            e: row.c[4]?.v || 0,  // Estoque
-            f: row.c[5]?.v || ""  // FOTOS (Links na coluna F)
-        }));
+        dados = j.table.rows.map(row => {
+            let rawFotos = row.c[5]?.v || "";
+            
+            // CONVERSÃO DE LINKS DO DRIVE PARA LINKS DIRETOS
+            let fotosConvertidas = rawFotos.split(',').map(link => {
+                link = link.trim();
+                if (link.includes('drive.google.com')) {
+                    // Extrai o ID do arquivo e gera o link direto
+                    const id = link.match(/[-\w]{25,}/);
+                    return id ? `https://lh3.googleusercontent.com/u/0/d/${id}` : link;
+                }
+                return link;
+            }).join(',');
+
+            return { 
+                p: row.c[0]?.v || "", 
+                t: row.c[1]?.v || "", 
+                c: row.c[2]?.v || "", 
+                v: row.c[3]?.v || 0,  
+                e: row.c[4]?.v || 0,  
+                f: fotosConvertidas // Agora com links que o navegador aceita
+            };
+        });
         
         renderVitrine();
     } catch (err) {
