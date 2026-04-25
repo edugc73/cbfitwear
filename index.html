@@ -200,6 +200,7 @@
 
 <script>
 // ID extraído da sua planilha cbfitwear
+// Configurações da Planilha
 const SHEET_ID = '10PHxjW6F-roUMump4IkhLF4UG0kB_yvX'; 
 const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=cbfitwear`;
 
@@ -208,7 +209,7 @@ let carrinho = [];
 let categoriaAtual = 'tudo';
 let produtoSelecionadoAtual = "";
 
-// 1. Carregar Dados com suporte à nova coluna G (Tags)
+// 1. Carregar Dados
 async function carregarDados() {
     try {
         const r = await fetch(URL);
@@ -223,7 +224,7 @@ async function carregarDados() {
             e: row.c[4]?.v || 0,  
             f: row.c[5]?.v || "", 
             tag: row.c[6]?.v || "", 
-            vPromo: row.c[7]?.v || null // CAPTURA A COLUNA H (Preço Promo)
+            vPromo: row.c[7]?.v || null 
         }));
         
         renderVitrine();
@@ -231,7 +232,8 @@ async function carregarDados() {
         console.error("Erro ao carregar planilha:", err);
     }
 }
-    
+
+// 2. Filtros
 function filtrarCategoria(cat, btn) {
     categoriaAtual = cat;
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -239,32 +241,26 @@ function filtrarCategoria(cat, btn) {
     renderVitrine();
 }
 
+// 3. Renderizar Vitrine (Corrigida)
 function renderVitrine() {
     const v = document.getElementById('vitrine');
     const produtosUnicos = [...new Set(dados.map(d => d.p))];
     
-    v.innerHTML = produtosUnicos.map(nomeProd => {
+    const itensVitrine = produtosUnicos.map(nomeProd => {
         const variacoes = dados.filter(d => d.p === nomeProd);
-        const item = variacoes[0];
-        const fotosArray = item.f ? item.f.split(',').map(s => s.trim()) : ['https://via.placeholder.com/400x500?text=Sem+Foto'];
+        const itemPrincipal = variacoes[0];
+        const fotosArray = itemPrincipal.f ? itemPrincipal.f.split(',').map(s => s.trim()) : ['https://via.placeholder.com/400x500?text=Sem+Foto'];
         const estoqueTotal = variacoes.reduce((acc, curr) => acc + (Number(curr.e) || 0), 0);
         
-        // Lógica de Preço
-        const temPromo = item.vPromo !== null && item.vPromo > 0;
-        const precoHTML = temPromo 
-            ? `<span class="preco-original">R$ ${item.v.toFixed(2).replace('.',',')}</span>
-               <span class="preco-venda em-promo">R$ ${item.vPromo.toFixed(2).replace('.',',')}</span>`
-            : `<span class="preco-venda">R$ ${item.v.toFixed(2).replace('.',',')}</span>`;
-
-        return `
-            <div class="product-card" onclick="${estoqueTotal > 0 ? `abrirModal('${nomeProd}')` : ''}">
-                ${item.tag ? `<div class="badge-tag">${item.tag}</div>` : ''}
-                <img src="${fotosArray[0]}" style="${estoqueTotal > 0 ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
-                <div class="product-info">
-                    ${item.p}<br>${precoHTML}
-                </div>
-            </div>
-       }
+        return {
+            n: nomeProd,
+            f: fotosArray,
+            tag: itemPrincipal.tag,
+            vOriginal: itemPrincipal.v,
+            vPromo: itemPrincipal.vPromo,
+            estoqueTotal: estoqueTotal
+        };
+    });
 
     const itensFiltrados = categoriaAtual === 'tudo' ? itensVitrine : itensVitrine.filter(i => {
         const nomeNorm = i.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -274,6 +270,12 @@ function renderVitrine() {
     v.innerHTML = itensFiltrados.map(i => {
         const estaDisponivel = i.estoqueTotal > 0;
         const poucasUnidades = i.estoqueTotal > 0 && i.estoqueTotal <= 2;
+        const temPromo = i.vPromo !== null && i.vPromo > 0;
+
+        const precoHTML = temPromo 
+            ? `<span class="preco-original">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span>
+               <span class="preco-venda em-promo">R$ ${i.vPromo.toFixed(2).replace('.',',')}</span>`
+            : `<span class="preco-venda">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span>`;
 
         return `
             <div class="product-card" onclick="${estaDisponivel ? `abrirModal('${i.n}')` : ''}">
@@ -282,13 +284,17 @@ function renderVitrine() {
                 <img src="${i.f[0]}" style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
                 <div class="product-info">
                     ${i.n}<br>
+                    ${precoHTML}<br>
                     <small style="color: ${estaDisponivel ? (poucasUnidades ? 'var(--warning)' : 'var(--success)') : 'var(--danger)'};">
                         ${estaDisponivel ? (poucasUnidades ? 'CORRA! RESTAM POUCAS' : 'DISPONÍVEL') : 'INDISPONÍVEL'}
                     </small>
                 </div>
             </div>
-        }
+        `;
+    }).join('');
+}
 
+// 4. Modal e Variantes
 function abrirModal(nome) {
     produtoSelecionadoAtual = nome;
     const itemDados = dados.find(d => d.p === nome);
@@ -330,22 +336,18 @@ function verificarEscassezVariacao() {
     const cor = document.getElementById('modal-cor').value;
     const alerta = document.getElementById('modal-alerta-estoque');
     const item = dados.find(d => d.p === nome && d.t === tam && d.c === cor);
-    if (item && item.e > 0 && item.e <= 2) {
-        alerta.innerText = `🔥 Garanta a sua! Restam apenas ${item.e} unidades.`;
-    } else {
-        alerta.innerText = "";
-    }
+    alerta.innerText = (item && item.e > 0 && item.e <= 2) ? `🔥 Garanta a sua! Restam apenas ${item.e} unidades.` : "";
 }
 
 function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
 
+// 5. Carrinho e Pedido
 function confirmarAdicao() {
     const nome = produtoSelecionadoAtual;
     const tam = document.getElementById('modal-tam').value;
     const cor = document.getElementById('modal-cor').value;
     const item = dados.find(d => d.p === nome && d.t === tam && d.c === cor);
     if(item) {
-        // DEFINE O PREÇO QUE VAI PARA O CARRINHO (Usa o promo se existir)
         const precoFinal = (item.vPromo !== null && item.vPromo > 0) ? item.vPromo : item.v;
         carrinho.push({ ...item, vFinal: precoFinal, id: Date.now() });
         atualizarCarrinho();
@@ -368,9 +370,8 @@ function copiarPix() {
     const chave = document.getElementById('chave-pix').innerText;
     navigator.clipboard.writeText(chave).then(() => {
         const btn = document.querySelector('.btn-copy');
-        const original = btn.innerHTML;
         btn.innerHTML = "✅ COPIADO!";
-        setTimeout(() => btn.innerHTML = original, 2000);
+        setTimeout(() => btn.innerHTML = "📋 COPIAR CHAVE PIX", 2000);
     });
 }
 
