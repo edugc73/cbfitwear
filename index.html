@@ -53,6 +53,24 @@
     z-index: 10;
 }
 
+        /* Estilo para a Tag de Promoção/Lançamento */
+.badge-tag {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background-color: var(--brand-main);
+    color: var(--brand-accent);
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 15;
+    border: 1px solid var(--brand-accent);
+}
+
 .product-card { position: relative; } /* Garante que o selo fique dentro do card */
 
         
@@ -176,6 +194,7 @@ let carrinho = [];
 let categoriaAtual = 'tudo';
 let produtoSelecionadoAtual = "";
 
+// 1. Carregar Dados com suporte à nova coluna G (Tags)
 async function carregarDados() {
     try {
         const r = await fetch(URL);
@@ -188,12 +207,13 @@ async function carregarDados() {
             c: row.c[2]?.v || "", // Cor
             v: row.c[3]?.v || 0,  // Valor
             e: row.c[4]?.v || 0,  // Estoque
-            f: row.c[5]?.v || ""  // FOTOS (Links diretos do Postimages)
+            f: row.c[5]?.v || "", // FOTOS
+            tag: row.c[6]?.v || "" // NOVA COLUNA G: TAG (Promo, Novo, etc)
         }));
         
         renderVitrine();
     } catch (err) {
-        console.error("Erro ao carregar dados da planilha:", err);
+        console.error("Erro ao carregar planilha:", err);
     }
 }
 
@@ -211,12 +231,12 @@ function renderVitrine() {
     const itensVitrine = produtosUnicos.map(nomeProd => {
         const variacoes = dados.filter(d => d.p === nomeProd);
         const itemPrincipal = variacoes[0];
-        // Converte a string de fotos em array. Se estiver vazio, usa um placeholder.
         const fotosArray = itemPrincipal.f ? itemPrincipal.f.split(',').map(s => s.trim()) : ['https://via.placeholder.com/400x500?text=Sem+Foto'];
         
         return {
             n: nomeProd,
             f: fotosArray,
+            tag: itemPrincipal.tag,
             estoqueTotal: variacoes.reduce((acc, curr) => acc + (Number(curr.e) || 0), 0)
         };
     });
@@ -232,7 +252,8 @@ function renderVitrine() {
 
         return `
             <div class="product-card" onclick="${estaDisponivel ? `abrirModal('${i.n}')` : ''}">
-                ${poucasUnidades ? '<div class="badge-escassez">Últimas Unidades!</div>' : ''}
+                ${i.tag ? `<div class="badge-tag">${i.tag}</div>` : ''}
+                ${poucasUnidades && !i.tag ? '<div class="badge-escassez">Últimas Unidades!</div>' : ''}
                 <img src="${i.f[0]}" style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
                 <div class="product-info">
                     ${i.n}<br>
