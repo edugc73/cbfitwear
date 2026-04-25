@@ -229,7 +229,7 @@ function renderVitrine() {
 
         // Cores e Textos Dinâmicos dependendo do estoque
         const statusCor = estaDisponivel ? (poucasUnidades ? 'var(--warning)' : 'var(--success)') : 'var(--danger)';
-        const statusTexto = estaDisponivel ? (poucasUnidades ? '🔥 ÚLTIMAS PEÇAS!' : 'DISPONÍVEL') : 'ESGOTADO';
+        const statusTexto = estaDisponivel ? (poucasUnidades ? '🔥 CORRA! RESTAM POUCAS' : 'DISPONÍVEL') : 'ESGOTADO';
 
         return `
             <div class="product-card" onclick="${estaDisponivel ? `abrirModal('${i.n}')` : ''}">
@@ -283,7 +283,7 @@ function atualizarCores() {
 
 function verificarEscassezVariacao() {
     const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === document.getElementById('modal-cor').value);
-    document.getElementById('modal-alerta-estoque').innerText = (item && item.e > 0 && item.e <= 2) ? `🔥 Restam apenas ${item.e} unidades!` : "";
+    document.getElementById('modal-alerta-estoque').innerText = (item && item.e > 0 && item.e <= 2) ? `🔥 Garanta a sua! Restam apenas ${item.e} unidades!` : "";
 }
 
 function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
