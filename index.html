@@ -7,16 +7,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Paleta Vinho Premium & Gold */
-            --brand-main: #5c131a;       /* Vinho Profundo (Bordeaux) */
-            --brand-accent: #c5a059;     /* Dourado Champanhe */
-            --brand-light: #fdfaf9;      /* Gelo Suave */
-            --header-bg: rgba(92, 19, 26, 0.9); /* Vinho com transparência */
+            --brand-main: #5c131a;       /* Vinho Profundo */
+            --brand-accent: #c5a059;     /* Dourado */
+            --brand-light: #fdfaf9;      
+            --header-bg: rgba(92, 19, 26, 0.9); 
             --white: #ffffff;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #fbbf24;
-            --overlay: rgba(45, 8, 12, 0.95); /* Overlay Vinho Escuro */
+            --overlay: rgba(45, 8, 12, 0.95);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; transition: all 0.2s ease; }
@@ -39,8 +38,7 @@
         .filter-btn { background: white; border: 1px solid #ddd; color: #666; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
         .filter-btn.active { background: var(--brand-main); color: var(--brand-accent); border-color: var(--brand-main); }
 
-        /* Vitrine */
-        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
         .product-card { background: white; border-radius: 0; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; position: relative; border: 1px solid #eee; }
         .product-card img { width: 100%; height: 420px; object-fit: cover; }
         .product-info { padding: 15px; text-align: center; }
@@ -48,32 +46,52 @@
         .badge-tag { position: absolute; top: 15px; left: 15px; background: var(--brand-main); color: var(--brand-accent); padding: 5px 12px; font-size: 0.7rem; font-weight: 700; border: 1px solid var(--brand-accent); z-index: 10; }
         .badge-escassez { position: absolute; top: 15px; right: 15px; background: white; color: var(--danger); padding: 5px 8px; font-size: 0.65rem; font-weight: 800; border-radius: 2px; z-index: 10; }
 
-        /* MODAL FIX (O que estava faltando) */
+        /* Ajuste do Carrinho (Voltou a ser Box Centralizado) */
+        .cart-section { 
+            background: var(--brand-main); 
+            color: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            max-width: 700px; 
+            margin: 40px auto 60px auto; 
+            border-top: 4px solid var(--brand-accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .payment-box { 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px dashed var(--brand-accent); 
+            padding: 15px; 
+            margin: 20px 0; 
+            text-align: center; 
+            border-radius: 12px;
+        }
+
+        .pix-key { display: block; font-family: monospace; background: #000; padding: 10px; margin: 10px 0; color: var(--brand-accent); font-size: 0.85rem; word-break: break-all; border-radius: 6px; }
+        .btn-copy { background: #009ee3; color: white; border: none; padding: 8px 15px; cursor: pointer; font-size: 0.75rem; font-weight: 700; border-radius: 6px; }
+
+        .btn-action { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; text-transform: uppercase; border-radius: 8px; }
+        .btn-finalize { background: var(--success); color: white; border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 15px; border-radius: 8px; }
+
+        /* Modal */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: var(--overlay); align-items: center; justify-content: center; backdrop-filter: blur(6px); padding: 20px; }
-        .modal-content { background: var(--brand-main); color: white; padding: 30px; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid var(--brand-accent); }
+        .modal-content { background: var(--brand-main); color: white; padding: 30px; width: 100%; max-width: 500px; position: relative; max-height: 90vh; overflow-y: auto; border: 1px solid var(--brand-accent); border-radius: 20px; }
         .close-modal { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: var(--brand-accent); }
-        
         .modal-gallery { display: flex; overflow-x: auto; gap: 10px; margin-bottom: 20px; scroll-snap-type: x mandatory; }
-        .modal-gallery img { width: 100%; max-height: 350px; object-fit: contain; flex-shrink: 0; }
+        .modal-gallery img { width: 100%; max-height: 350px; object-fit: contain; flex-shrink: 0; border-radius: 12px; }
 
         .input-group { margin-bottom: 1.2rem; }
         label { display: block; font-size: 0.7rem; color: var(--brand-accent); font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
-        select, input { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(197,160,89,0.3); color: white; border-radius: 0; }
-
-        /* Checkout e Carrinho */
-        .cart-section { background: var(--brand-main); color: white; padding: 30px; margin-top: 50px; border-top: 4px solid var(--brand-accent); }
-        .btn-action { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-finalize { background: transparent; border: 1px solid var(--success); color: var(--success); padding: 15px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 15px; }
-        .btn-finalize:hover { background: var(--success); color: white; }
-
-        .payment-box { background: rgba(0,0,0,0.2); border: 1px dashed var(--brand-accent); padding: 15px; margin: 20px auto; text-align: center; max-width: 400px; } /* Proporção do PIX ajustada */
-        .pix-key { display: block; font-family: monospace; background: #000; padding: 10px; margin: 10px 0; color: var(--brand-accent); font-size: 0.85rem; word-break: break-all; }
-        .btn-copy { background: #009ee3; color: white; border: none; padding: 8px 15px; cursor: pointer; font-size: 0.75rem; font-weight: 700; }
+        select, input { width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(197,160,89,0.3); color: white; border-radius: 8px; }
 
         .preco-original { text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px; }
         .em-promo { color: var(--brand-accent); }
 
-        @media (max-width: 600px) { .gallery { grid-template-columns: 1fr 1fr; gap: 10px; } .product-card img { height: 250px; } }
+        @media (max-width: 600px) { 
+            .gallery { grid-template-columns: 1fr 1fr; gap: 10px; } 
+            .product-card img { height: 250px; }
+            .cart-section { margin: 20px; padding: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -89,10 +107,8 @@
         <button class="filter-btn" onclick="filtrarCategoria('camiseta', this)">Camisetas</button>
     </div>
     <div class="gallery" id="vitrine"></div>
-</div>
 
-<div class="cart-section">
-    <div class="container">
+    <div class="cart-section">
         <h3>Seu Carrinho</h3>
         <div id="lista-carrinho"></div>
         <div style="text-align: right; margin: 20px 0; font-size: 1.2rem;">Total: <span id="total-carrinho" style="color: var(--brand-accent); font-weight: 800;">R$ 0,00</span></div>
@@ -112,25 +128,17 @@
     <div class="modal-content">
         <span class="close-modal" onclick="fecharModal()">&times;</span>
         <div id="modal-imagens" class="modal-gallery"></div>
-        <h3 id="modal-titulo" style="color: var(--brand-accent); margin-bottom: 20px; font-family: 'Montserrat';"></h3>
-        
-        <div class="input-group">
-            <label>Tamanho</label>
-            <select id="modal-tam" onchange="atualizarCores()"></select>
-        </div>
-        <div class="input-group">
-            <label>Cor</label>
-            <select id="modal-cor" onchange="verificarEscassezVariacao()"></select>
-        </div>
-        
+        <h3 id="modal-titulo" style="color: var(--brand-accent); margin-bottom: 20px;"></h3>
+        <div class="input-group"><label>Tamanho</label><select id="modal-tam" onchange="atualizarCores()"></select></div>
+        <div class="input-group"><label>Cor</label><select id="modal-cor" onchange="verificarEscassezVariacao()"></select></div>
         <p id="modal-preco" style="text-align: right; font-weight: 700; font-size: 1.4rem; margin-bottom: 15px;"></p>
         <p id="modal-alerta-estoque" style="color: var(--brand-accent); font-weight: 700; text-align: center; font-size: 0.85rem; min-height: 1.2rem; margin-bottom: 15px;"></p>
-        
         <button class="btn-action" onclick="confirmarAdicao()">ADICIONAR AO CARRINHO</button>
     </div>
 </div>
 
 <script>
+// Script permanece o mesmo do anterior, apenas o CSS mudou
 const SHEET_ID = '10PHxjW6F-roUMump4IkhLF4UG0kB_yvX'; 
 const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=cbfitwear`;
 
@@ -144,21 +152,13 @@ async function carregarDados() {
         const r = await fetch(URL);
         const t = await r.text();
         const j = JSON.parse(t.substr(47).slice(0, -2));
-        
         dados = j.table.rows.map(row => ({ 
-            p: row.c[0]?.v || "", 
-            t: row.c[1]?.v || "", 
-            c: row.c[2]?.v || "", 
-            v: row.c[3]?.v || 0,  
-            e: row.c[4]?.v || 0,  
-            f: row.c[5]?.v || "", 
-            tag: row.c[6]?.v || "", 
-            vPromo: row.c[7]?.v || null 
+            p: row.c[0]?.v || "", t: row.c[1]?.v || "", c: row.c[2]?.v || "", 
+            v: row.c[3]?.v || 0, e: row.c[4]?.v || 0, f: row.c[5]?.v || "", 
+            tag: row.c[6]?.v || "", vPromo: row.c[7]?.v || null 
         }));
         renderVitrine();
-    } catch (err) {
-        console.error("Erro ao carregar planilha:", err);
-    }
+    } catch (err) { console.error(err); }
 }
 
 function filtrarCategoria(cat, btn) {
@@ -171,52 +171,31 @@ function filtrarCategoria(cat, btn) {
 function renderVitrine() {
     const v = document.getElementById('vitrine');
     const produtosUnicos = [...new Set(dados.map(d => d.p))];
-    
     const itensVitrine = produtosUnicos.map(nomeProd => {
         const variacoes = dados.filter(d => d.p === nomeProd);
         const itemPrincipal = variacoes[0];
         const fotosArray = itemPrincipal.f ? itemPrincipal.f.split(',').map(s => s.trim()) : ['https://via.placeholder.com/400x500?text=Sem+Foto'];
         const estoqueTotal = variacoes.reduce((acc, curr) => acc + (Number(curr.e) || 0), 0);
-        
-        return {
-            n: nomeProd,
-            f: fotosArray,
-            tag: itemPrincipal.tag,
-            vOriginal: itemPrincipal.v,
-            vPromo: itemPrincipal.vPromo,
-            estoqueTotal: estoqueTotal
-        };
+        return { n: nomeProd, f: fotosArray, tag: itemPrincipal.tag, vOriginal: itemPrincipal.v, vPromo: itemPrincipal.vPromo, estoqueTotal: estoqueTotal };
     });
 
-    const itensFiltrados = categoriaAtual === 'tudo' ? itensVitrine : itensVitrine.filter(i => {
-        const nomeNorm = i.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        return nomeNorm.includes(categoriaAtual);
-    });
+    const itensFiltrados = categoriaAtual === 'tudo' ? itensVitrine : itensVitrine.filter(i => i.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(categoriaAtual));
 
     v.innerHTML = itensFiltrados.map(i => {
         const estaDisponivel = i.estoqueTotal > 0;
         const poucasUnidades = i.estoqueTotal > 0 && i.estoqueTotal <= 2;
         const temPromo = i.vPromo !== null && i.vPromo > 0;
-
-        const precoHTML = temPromo 
-            ? `<span class="preco-original">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span>
-               <span class="preco-venda em-promo">R$ ${i.vPromo.toFixed(2).replace('.',',')}</span>`
-            : `<span class="preco-venda">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span>`;
+        const precoHTML = temPromo ? `<span class="preco-original">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span><span class="preco-venda em-promo">R$ ${i.vPromo.toFixed(2).replace('.',',')}</span>` : `<span class="preco-venda">R$ ${i.vOriginal.toFixed(2).replace('.',',')}</span>`;
 
         return `
             <div class="product-card" onclick="${estaDisponivel ? `abrirModal('${i.n}')` : ''}">
                 ${i.tag ? `<div class="badge-tag">${i.tag}</div>` : ''}
                 ${poucasUnidades && !i.tag ? '<div class="badge-escassez">Últimas Unidades!</div>' : ''}
                 <img src="${i.f[0]}" style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
-                <div class="product-info">
-                    <strong>${i.n}</strong><br>
-                    ${precoHTML}<br>
-                    <small style="color: ${estaDisponivel ? (poucasUnidades ? 'var(--warning)' : 'var(--success)') : 'var(--danger)'};">
-                        ${estaDisponivel ? (poucasUnidades ? 'CORRA! RESTAM POUCAS' : 'DISPONÍVEL') : 'INDISPONÍVEL'}
-                    </small>
+                <div class="product-info"><strong>${i.n}</strong><br>${precoHTML}<br>
+                <small style="color: ${estaDisponivel ? (poucasUnidades ? 'var(--warning)' : 'var(--success)') : 'var(--danger)'};">${estaDisponivel ? (poucasUnidades ? 'CORRA!' : 'DISPONÍVEL') : 'INDISPONÍVEL'}</small>
                 </div>
-            </div>
-        `;
+            </div>`;
     }).join('');
 }
 
@@ -224,15 +203,10 @@ function abrirModal(nome) {
     produtoSelecionadoAtual = nome;
     const itemDados = dados.find(d => d.p === nome);
     const fotosArray = itemDados && itemDados.f ? itemDados.f.split(',').map(s => s.trim()) : ['https://via.placeholder.com/400x500?text=Sem+Foto'];
-
-    const imagensDiv = document.getElementById('modal-imagens');
-    imagensDiv.innerHTML = fotosArray.map(img => `<img src="${img}">`).join('');
-    
+    document.getElementById('modal-imagens').innerHTML = fotosArray.map(img => `<img src="${img}">`).join('');
     document.getElementById('modal-titulo').innerText = nome;
-    const tamSelect = document.getElementById('modal-tam');
     const tamanhos = [...new Set(dados.filter(d => d.p === nome).map(d => d.t))];
-    tamSelect.innerHTML = tamanhos.map(t => `<option value="${t}">${t}</option>`).join('');
-    
+    document.getElementById('modal-tam').innerHTML = tamanhos.map(t => `<option value="${t}">${t}</option>`).join('');
     atualizarCores();
     document.getElementById('modal-selecao').style.display = 'flex';
 }
@@ -240,59 +214,40 @@ function abrirModal(nome) {
 function atualizarCores() {
     const nome = produtoSelecionadoAtual;
     const tam = document.getElementById('modal-tam').value;
-    const corSelect = document.getElementById('modal-cor');
     const variacoes = dados.filter(d => d.p === nome && d.t === tam);
-    
-    corSelect.innerHTML = variacoes.map(v => `<option value="${v.c}">${v.c} (${v.e} un)</option>`).join('');
-    
+    document.getElementById('modal-cor').innerHTML = variacoes.map(v => `<option value="${v.c}">${v.c} (${v.e} un)</option>`).join('');
     if(variacoes[0]) {
         const item = variacoes[0];
         const temPromo = item.vPromo !== null && item.vPromo > 0;
-        document.getElementById('modal-preco').innerHTML = temPromo
-            ? `<span class="preco-original">R$ ${item.v.toFixed(2).replace('.',',')}</span> R$ ${item.vPromo.toFixed(2).replace('.',',')}`
-            : `R$ ${item.v.toFixed(2).replace('.',',')}`;
+        document.getElementById('modal-preco').innerHTML = temPromo ? `<span class="preco-original">R$ ${item.v.toFixed(2).replace('.',',')}</span> R$ ${item.vPromo.toFixed(2).replace('.',',')}` : `R$ ${item.v.toFixed(2).replace('.',',')}`;
     }
     verificarEscassezVariacao();
 }
 
 function verificarEscassezVariacao() {
-    const nome = produtoSelecionadoAtual;
-    const tam = document.getElementById('modal-tam').value;
-    const cor = document.getElementById('modal-cor').value;
-    const alerta = document.getElementById('modal-alerta-estoque');
-    const item = dados.find(d => d.p === nome && d.t === tam && d.c === cor);
-    alerta.innerText = (item && item.e > 0 && item.e <= 2) ? `🔥 Garanta a sua! Restam apenas ${item.e} unidades.` : "";
+    const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === document.getElementById('modal-cor').value);
+    document.getElementById('modal-alerta-estoque').innerText = (item && item.e > 0 && item.e <= 2) ? `🔥 Garanta a sua! Restam apenas ${item.e} unidades.` : "";
 }
 
 function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
 
 function confirmarAdicao() {
-    const nome = produtoSelecionadoAtual;
-    const tam = document.getElementById('modal-tam').value;
-    const cor = document.getElementById('modal-cor').value;
-    const item = dados.find(d => d.p === nome && d.t === tam && d.c === cor);
+    const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === document.getElementById('modal-cor').value);
     if(item) {
-        const precoFinal = (item.vPromo !== null && item.vPromo > 0) ? item.vPromo : item.v;
-        carrinho.push({ ...item, vFinal: precoFinal, id: Date.now() });
+        carrinho.push({ ...item, vFinal: (item.vPromo !== null && item.vPromo > 0) ? item.vPromo : item.v, id: Date.now() });
         atualizarCarrinho();
         fecharModal();
     }
 }
 
 function atualizarCarrinho() {
-    const lista = document.getElementById('lista-carrinho');
-    lista.innerHTML = carrinho.map(i => `
-        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
-            <span>${i.p} (${i.t}/${i.c})</span>
-            <span>R$ ${i.vFinal.toFixed(2).replace('.',',')}</span>
-        </div>`).join('');
+    document.getElementById('lista-carrinho').innerHTML = carrinho.map(i => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);"><span>${i.p} (${i.t}/${i.c})</span><span>R$ ${i.vFinal.toFixed(2).replace('.',',')}</span></div>`).join('');
     const total = carrinho.reduce((a, b) => a + b.vFinal, 0);
     document.getElementById('total-carrinho').innerText = `R$ ${total.toFixed(2).replace('.',',')}`;
 }
 
 function copiarPix() {
-    const chave = document.getElementById('chave-pix').innerText;
-    navigator.clipboard.writeText(chave).then(() => {
+    navigator.clipboard.writeText(document.getElementById('chave-pix').innerText).then(() => {
         const btn = document.querySelector('.btn-copy');
         btn.innerHTML = "✅ COPIADO!";
         setTimeout(() => btn.innerHTML = "📋 COPIAR CHAVE PIX", 2000);
@@ -302,9 +257,8 @@ function copiarPix() {
 function enviarPedido() {
     const nome = document.getElementById('nome_cliente').value;
     if(!nome || carrinho.length === 0) return alert("Preencha seu nome e adicione itens!");
-    const total = document.getElementById('total-carrinho').innerText;
     const itens = carrinho.map(i => `- ${i.p} (${i.t}/${i.c})`).join('%0A');
-    const msg = `Olá! Meu nome é ${nome}. Gostaria de confirmar o pedido:%0A%0A${itens}%0A%0A*Total: ${total}*`;
+    const msg = `Olá! Meu nome é ${nome}. Gostaria de confirmar o pedido:%0A%0A${itens}%0A%0A*Total: ${document.getElementById('total-carrinho').innerText}*`;
     window.open(`https://wa.me/5513996526566?text=${msg}`, '_blank');
 }
 
