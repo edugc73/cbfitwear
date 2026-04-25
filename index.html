@@ -74,7 +74,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
             text-transform: uppercase;
             letter-spacing: 1px;
-            display: inline-block; /* Garante que não estique como tarja */
+            display: inline-block; 
             width: auto;
         }
 
@@ -91,15 +91,21 @@
 
         /* Modal e Outros */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: var(--overlay); align-items: center; justify-content: center; backdrop-filter: blur(6px); padding: 20px; }
-        .modal-content { background: var(--brand-main); color: white; padding: 30px; width: 100%; max-width: 500px; position: relative; border-radius: 20px; border: 1px solid var(--brand-accent); }
+        .modal-content { background: var(--brand-main); color: white; padding: 30px; width: 100%; max-width: 500px; position: relative; border-radius: 20px; border: 1px solid var(--brand-accent); max-height: 90vh; overflow-y: auto; }
         .close-modal { position: absolute; right: 20px; top: 15px; font-size: 30px; cursor: pointer; color: var(--brand-accent); }
         
         select, input { 
             width: 100%; padding: 12px; background: white !important; color: #333 !important; 
-            border: 2px solid var(--brand-accent); border-radius: 8px; font-size: 1rem; margin-top: 5px;
+            border: 2px solid var(--brand-accent); border-radius: 8px; font-size: 1rem; margin-top: 5px; margin-bottom: 15px;
         }
 
         .cart-section { background: var(--brand-main); color: white; padding: 30px; border-radius: 20px; max-width: 700px; margin: 40px auto; border-top: 4px solid var(--brand-accent); }
+        
+        .payment-box { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(197, 160, 89, 0.4); padding: 20px; margin: 25px 0; text-align: center; border-radius: 12px; }
+        .pix-key { display: block; background: rgba(255, 255, 255, 0.1); padding: 12px; margin: 10px 0; color: var(--brand-accent); border-radius: 8px; font-family: monospace; word-break: break-all; }
+        .btn-copy { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 10px 20px; cursor: pointer; font-weight: 700; border-radius: 6px; }
+        
+        .btn-action { background: var(--brand-accent); color: var(--brand-main); border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; text-transform: uppercase; border-radius: 8px; margin-top: 10px; }
         .btn-finalize { background: var(--success); color: white; border: none; padding: 15px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 15px; border-radius: 8px; }
 
         @media (max-width: 600px) { 
@@ -110,7 +116,7 @@
 </head>
 <body>
 
-<header><img src="LOGO1.gif" alt="Logo" class="logo"></header>
+<header><img src="LOGO1.png" alt="Logo" class="logo"></header>
 
 <div class="container">
     <h2>Coleção Exclusive</h2>
@@ -126,22 +132,35 @@
         <h3 style="text-align: center; text-transform: uppercase;">Seu Carrinho</h3>
         <div id="lista-carrinho" style="margin-top: 15px;"></div>
         <div style="text-align: right; margin: 20px 0; font-size: 1.2rem;">Total: <span id="total-carrinho" style="color: var(--brand-accent); font-weight: 800;">R$ 0,00</span></div>
-        <input type="text" id="nome_cliente" placeholder="Seu nome completo">
-        <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR PEDIDO</button>
+        
+        <div class="payment-box">
+            <label style="color: white; margin-bottom: 10px; display: block;">Pague via PIX</label>
+            <span class="pix-key" id="chave-pix">bilhacamilla86@gmail.com</span>
+            <button class="btn-copy" onclick="copiarPix()">📋 COPIAR CHAVE PIX</button>
+        </div>
+
+        <label style="color: white; font-size: 0.8rem; text-transform: uppercase;">Nome Completo</label>
+        <input type="text" id="nome_cliente" placeholder="Digite seu nome">
+        <button class="btn-finalize" onclick="enviarPedido()">FINALIZAR E ENVIAR WHATSAPP</button>
     </div>
 </div>
 
 <div id="modal-selecao" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="fecharModal()">&times;</span>
-        <div id="modal-imagens" style="display:flex; overflow-x:auto; gap:10px; margin-bottom:15px;"></div>
+        <div id="modal-imagens" style="display:flex; overflow-x:auto; gap:10px; margin-bottom:15px; scroll-snap-type: x mandatory;"></div>
         <h3 id="modal-titulo" style="color: var(--brand-accent); margin-bottom: 20px;"></h3>
-        <label>TAMANHO</label>
+        
+        <label style="color: var(--brand-accent); font-weight: bold; font-size: 0.8rem;">TAMANHO</label>
         <select id="modal-tam" onchange="atualizarCores()"></select>
-        <label style="margin-top:10px; display:block;">COR</label>
+        
+        <label style="color: var(--brand-accent); font-weight: bold; font-size: 0.8rem;">COR</label>
         <select id="modal-cor" onchange="verificarEscassezVariacao()"></select>
+        
         <p id="modal-preco" style="text-align: right; font-weight: 700; font-size: 1.4rem; margin: 15px 0;"></p>
-        <button class="btn-finalize" style="background: var(--brand-accent); color: var(--brand-main);" onclick="confirmarAdicao()">ADICIONAR AO CARRINHO</button>
+        <p id="modal-alerta-estoque" style="color: var(--brand-accent); font-weight: 700; text-align: center; font-size: 0.85rem; min-height: 1.2rem; margin-bottom: 15px;"></p>
+        
+        <button class="btn-action" onclick="confirmarAdicao()">ADICIONAR AO CARRINHO</button>
     </div>
 </div>
 
@@ -168,23 +187,33 @@ async function carregarDados() {
     } catch (err) { console.error(err); }
 }
 
+function filtrarCategoria(cat, btn) {
+    categoriaAtual = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderVitrine();
+}
+
 function renderVitrine() {
     const v = document.getElementById('vitrine');
     const produtosUnicos = [...new Set(dados.map(d => d.p))];
     const itensVitrine = produtosUnicos.map(nomeProd => {
         const variacoes = dados.filter(d => d.p === nomeProd);
-        const item = variacoes[0];
+        const itemPrincipal = variacoes[0];
+        const fotosArray = itemPrincipal.f ? itemPrincipal.f.split(',').map(s => s.trim()) : ['https://via.placeholder.com/400x500?text=Sem+Foto'];
         const estoqueTotal = variacoes.reduce((acc, curr) => acc + (Number(curr.e) || 0), 0);
-        return { n: nomeProd, f: item.f.split(',')[0], tag: item.tag, vOriginal: item.v, vPromo: item.vPromo, estoqueTotal: estoqueTotal };
+        return { n: nomeProd, f: fotosArray, tag: itemPrincipal.tag, vOriginal: itemPrincipal.v, vPromo: itemPrincipal.vPromo, estoqueTotal: estoqueTotal };
     });
 
-    const itensFiltrados = categoriaAtual === 'tudo' ? itensVitrine : itensVitrine.filter(i => i.n.toLowerCase().includes(categoriaAtual));
+    // CORREÇÃO: Usando normalize("NFD") para ignorar acentos na busca
+    const itensFiltrados = categoriaAtual === 'tudo' 
+        ? itensVitrine 
+        : itensVitrine.filter(i => i.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(categoriaAtual));
 
     v.innerHTML = itensFiltrados.map(i => {
         const estaDisponivel = i.estoqueTotal > 0;
         const temPromo = i.vPromo !== null && i.vPromo > 0;
         
-        // Lógica do Selo: Se tiver tag usa ela, se não, calcula a % de desconto
         let seloHTML = '';
         if (i.tag) {
             seloHTML = `<div class="badge-tag">${i.tag}</div>`;
@@ -200,39 +229,98 @@ function renderVitrine() {
         return `
             <div class="product-card" onclick="${estaDisponivel ? `abrirModal('${i.n}')` : ''}">
                 ${seloHTML}
-                <img src="${i.f}" style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
+                <img src="${i.f[0]}" style="${estaDisponivel ? '' : 'filter: grayscale(1); opacity: 0.4;'}">
                 <div class="product-info">
-                    <strong>${i.n}</strong><br>${precoHTML}
+                    <strong>${i.n}</strong><br>
+                    ${precoHTML}<br>
+                    <small style="color: ${estaDisponivel ? 'var(--success)' : 'var(--danger)'}; font-weight: bold;">
+                        ${estaDisponivel ? 'DISPONÍVEL' : 'ESGOTADO'}
+                    </small>
                 </div>
             </div>`;
     }).join('');
 }
 
-// Funções de Modal e Carrinho simplificadas para o exemplo
 function abrirModal(nome) {
     produtoSelecionadoAtual = nome;
-    const variacoes = dados.filter(d => d.p === nome);
+    const itemDados = dados.find(d => d.p === nome);
+    const fotosArray = itemDados && itemDados.f ? itemDados.f.split(',').map(s => s.trim()) : [];
+    
+    // Mostra todas as fotos do produto no modal
+    document.getElementById('modal-imagens').innerHTML = fotosArray.map(img => 
+        `<img src="${img}" style="width:100%; max-height:350px; object-fit:contain; flex-shrink:0; border-radius:10px; scroll-snap-align: center;">`
+    ).join('');
+    
     document.getElementById('modal-titulo').innerText = nome;
-    document.getElementById('modal-tam').innerHTML = [...new Set(variacoes.map(v => v.t))].map(t => `<option value="${t}">${t}</option>`).join('');
+    const tamanhos = [...new Set(dados.filter(d => d.p === nome).map(d => d.t))];
+    document.getElementById('modal-tam').innerHTML = tamanhos.map(t => `<option value="${t}">${t}</option>`).join('');
+    
     atualizarCores();
     document.getElementById('modal-selecao').style.display = 'flex';
 }
 
 function atualizarCores() {
+    const nome = produtoSelecionadoAtual;
     const tam = document.getElementById('modal-tam').value;
-    const variacoes = dados.filter(d => d.p === produtoSelecionadoAtual && d.t === tam);
-    document.getElementById('modal-cor').innerHTML = variacoes.map(v => `<option value="${v.c}">${v.c}</option>`).join('');
-    const item = variacoes[0];
-    const valor = (item.vPromo > 0) ? item.vPromo : item.v;
-    document.getElementById('modal-preco').innerText = `R$ ${valor.toFixed(2).replace('.',',')}`;
+    const variacoes = dados.filter(d => d.p === nome && d.t === tam);
+    
+    document.getElementById('modal-cor').innerHTML = variacoes.map(v => `<option value="${v.c}">${v.c} (${v.e} un)</option>`).join('');
+    
+    if(variacoes[0]) {
+        const item = variacoes[0];
+        const temPromo = item.vPromo !== null && item.vPromo > 0;
+        document.getElementById('modal-preco').innerHTML = temPromo 
+            ? `<span class="preco-original" style="color: rgba(255,255,255,0.6);">R$ ${item.v.toFixed(2).replace('.',',')}</span> R$ ${item.vPromo.toFixed(2).replace('.',',')}` 
+            : `R$ ${item.v.toFixed(2).replace('.',',')}`;
+    }
+    verificarEscassezVariacao();
+}
+
+function verificarEscassezVariacao() {
+    const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === document.getElementById('modal-cor').value);
+    document.getElementById('modal-alerta-estoque').innerText = (item && item.e > 0 && item.e <= 2) ? `🔥 Restam apenas ${item.e} unidades!` : "";
 }
 
 function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
-function filtrarCategoria(cat, btn) {
-    categoriaAtual = cat;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderVitrine();
+
+function confirmarAdicao() {
+    const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === document.getElementById('modal-cor').value);
+    if(item) {
+        const precoFinal = (item.vPromo !== null && item.vPromo > 0) ? item.vPromo : item.v;
+        carrinho.push({ ...item, vFinal: precoFinal, id: Date.now() });
+        atualizarCarrinho();
+        fecharModal();
+    }
+}
+
+function atualizarCarrinho() {
+    const lista = document.getElementById('lista-carrinho');
+    lista.innerHTML = carrinho.map(i => `
+        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+            <span>${i.p} (${i.t}/${i.c})</span>
+            <span>R$ ${i.vFinal.toFixed(2).replace('.',',')}</span>
+        </div>`).join('');
+    const total = carrinho.reduce((a, b) => a + b.vFinal, 0);
+    document.getElementById('total-carrinho').innerText = `R$ ${total.toFixed(2).replace('.',',')}`;
+}
+
+function copiarPix() {
+    navigator.clipboard.writeText(document.getElementById('chave-pix').innerText).then(() => {
+        const btn = document.querySelector('.btn-copy');
+        btn.innerHTML = "✅ COPIADO!";
+        setTimeout(() => btn.innerHTML = "📋 COPIAR CHAVE PIX", 2000);
+    });
+}
+
+function enviarPedido() {
+    const nome = document.getElementById('nome_cliente').value;
+    if(!nome || carrinho.length === 0) return alert("Preencha seu nome e adicione itens ao carrinho!");
+    
+    const itens = carrinho.map(i => `- ${i.p} (${i.t}/${i.c})`).join('%0A');
+    const total = document.getElementById('total-carrinho').innerText;
+    const msg = `Olá! Meu nome é ${nome}. Gostaria de confirmar o pedido:%0A%0A${itens}%0A%0A*Total: ${total}*`;
+    
+    window.open(`https://wa.me/5513996526566?text=${msg}`, '_blank');
 }
 
 window.onload = carregarDados;
