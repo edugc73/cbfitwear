@@ -304,7 +304,9 @@ function abrirModal(nome) {
     
     document.getElementById('modal-selecao').style.display = 'flex';
 }
-
+function fecharModal() {
+    document.getElementById('modal-selecao').style.display = 'none';
+}
 function atualizarCores() {
     const nome = produtoSelecionadoAtual;
     const tam = document.getElementById('modal-tam').value;
@@ -331,30 +333,31 @@ function atualizarCores() {
 function verificarEscassezVariacao() {
     const tam = document.getElementById('modal-tam').value;
     const cor = document.getElementById('modal-cor').value;
-    
-    if (!tam || !cor) return; // Garante que ambos foram selecionados
+    const btnAdd = document.getElementById('btn-add-cart');
+    const precoDisplay = document.getElementById('modal-preco');
+    const alertaEstoque = document.getElementById('modal-alerta-estoque');
+
+    // Se não houver seleção, mantém o botão travado e limpa textos
+    if (!tam || !cor) {
+        if (btnAdd) btnAdd.disabled = true;
+        return;
+    }
     
     const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === tam && d.c === cor);
     
     if (item) {
-        // Mostra o preço correspondente
         const temPromo = item.vPromo !== null && item.vPromo > 0;
-        document.getElementById('modal-preco').innerHTML = temPromo 
+        precoDisplay.innerHTML = temPromo 
             ? `<span class="preco-original" style="color: rgba(255,255,255,0.6);">R$ ${item.v.toFixed(2).replace('.',',')}</span> R$ ${item.vPromo.toFixed(2).replace('.',',')}` 
             : `R$ ${item.v.toFixed(2).replace('.',',')}`;
             
-        // Avalia o estoque e ativa/desativa o botão
-        const btnAdd = document.getElementById('btn-add-cart');
-        
         if (item.e > 0) {
-            document.getElementById('modal-alerta-estoque').innerText = (item.e <= 2) ? `🔥 Garanta a sua! Restam apenas ${item.e} unidades!` : "";
-            // Libera o botão
+            alertaEstoque.innerText = (item.e <= 2) ? `🔥 Garanta a sua! Restam apenas ${item.e} unidades!` : "";
             btnAdd.disabled = false;
             btnAdd.style.opacity = '1';
             btnAdd.style.cursor = 'pointer';
         } else {
-            document.getElementById('modal-alerta-estoque').innerText = "Produto esgotado nesta cor/tamanho.";
-            // Mantém travado se por acaso selecionar um esgotado
+            alertaEstoque.innerText = "Produto esgotado nesta cor/tamanho.";
             btnAdd.disabled = true;
             btnAdd.style.opacity = '0.5';
             btnAdd.style.cursor = 'not-allowed';
