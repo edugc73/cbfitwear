@@ -94,6 +94,35 @@
             border: 2px solid var(--brand-accent); border-radius: 8px; font-size: 1rem; margin-top: 5px; margin-bottom: 15px;
         }
 
+.cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.btn-qty {
+    background: var(--brand-accent);
+    color: var(--brand-main);
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-remove {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.7rem;
+    margin-left: 10px;
+}
+        
         .cart-section { background: var(--brand-main); color: white; padding: 30px; border-radius: 20px; max-width: 700px; margin: 40px auto; border-top: 4px solid var(--brand-accent); }
         
         .payment-box { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(197, 160, 89, 0.4); padding: 20px; margin: 25px 0; text-align: center; border-radius: 12px; }
@@ -288,27 +317,81 @@ function verificarEscassezVariacao() {
 
 function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
 
+// Alteramos o confirmarAdicao para verificar se o item já existe
 function confirmarAdicao() {
     const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === document.getElementById('modal-cor').value);
+    
     if(item) {
         const precoFinal = (item.vPromo !== null && item.vPromo > 0) ? item.vPromo : item.v;
-        carrinho.push({ ...item, vFinal: precoFinal, id: Date.now() });
+        
+        // Criamos uma chave única para identificar o produto (Nome + Tamanho + Cor)
+        const chaveItem = `${item.p}-${item.t}-${item.c}`;
+        const itemExistente = carrinho.find(i => i.chave === chaveItem);
+
+        if (itemExistente) {
+            // Se já existe e tem estoque, aumenta a quantidade
+            if (itemExistente.qtd < item.e) {
+                itemExistente.qtd++;
+            } else {
+                alert("Desculpe, não temos mais unidades deste item em estoque.");
+            }
+        } else {
+            // Se é novo, adiciona com qtd 1
+            carrinho.push({ ...item, vFinal: precoFinal, qtd: 1, chave: chaveItem });
+        }
+        
         atualizarCarrinho();
         fecharModal();
     }
 }
 
-function atualizarCarrinho() {
-    const lista = document.getElementById('lista-carrinho');
-    lista.innerHTML = carrinho.map(i => `
-        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
-            <span>${i.p} (${i.t}/${i.c})</span>
-            <span>R$ ${i.vFinal.toFixed(2).replace('.',',')}</span>
-        </div>`).join('');
-    const total = carrinho.reduce((a, b) => a + b.vFinal, 0);
-    document.getElementById('total-carrinho').innerText = `R$ ${total.toFixed(2).replace('.',',')}`;
+// Nova função para alterar quantidade diretamente no carrinho
+function alterarQuantidade(chave, delta) {
+    const item = carrinho.find(i => i.chave === chave);
+    if (item) {
+        const novaQtd = item.qtd + delta;
+        
+        if (novaQtd <= 0) {
+            removerDoCarrinho(chave);
+        } else if (novaQtd <= item.e) {
+            item.qtd = novaQtd;
+        } else {
+            alert("Limite de estoque atingido.");
+        }
+    }
+    atualizarCarrinho();
+}
+function removerDoCarrinho(chave) {
+    carrinho = carrinho.filter(i => i.chave !== chave);
+    atualizarCarrinho();
 }
 
+function atualizarCarrinho() {
+    const lista = document.getElementById('lista-carrinho');
+    
+    if (carrinho.length === 0) {
+        lista.innerHTML = '<p style="text-align:center; opacity:0.6;">Seu carrinho está vazio.</p>';
+    } else {
+        lista.innerHTML = carrinho.map(i => `
+            <div style="display:flex; flex-direction:column; padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span><strong>${i.p}</strong> <br><small>${i.t} / ${i.c}</small></span>
+                    <span style="color: var(--brand-accent); font-weight:700;">R$ ${(i.vFinal * i.qtd).toFixed(2).replace('.',',')}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                    <div class="cart-item-controls">
+                        <button class="btn-qty" onclick="alterarQuantidade('${i.chave}', -1)">-</button>
+                        <span>${i.qtd}</span>
+                        <button class="btn-qty" onclick="alterarQuantidade('${i.chave}', 1)">+</button>
+                    </div>
+                    <button class="btn-remove" onclick="removerDoCarrinho('${i.chave}')">Remover</button>
+                </div>
+            </div>`).join('');
+    }
+
+    const total = carrinho.reduce((a, b) => a + (b.vFinal * b.qtd), 0);
+    document.getElementById('total-carrinho').innerText = `R$ ${total.toFixed(2).replace('.',',')}`;
+}
 function copiarPix() {
     navigator.clipboard.writeText(document.getElementById('chave-pix').innerText).then(() => {
         const btn = document.querySelector('.btn-copy');
@@ -317,11 +400,12 @@ function copiarPix() {
     });
 }
 
+// Atualizamos a mensagem do WhatsApp para incluir as quantidades
 function enviarPedido() {
     const nome = document.getElementById('nome_cliente').value;
     if(!nome || carrinho.length === 0) return alert("Preencha seu nome e adicione itens ao carrinho!");
     
-    const itens = carrinho.map(i => `- ${i.p} (${i.t}/${i.c})`).join('%0A');
+    const itens = carrinho.map(i => `- ${i.qtd}x ${i.p} (${i.t}/${i.c})`).join('%0A');
     const total = document.getElementById('total-carrinho').innerText;
     const msg = `Olá! Meu nome é ${nome}. Gostaria de confirmar o pedido:%0A%0A${itens}%0A%0A*Total: ${total}*`;
     
