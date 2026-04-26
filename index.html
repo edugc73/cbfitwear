@@ -184,7 +184,7 @@
         <p id="modal-preco" style="text-align: right; font-weight: 700; font-size: 1.4rem; margin: 15px 0;"></p>
         <p id="modal-alerta-estoque" style="color: var(--brand-accent); font-weight: 700; text-align: center; font-size: 0.85rem; min-height: 1.2rem; margin-bottom: 15px;"></p>
         
-        <button class="btn-action" onclick="confirmarAdicao()">ADICIONAR AO CARRINHO</button>
+       <button id="btn-add-cart" class="btn-action" onclick="confirmarAdicao()">ADICIONAR AO CARRINHO</button>
     </div>
 </div>
 
@@ -275,7 +275,6 @@ function renderVitrine() {
             </div>`;
     }).join('');
 }
-
 function abrirModal(nome) {
     produtoSelecionadoAtual = nome;
     const itemDados = dados.find(d => d.p === nome);
@@ -286,57 +285,107 @@ function abrirModal(nome) {
     ).join('');
     
     document.getElementById('modal-titulo').innerText = nome;
-    const tamanhos = [...new Set(dados.filter(d => d.p === nome).map(d => d.t))];
-    document.getElementById('modal-tam').innerHTML = tamanhos.map(t => `<option value="${t}">${t}</option>`).join('');
     
-    atualizarCores();
+    // Configura os tamanhos com uma opção neutra obrigatória
+    const tamanhos = [...new Set(dados.filter(d => d.p === nome).map(d => d.t))];
+    let htmlTam = `<option value="" disabled selected>Selecione um tamanho</option>`;
+    htmlTam += tamanhos.map(t => `<option value="${t}">${t}</option>`).join('');
+    document.getElementById('modal-tam').innerHTML = htmlTam;
+    
+    // Reseta as cores, o preço e desativa o botão de compra
+    document.getElementById('modal-cor').innerHTML = `<option value="" disabled selected>Selecione o tamanho primeiro</option>`;
+    document.getElementById('modal-preco').innerHTML = '';
+    document.getElementById('modal-alerta-estoque').innerText = '';
+    
+    const btnAdd = document.getElementById('btn-add-cart');
+    btnAdd.disabled = true;
+    btnAdd.style.opacity = '0.5';
+    btnAdd.style.cursor = 'not-allowed';
+    
     document.getElementById('modal-selecao').style.display = 'flex';
 }
 
 function atualizarCores() {
     const nome = produtoSelecionadoAtual;
     const tam = document.getElementById('modal-tam').value;
+    
+    if (!tam) return; // Só avança se o tamanho foi escolhido
+    
     const variacoes = dados.filter(d => d.p === nome && d.t === tam);
     
-    document.getElementById('modal-cor').innerHTML = variacoes.map(v => `<option value="${v.c}">${v.c} (${v.e} un)</option>`).join('');
+    // Configura as cores com opção neutra obrigatória
+    let htmlCor = `<option value="" disabled selected>Selecione uma cor</option>`;
+    htmlCor += variacoes.map(v => `<option value="${v.c}">${v.c} (${v.e} un)</option>`).join('');
+    document.getElementById('modal-cor').innerHTML = htmlCor;
     
-    if(variacoes[0]) {
-        const item = variacoes[0];
+    // Mantém o preço oculto e o botão desativado até escolher a cor
+    document.getElementById('modal-preco').innerHTML = '';
+    document.getElementById('modal-alerta-estoque').innerText = '';
+    
+    const btnAdd = document.getElementById('btn-add-cart');
+    btnAdd.disabled = true;
+    btnAdd.style.opacity = '0.5';
+    btnAdd.style.cursor = 'not-allowed';
+}
+
+function verificarEscassezVariacao() {
+    const tam = document.getElementById('modal-tam').value;
+    const cor = document.getElementById('modal-cor').value;
+    
+    if (!tam || !cor) return; // Garante que ambos foram selecionados
+    
+    const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === tam && d.c === cor);
+    
+    if (item) {
+        // Mostra o preço correspondente
         const temPromo = item.vPromo !== null && item.vPromo > 0;
         document.getElementById('modal-preco').innerHTML = temPromo 
             ? `<span class="preco-original" style="color: rgba(255,255,255,0.6);">R$ ${item.v.toFixed(2).replace('.',',')}</span> R$ ${item.vPromo.toFixed(2).replace('.',',')}` 
             : `R$ ${item.v.toFixed(2).replace('.',',')}`;
+            
+        // Avalia o estoque e ativa/desativa o botão
+        const btnAdd = document.getElementById('btn-add-cart');
+        
+        if (item.e > 0) {
+            document.getElementById('modal-alerta-estoque').innerText = (item.e <= 2) ? `🔥 Garanta a sua! Restam apenas ${item.e} unidades!` : "";
+            // Libera o botão
+            btnAdd.disabled = false;
+            btnAdd.style.opacity = '1';
+            btnAdd.style.cursor = 'pointer';
+        } else {
+            document.getElementById('modal-alerta-estoque').innerText = "Produto esgotado nesta cor/tamanho.";
+            // Mantém travado se por acaso selecionar um esgotado
+            btnAdd.disabled = true;
+            btnAdd.style.opacity = '0.5';
+            btnAdd.style.cursor = 'not-allowed';
+        }
     }
-    verificarEscassezVariacao();
 }
 
-function verificarEscassezVariacao() {
-    const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === document.getElementById('modal-cor').value);
-    document.getElementById('modal-alerta-estoque').innerText = (item && item.e > 0 && item.e <= 2) ? `🔥 Garanta a sua! Restam apenas ${item.e} unidades!` : "";
-}
-
-function fecharModal() { document.getElementById('modal-selecao').style.display = 'none'; }
-
-// Alteramos o confirmarAdicao para verificar se o item já existe
 function confirmarAdicao() {
-    const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === document.getElementById('modal-tam').value && d.c === document.getElementById('modal-cor').value);
+    const tam = document.getElementById('modal-tam').value;
+    const cor = document.getElementById('modal-cor').value;
+    
+    // Trava final de segurança
+    if (!tam || !cor) {
+        alert("Por favor, selecione o tamanho e a cor antes de adicionar.");
+        return;
+    }
+
+    const item = dados.find(d => d.p === produtoSelecionadoAtual && d.t === tam && d.c === cor);
     
     if(item) {
         const precoFinal = (item.vPromo !== null && item.vPromo > 0) ? item.vPromo : item.v;
-        
-        // Criamos uma chave única para identificar o produto (Nome + Tamanho + Cor)
         const chaveItem = `${item.p}-${item.t}-${item.c}`;
         const itemExistente = carrinho.find(i => i.chave === chaveItem);
 
         if (itemExistente) {
-            // Se já existe e tem estoque, aumenta a quantidade
             if (itemExistente.qtd < item.e) {
                 itemExistente.qtd++;
             } else {
                 alert("Desculpe, não temos mais unidades deste item em estoque.");
             }
         } else {
-            // Se é novo, adiciona com qtd 1
             carrinho.push({ ...item, vFinal: precoFinal, qtd: 1, chave: chaveItem });
         }
         
