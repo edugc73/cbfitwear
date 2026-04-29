@@ -163,9 +163,7 @@
 <body>
 
 <header>
-    <!-- Substitua pela sua logo real -->
-    <h1 style="color: var(--brand-accent); font-family: 'Montserrat'; font-weight: 800; letter-spacing: 2px; font-size: 1.5rem;">CAMILLA BILHA</h1>
-    <span style="color: white; font-size: 0.8rem; letter-spacing: 4px; text-transform: uppercase;">Fitwear</span>
+    <img src="NOVOLOGO.PNG" alt="Logo" class="logo">
 </header>
 
 <div id="toast" class="toast">✅ Item adicionado com sucesso!</div>
@@ -237,9 +235,6 @@
         <div style="background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; margin-top: 20px;">
             <label style="color: var(--brand-accent); font-size: 0.8rem; text-transform: uppercase; font-weight: 700;">Nome Completo</label>
             <input type="text" id="nome_cliente" placeholder="Ex: Maria Silva">
-
-            <label style="color: var(--brand-accent); font-size: 0.8rem; text-transform: uppercase; font-weight: 700;">Endereço / CEP / Bairro (Para Entrega)</label>
-            <input type="text" id="endereco_cliente" placeholder="Rua, Número, Bairro ou CEP">
         </div>
 
         <button class="btn-finalize" onclick="enviarPedido()">
@@ -584,19 +579,12 @@ function copiarPix() {
 
 function enviarPedido() {
     const nome = document.getElementById('nome_cliente').value.trim();
-    const endereco = document.getElementById('endereco_cliente').value.trim();
     const metodoPagamento = document.getElementById('forma_pagamento');
     const metodoNome = metodoPagamento.options[metodoPagamento.selectedIndex].text;
 
     if(!nome) {
         alert("Por favor, preencha seu nome para continuarmos!");
         document.getElementById('nome_cliente').focus();
-        return;
-    }
-    
-    if(!endereco) {
-        alert("Por favor, preencha o endereço ou CEP para a entrega.");
-        document.getElementById('endereco_cliente').focus();
         return;
     }
 
@@ -607,11 +595,10 @@ function enviarPedido() {
     
     const msg = `🛍️ *NOVO PEDIDO - FITWEAR*%0A%0A` +
                 `👤 *Cliente:* ${nome}%0A` +
-                `📍 *Endereço/CEP:* ${endereco}%0A` +
                 `💳 *Forma de Pagamento:* ${metodoNome}%0A%0A` +
                 `*ITENS DO PEDIDO:*%0A${itens}%0A%0A` +
                 `💰 *TOTAL DA COMPRA: ${total}*%0A%0A` +
-                `Aguardo a confirmação!`;
+                `Aguardo a confirmação para combinarmos a entrega!`;
 
     window.open(`https://wa.me/5513996526566?text=${msg}`, '_blank');
 }
